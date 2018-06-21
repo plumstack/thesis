@@ -1,0 +1,23 @@
+{
+  "singleQuote": true,
+  "printWidth": 100,
+  "semi": true,
+  "trailingComma": "all",
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false,
+  "arrowParens": "always",
+  "overrides": [
+    {
+      "files": [
+        "babel-preset.js",
+        "**/preinstall.js",
+        "**/postinstall.js",
+        "**/fixReactTypeDefinition.js",
+        ".babelrc.js"
+      ],
+      "options": {
+        "trailingComma": "es5"
+      }
+    }
+  ]
+}
