@@ -1,0 +1,19 @@
+{
+  "name": "spotify-social-night",
+  "version": "0.1.0",
+  "description": "Spotify integrated DJing app for social nights",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plumstack/thesis.git"
+  },
+  "author": "johnstonjacob, chungrob, panetters",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plumstack/thesis/issues"
+  },
+  "homepage": "https://github.com/plumstack/thesis#readme"
+}
