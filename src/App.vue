@@ -19,8 +19,7 @@ export default {
     };
   },
 
-  components: {
-  },
+  components: {},
 
   methods: {
     homeRoute() {

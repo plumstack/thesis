@@ -73,7 +73,7 @@ class Spotify {
         albumTitle: data.item.album.name,
         albumArt: data.item.album.images[0].url,
         artist: data.item.artists[0].name,
-        artistFeature: data.item.artists.slice(1).map(item => item.name),
+        artistFeature: data.item.artists.slice(1).map((item) => item.name),
         device: data.device.name,
         url: data.context.href,
         shuffle: data.shuffle_state,

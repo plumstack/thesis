@@ -2,8 +2,8 @@
 **/node_modules
 **/package-lock.json
 **/.env
-/dist
-
+dist/
+output.txt
 # local env files
 .env.local
 .env.*.local
