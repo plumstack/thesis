@@ -5,6 +5,10 @@ const dotenv = require('dotenv');
 
 // router
 const spotifyNext = require('./routes/spotify/player/next');
+const spotifyPrev = require('./routes/spotify/player/prev');
+const spotifyPlay = require('./routes/spotify/player/play');
+const spotifyPause = require('./routes/spotify/player/pause');
+const spotifyPlayerInfo = require('./routes/spotify/player/info');
 
 dotenv.config({ silent: true });
 
@@ -26,6 +30,10 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use('/spotify/player/next', spotifyNext);
+app.use('/spotify/player/prev', spotifyPrev);
+app.use('/spotify/player/play', spotifyPlay);
+app.use('/spotify/player/pause', spotifyPause);
+app.use('/spotify/player/info', spotifyPlayerInfo);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}!`);

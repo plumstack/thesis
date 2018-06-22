@@ -6,7 +6,7 @@ const Spotify = require('../../../../spotify/index.js');
 
 router.get('/', async (req, res) => {
   const newSpot = new Spotify();
-  const result = await newSpot.nextPlayer();
+  const result = await newSpot.getPlayerInfo();
   res.send(result);
 });
 
