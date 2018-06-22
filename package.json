@@ -8,6 +8,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
+  "pre-commit": ["eslint *"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/plumstack/thesis.git"
