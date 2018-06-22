@@ -20,8 +20,7 @@ export default {
     };
   },
 
-  components: {
-  },
+  components: {},
 
   methods: {
     buttonClick() {
@@ -37,7 +36,7 @@ export default {
     },
     signupRoute() {
       this.$router.push({ path: '/signup' });
-    }
+    },
   },
 };
 </script>
@@ -48,7 +47,7 @@ body {
 }
 
 h1 {
-  font-family: "Comic Sans MS";
+  font-family: 'Comic Sans MS';
   color: orange;
   text-align: center;
 }
