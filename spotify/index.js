@@ -60,6 +60,7 @@ class Spotify {
 
   async getPlayerInfo() {
     const options = {
+      method: 'GET',
       url: `${this.spotifyurl}/?market=ES`,
       headers: this.headers,
     };

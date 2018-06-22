@@ -3,6 +3,7 @@
   <button v-on:click="onClickPrev()">Prev</button>
   <button class="md-accent md-raised" v-on:click="onClickPlay()">{{playButton}}</button>
   <button v-on:click="onClickNext()">Next</button>
+  <button v-on:click="getPlayerInfo()">GetInfo</button>
 </div>
 </template>
 
@@ -26,7 +27,7 @@ function playButtonChange(current) {
 export default {
   name: 'Player',
   data() {
-    return { playButton: playOrPause ? 'Pause' : 'Play' };
+    return { playButton: playOrPause ? 'Pause' : 'Play', playerInfo: {} };
   },
   methods: {
     onClickNext() {
@@ -39,6 +40,11 @@ export default {
       axios(options(playOrPause ? 'pause' : 'play'));
       playOrPause = !playOrPause;
       this.playButton = playButtonChange(playOrPause);
+    },
+    async getPlayerInfo() {
+      const result = await axios(options('info'));
+      this.playerInfo = result;
+      window.console.log(this.playerInfo);
     },
   },
 };
