@@ -12,6 +12,8 @@ Vue.use(VueRouter);
 const routes = [
   { path: '/', component: HelloWorld },
   { path: '/room/:roomId', component: Room },
+  { path: '/login', component: Login },
+  { path: '/signup', component: Signup }
 ];
 
 const router = new VueRouter({
