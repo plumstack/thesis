@@ -1,6 +1,6 @@
 <template>
   <div class="room">
-    <h1>Test Room {{ $route.params.roomId }}</h1>
+    <h2>Test Room {{ $route.params.roomId }}</h2>
     <Player />
   </div>
 </template>
@@ -18,5 +18,11 @@ export default {
 </script>
 
 <style scoped>
-
+  h2 {
+    font-family: "Kalam";
+    color: #fff;
+    text-align: center;
+    font-size: 5vw;
+    margin: 2px;
+  }
 </style>

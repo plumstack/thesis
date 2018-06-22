@@ -68,16 +68,16 @@ class Spotify {
     const data = playerInfoData ? JSON.parse(playerInfoData) : null;
     const playerInfo = data
       ? {
-          ok: true,
-          title: data.item.name,
-          albumTitle: data.item.album.name,
-          albumArt: data.item.album.images[0].url,
-          artist: data.item.artists[0].name,
-          artistFeature: data.item.artists.slice(1).map((item) => item.name),
-          device: data.device.name,
-          url: data.context.href,
-          shuffle: data.shuffle_state,
-        }
+        ok: true,
+        title: data.item.name,
+        albumTitle: data.item.album.name,
+        albumArt: data.item.album.images[0].url,
+        artist: data.item.artists[0].name,
+        artistFeature: data.item.artists.slice(1).map(item => item.name),
+        device: data.device.name,
+        url: data.context.href,
+        shuffle: data.shuffle_state,
+      }
       : null;
     if (playerInfo) return playerInfo;
     return this.failure;

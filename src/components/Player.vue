@@ -1,17 +1,18 @@
 <template>
-<div class='player'>
-  <div class='controls'>
-  <button v-on:click="onClickPrev()">Prev</button>
-  <button class="md-accent md-raised" v-on:click="onClickPlay()">{{playButton}}</button>
-  <button v-on:click="onClickNext()">Next</button>
-  <button v-on:click="getPlayerInfo()">GetInfo</button>
-</div>
-<div class='info'>
-  <img :src="playerInfo.albumArt" />
-  <p v-html="playerInfo" />
+  <div class="player">
+    <ul class="menu-container controls">
+      <li class="menu-item controls-item" v-on:click="onClickPrev()">Prev</li>
+      <li class="menu-item controls-item" v-on:click="onClickPlay()">{{ playButton }}</li>
+      <li class="menu-item controls-item" v-on:click="onClickNext()">Next</li>
+      <li class="menu-item controls-item" v-on:click="getPlayerInfo()">GetInfo</li>
+    </ul>
+    <div class="info">
+      <img :src="playerInfo.albumArt" />
+      <p v-html="playerInfo" />
+    </div>
   </div>
-</div>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -55,23 +56,12 @@ export default {
 </script>
 
 <style>
-button {
-  width: 33%;
-}
-
-.player {
-  display: flex;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-}
-
-.info {
-  position: absolute;
-  float: bottom;
-}
-
-.controls {
-  float: top;
+.controls-item {
+  display: inline-block;
+  font-size: 1.5vw;
+  padding: 5px 10px;
+  margin: 5px;
+  text-align: center;
+  border-radius: 5px;
 }
 </style>
