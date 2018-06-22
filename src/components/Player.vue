@@ -7,14 +7,15 @@
   <button v-on:click="getPlayerInfo()">GetInfo</button>
 </div>
 <div class='info'>
-<!-- https://i.scdn.co/image/962c51ca74944e60cccf0f39d10bee03666b0467 -->
+  <img :src="playerInfo.albumArt" />
+  <p v-html="playerInfo" />
   </div>
 </div>
 </template>
 <script>
 import axios from 'axios';
 
-const url = 'http://192.168.0.102:8082/spotify/player/';
+const url = 'http://10.30.23.191:8082/spotify/player/';
 let playOrPause = true;
 function options(meth) {
   return {
