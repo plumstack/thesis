@@ -14,6 +14,7 @@ export default {
 <style scoped>
 h1 {
   font-family: 'Montserrat', sans-serif;
+  background-color: #000000;
   color: #84bd00;
   text-align: center;
 }
