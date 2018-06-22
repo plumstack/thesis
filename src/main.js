@@ -15,7 +15,7 @@ const routes = [
   { path: '/', component: HelloWorld },
   { path: '/room/:roomId', component: Room },
   { path: '/login', component: Login },
-  { path: '/signup', component: Signup }
+  { path: '/signup', component: Signup },
 ];
 
 const router = new VueRouter({
@@ -23,6 +23,6 @@ const router = new VueRouter({
 });
 
 new Vue({
-  render: h => h(App),
+  render: (h) => h(App),
   router,
 }).$mount('#app');
