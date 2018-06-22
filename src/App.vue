@@ -2,6 +2,8 @@
   <div id="app">
     <h1>Welcome to Our App</h1>
     <button v-on:click="buttonClick">Go to a Room</button>
+    <button v-on:click="loginRoute">Login</button>
+    <button v-on:click="signupRoute">Sign Up</button>
     <router-view></router-view>
   </div>
 </template>
@@ -30,6 +32,12 @@ export default {
       });
       this.$router.push({ path: `/room/${this.room}` });
     },
+    loginRoute() {
+      this.$router.push({ path: '/login' });
+    },
+    signupRoute() {
+      this.$router.push({ path: '/signup' });
+    }
   },
 };
 </script>
