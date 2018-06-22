@@ -1,16 +1,20 @@
 <template>
 <div class='player'>
+  <div class='controls'>
   <button v-on:click="onClickPrev()">Prev</button>
   <button class="md-accent md-raised" v-on:click="onClickPlay()">{{playButton}}</button>
   <button v-on:click="onClickNext()">Next</button>
   <button v-on:click="getPlayerInfo()">GetInfo</button>
 </div>
+<div class='info'>
+<!-- https://i.scdn.co/image/962c51ca74944e60cccf0f39d10bee03666b0467 -->
+  </div>
+</div>
 </template>
-
 <script>
 import axios from 'axios';
 
-const url = 'http://localhost:8082/spotify/player/';
+const url = 'http://192.168.0.102:8082/spotify/player/';
 let playOrPause = true;
 function options(meth) {
   return {
@@ -43,8 +47,7 @@ export default {
     },
     async getPlayerInfo() {
       const result = await axios(options('info'));
-      this.playerInfo = result;
-      window.console.log(this.playerInfo);
+      this.playerInfo = result.data;
     },
   },
 };
@@ -52,12 +55,22 @@ export default {
 
 <style>
 button {
-  width: 10%;
+  width: 33%;
 }
 
 .player {
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: center;
+}
+
+.info {
+  position: absolute;
+  float: bottom;
+}
+
+.controls {
+  float: top;
 }
 </style>
