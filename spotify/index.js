@@ -7,7 +7,7 @@ class Spotify {
   constructor() {
     this.key = process.env.SPOTIFY_ID;
     this.secret = process.env.SPOTIFY_SECRET;
-    this.oauth = 'BQB4cOzjp4uKTA4vDEhURunycTDhW_FwT2IrAHTbrZ1nuyjFOhPq7mxcmhCakS2RllpZAx4zfUGHIdII09ERNjvs_QcD-kzHl8kPKylBR34yVcI9FOnEwUOHdtyZho88nLvZnnjgvqcHbfpMa6UPnCbGwqcRlAD94akfqF71h2HIDC56QwHFNj37AecAqUBW'
+    this.oauth = 'BQBFNQ318mSu2we3d4mC1_evdP3z5Jpe0s1ufSNPhXZUDG051-rSUNT14cQv0iDMkxnIV9M47lVF547qhM8zPtifMuxJI8hHUSG2K6wvm2qJjoq7yLDwpf4WwBMT49fE05QGFwXB0vHmYaw-xs1BjwEKFuX0cqFEjCo-AP162Um_actDbNLZE2oSCdMji8i8';
     this.spotifyurl = 'https://api.spotify.com/v1/me/player';
     this.auth_token = '';
     this.refresh_token = '';
