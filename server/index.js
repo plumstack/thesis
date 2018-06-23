@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
+const app = (module.exports = express()); //eslint-disable-line
+(require('./auth'));
+
 // router
 const spotifyNext = require('./routes/spotify/player/next');
 const spotifyPrev = require('./routes/spotify/player/prev');
@@ -12,7 +15,6 @@ const spotifyPlayerInfo = require('./routes/spotify/player/info');
 
 dotenv.config({ silent: true });
 
-const app = express();
 const port = process.env.PORT || 8082;
 
 app.use((req, res, next) => {
