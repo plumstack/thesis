@@ -7,8 +7,8 @@ class Spotify {
   constructor() {
     this.key = process.env.SPOTIFY_ID;
     this.secret = process.env.SPOTIFY_SECRET;
-    this.oauth = 'BQBFNQ318mSu2we3d4mC1_evdP3z5Jpe0s1ufSNPhXZUDG051-rSUNT14cQv0iDMkxnIV9M47lVF547qhM8zPtifMuxJI8hHUSG2K6wvm2qJjoq7yLDwpf4WwBMT49fE05QGFwXB0vHmYaw-xs1BjwEKFuX0cqFEjCo-AP162Um_actDbNLZE2oSCdMji8i8';
-    this.spotifyurl = 'https://api.spotify.com/v1/me/player';
+    this.oauth = process.env.OAUTH;
+    this.spotifyurl = 'https://api.spotify.com/v1';
     this.auth_token = '';
     this.refresh_token = '';
     this.success = { ok: true };
@@ -18,6 +18,7 @@ class Spotify {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.oauth}`,
     };
+    this.getUserInfo().then(() => this.newPlaylist());
   }
 
   playPlayer() {
@@ -35,6 +36,46 @@ class Spotify {
     return this.modifyPlayer('previous');
   }
 
+  async newPlaylist() {
+    const options = {
+      method: 'POST',
+      url: `${this.spotifyurl}/users/${this.userInfo.id}/playlists`,
+      headers: this.headers,
+      body: JSON.stringify({
+        name: 'party playlist',
+        description: 'social night playlist',
+        public: true,
+      }),
+    };
+
+    try {
+      const result = await request(options);
+      this.playlist = JSON.parse(result);
+      console.log(this.playlist);
+      return result;
+    } catch (error) {
+      console.error(error);
+      return this.failure;
+    }
+  }
+
+  async getUserInfo() {
+    const options = {
+      method: 'GET',
+      url: `${this.spotifyurl}/me`,
+      headers: this.headers,
+    };
+
+    try {
+      const results = await request(options);
+      this.userInfo = JSON.parse(results);
+      return results;
+    } catch (error) {
+      console.error(error);
+      return this.failure;
+    }
+  }
+
   async modifyPlayer(mod) {
     const reqMethod = {
       play: 'PUT',
@@ -45,7 +86,7 @@ class Spotify {
 
     const options = {
       method: reqMethod[mod],
-      url: `${this.spotifyurl}/${mod}`,
+      url: `${this.spotifyurl}/me/player/${mod}`,
       headers: this.headers,
     };
     try {
@@ -60,7 +101,7 @@ class Spotify {
   async getPlayerInfo() {
     const options = {
       method: 'GET',
-      url: `${this.spotifyurl}/?market=ES`,
+      url: `${this.spotifyurl}/me/player/?market=ES`,
       headers: this.headers,
     };
 
@@ -69,6 +110,7 @@ class Spotify {
     const playerInfo = data
       ? {
         ok: true,
+        playing: true,
         title: data.item.name,
         albumTitle: data.item.album.name,
         albumArt: data.item.album.images[0].url,
@@ -80,7 +122,7 @@ class Spotify {
       }
       : null;
     if (playerInfo) return playerInfo;
-    return this.failure;
+    return Object.assign(this.failure, { playing: false });
   }
 }
 

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
+mongoose
+  .connect('mongodb://tweeter-map:asus3dallsopmouse@206.189.170.211/tweet-map')
+  .then(console.log('successful connection'))
+  .catch(console.error);
+
 const UserSchema = new mongoose.Schema({
   username: String,
   session: String,
@@ -10,14 +15,15 @@ const UserSchema = new mongoose.Schema({
 });
 UserSchema.plugin(passportLocalMongoose);
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model('SpotifyUser', UserSchema);
 
 User.findOrCreate = function findCreate(info, cb) {
-  User.findOne({ username: info.twitterId }, (err, user) => {
+  console.log(info);
+  User.findOne({ username: info.spotifyId }, (err, user) => {
     if (err) return cb(err, null);
     if (!user) {
       const newUser = new User({
-        username: info.twitterId,
+        username: info.spotifyId,
         session: '',
         accessToken: info.accessToken,
         refreshToken: info.refreshToken,

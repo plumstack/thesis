@@ -7,16 +7,16 @@ const app = require('./index');
 
 dotenv.config({ silent: true });
 
-app.use(session({ secret: 'tampa vice', resave: false, saveUnitialized: false }));
+app.use(session({ secret: 'tampa vice', resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
-const spotifyStrategy = new SpotifyStrategy(
+passport.use(new SpotifyStrategy(
   {
     clientID: process.env.SPOTIFY_ID,
     clientSecret: process.env.SPOTIFY_SECRET,
     callbackURL: 'http://localhost:8082/auth/spotify/callback',
   },
-  (accessToken, refreshToken, expiresIn, profile, done) =>
+  (accessToken, refreshToken, expiresIn, profile, done) => {
     User.findOrCreate(
       {
         spotifyId: profile.id,
@@ -25,10 +25,9 @@ const spotifyStrategy = new SpotifyStrategy(
         expiresIn,
       },
       (err, user) => done(err, user),
-    ),
-);
-
-passport.use(spotifyStrategy);
+    );
+  },
+));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -51,6 +50,7 @@ app.get(
     failureRedirect: '/login',
   }),
   (req, res) => {
+    console.log('---');
     const { user } = req._passport.session; //eslint-disable-line
     User.sessionAdd(user, req.sessionID);
     res.redirect('/');
