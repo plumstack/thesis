@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const request = require('request-promise-native');
+const btoa = require('btoa');
 
 dotenv.config({ silent: true });
 
@@ -18,7 +19,29 @@ class Spotify {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.oauth}`,
     };
-    this.getUserInfo().then(() => this.newPlaylist());
+    // this.getUserInfo().then(() => this.newPlaylist());
+  }
+
+  async refreshToken() {
+    const encode = btoa(`${this.key}:${this.secret}`);
+    const dataString = `?grant_type=refresh_token&refresh_token=${process.env.REFRESH}`;
+    const options = {
+      method: 'POST',
+      url: `https://accounts.spotify.com/api/token${dataString}`,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${encode}`,
+      },
+      params: dataString,
+    };
+
+    try {
+      const result = await request(options);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   playPlayer() {
@@ -51,7 +74,6 @@ class Spotify {
     try {
       const result = await request(options);
       this.playlist = JSON.parse(result);
-      console.log(this.playlist);
       return result;
     } catch (error) {
       console.error(error);
@@ -125,5 +147,6 @@ class Spotify {
     return Object.assign(this.failure, { playing: false });
   }
 }
-
+const testSpot = new Spotify();
+testSpot.refreshToken();
 module.exports = Spotify;

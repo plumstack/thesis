@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
+const dotenv = require('dotenv');
+
+dotenv.config({ silent: true });
 
 mongoose
-  .connect('mongodb://tweeter-map:asus3dallsopmouse@206.189.170.211/tweet-map')
+  .connect(process.env.MONGO_URL)
   .then(console.log('successful connection'))
   .catch(console.error);
 
