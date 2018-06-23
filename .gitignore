@@ -4,6 +4,7 @@
 **/.env
 dist/
 output.txt
+.eslintcache
 # local env files
 .env.local
 .env.*.local

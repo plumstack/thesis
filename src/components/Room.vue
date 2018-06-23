@@ -1,6 +1,6 @@
 <template>
   <div class="room">
-    <h2>Test Room {{ $route.params.roomId }}</h2>
+    <h2>Room {{ $route.params.roomId }}</h2>
     <Player />
   </div>
 </template>
