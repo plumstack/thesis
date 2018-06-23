@@ -1,10 +1,9 @@
 <template>
   <div id="app">
     <ul class="menu-container">
-      <li class="menu-item topbar-item" v-on:click="homeRoute">Spotify</li>
-      <li class="menu-item topbar-item right" v-on:click="loginRoute">Login</li>
+      <li class="menu-item topbar-item" v-on:click="homeRoute">Party Pooper</li>
     </ul>
-    <router-view></router-view>
+    <router-view :joining="joining" :toggleJoin="toggleJoin"></router-view>
   </div>
 </template>
 
@@ -15,18 +14,22 @@ export default {
 
   data() {
     return {
-      room: '',
+      joining: false,
     };
   },
 
-  components: {},
-
   methods: {
     homeRoute() {
+      this.joining = false;
       this.$router.push({ path: '/' });
     },
+
     loginRoute() {
       this.$router.push({ path: '/login' });
+    },
+
+    toggleJoin() {
+      this.joining = true;
     },
   },
 };
@@ -49,6 +52,7 @@ body{
 h1 {
   font-family: "Kalam";
   color: #fff;
+  text-shadow: 2px 2px #0ff;
   text-align: center;
   font-size: 8vw;
   margin: 2px;
@@ -74,10 +78,6 @@ h1 {
   padding: 8px;
   margin: 5px;
   border-radius: 5px;
-}
-
-.right {
-  float: right;
 }
 
 .menu-item:hover {
