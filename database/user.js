@@ -18,7 +18,6 @@ UserSchema.plugin(passportLocalMongoose);
 const User = mongoose.model('SpotifyUser', UserSchema);
 
 User.findOrCreate = function findCreate(info, cb) {
-  console.log(info);
   User.findOne({ username: info.spotifyId }, (err, user) => {
     if (err) return cb(err, null);
     if (!user) {
@@ -29,12 +28,21 @@ User.findOrCreate = function findCreate(info, cb) {
         refreshToken: info.refreshToken,
         expiresIn: info.expiresIn,
       });
+
       return newUser.save((error) => {
         if (err) return cb(error, null);
         return cb(null, newUser);
       });
     }
-    return cb(null, user);
+    const updateUser = user;
+    updateUser.accessToken = info.accessToken;
+    updateUser.refreshToken = info.refreshToken;
+    updateUser.expiresIn = info.expiresIn;
+
+    return updateUser.save((error) => {
+      if (error) return console.error(error);
+      return cb(null, updateUser);
+    });
   });
 };
 

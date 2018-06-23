@@ -9,24 +9,9 @@
 </template>
 
 <script>
-import axios from 'axios';
-
-const url = 'http://localhost:8082';
-
-function getLogin() {
-  return {
-    method: 'GET',
-    url: `${url}/auth/spotify`,
-  };
-}
-
 export default {
   name: 'Login',
   methods: {
-    loginSpot() {
-      console.log('Trying to login');
-      axios(getLogin()).catch(console.log);
-    },
     authSpot() {
       this.$router.push({ path: '/auth/spotify' });
     },
