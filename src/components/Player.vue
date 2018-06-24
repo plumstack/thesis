@@ -19,7 +19,7 @@
 <script>
 import axios from 'axios';
 
-const url = 'http://localhost:8082/spotify/player/';
+const url = '/spotify/player/';
 let playOrPause = true;
 function options(meth) {
   return {
