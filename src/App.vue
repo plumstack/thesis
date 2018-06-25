@@ -3,7 +3,7 @@
     <ul class="menu-container">
       <li class="menu-item topbar-item" v-on:click="homeRoute">Party Pooper</li>
     </ul>
-    <router-view :joining="joining" :toggleJoin="toggleJoin"></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -12,15 +12,9 @@
 export default {
   name: 'app',
 
-  data() {
-    return {
-      joining: false,
-    };
-  },
-
   methods: {
     homeRoute() {
-      this.joining = false;
+      this.$store.commit('joining', false);
       this.$router.push({ path: '/' });
     },
 

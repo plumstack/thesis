@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import store from './store/store';
 
 import App from './App.vue';
 import Splash from '../src/components/Splash.vue';
@@ -12,7 +13,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: Splash },
-  { path: '/room/:roomId', component: Room },
+  { path: '/room/:roomId', component: Room, props: true },
   { path: '/login', component: Login },
 ];
 
@@ -23,4 +24,5 @@ const router = new VueRouter({
 new Vue({
   render: (h) => h(App),
   router,
+  store,
 }).$mount('#app');
