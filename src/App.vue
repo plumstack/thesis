@@ -52,10 +52,19 @@ body{
 h1 {
   font-family: "Kalam";
   color: #fff;
-  text-shadow: 2px 2px #0ff;
   text-align: center;
   font-size: 8vw;
   margin: 2px;
+  animation: shadow 2s infinite alternate;
+}
+
+@keyframes shadow {
+  0% {
+    text-shadow: 3px 3px #ff1493;
+  }
+  100% {
+    text-shadow: 3px 3px #0ff;
+  }
 }
 
 .menu-container {
