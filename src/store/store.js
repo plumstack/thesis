@@ -8,8 +8,8 @@ const state = {
 };
 
 const mutations = {
-  joining(state, bool) {
-    state.joining = bool;
+  joining(state, bool) { // eslint-disable-line
+    state.joining = bool; // eslint-disable-line
   },
 };
 
