@@ -13,6 +13,8 @@ const spotifyPlay = require('./routes/spotify/player/play');
 const spotifyPause = require('./routes/spotify/player/pause');
 const spotifyPlayerInfo = require('./routes/spotify/player/info');
 
+const roomInfo = require('./routes/dash/room/info');
+
 dotenv.config({ silent: true });
 
 const port = process.env.PORT || 8082;
@@ -36,6 +38,9 @@ app.use('/spotify/player/prev', spotifyPrev);
 app.use('/spotify/player/play', spotifyPlay);
 app.use('/spotify/player/pause', spotifyPause);
 app.use('/spotify/player/info', spotifyPlayerInfo);
+
+app.use('/dash/room/info', roomInfo);
+
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}!`);

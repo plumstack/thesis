@@ -39,8 +39,9 @@ class Spotify {
     try {
       const result = await request(options);
       console.log(result);
+      this.oauth = JSON.parse(result).access_token;
     } catch (error) {
-      console.log(error);
+      console.log('ERROR LINE 43');
     }
   }
 
@@ -57,6 +58,30 @@ class Spotify {
 
   prevPlayer() {
     return this.modifyPlayer('previous');
+  }
+
+  playSpecific(trackid) {
+    return this.modifyPlayer('play', trackid);
+  }
+
+  async search(q) {
+    const options = {
+      method: 'GET',
+      url: `${this.spotifyurl}/search`,
+      headers: this.headers,
+      qs: {
+        q,
+        type: 'track',
+        limit: 5,
+      },
+    };
+
+    try {
+      const result = await request(options);
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async newPlaylist() {
@@ -98,7 +123,7 @@ class Spotify {
     }
   }
 
-  async modifyPlayer(mod) {
+  async modifyPlayer(mod, trackid) {
     const reqMethod = {
       play: 'PUT',
       pause: 'PUT',
@@ -111,6 +136,7 @@ class Spotify {
       url: `${this.spotifyurl}/me/player/${mod}`,
       headers: this.headers,
     };
+    if (trackid) options.body = JSON.stringify({ context_uri: trackid });
     try {
       await request(options);
       return this.success;
@@ -149,4 +175,5 @@ class Spotify {
 }
 const testSpot = new Spotify();
 testSpot.refreshToken();
+setTimeout(() => testSpot.playSpecific('spotify:album:5b3tupDh9sl0Mf9ZjR989N'));
 module.exports = Spotify;

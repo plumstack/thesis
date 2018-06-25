@@ -9,6 +9,10 @@ module.exports = {
         target: 'http://localhost:8082',
         secure: false,
       },
+      '/dash': {
+        target: 'http://localhost:8082',
+        secure: false,
+      },
     },
   },
 };
