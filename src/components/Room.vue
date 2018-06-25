@@ -1,6 +1,6 @@
 <template>
   <div class="room">
-    <h2>Room {{ $route.params.roomId }}</h2>
+    <h2>Room {{ roomId }}</h2>
     <Player />
   </div>
 </template>
@@ -10,6 +10,10 @@ import Player from './Player.vue';
 
 export default {
   name: 'Room',
+
+  props: [
+    'roomId',
+  ],
 
   components: {
     Player,
