@@ -44,14 +44,19 @@ export default {
   methods: {
     onClickNext() {
       axios(options('next'));
+      this.getPlayerInfo();
+      setTimeout(this.getPlayerInfo, 1500);
     },
     onClickPrev() {
       axios(options('prev'));
+      this.getPlayerInfo();
+      setTimeout(this.getPlayerInfo, 1500);
     },
     onClickPlay() {
       axios(options(playOrPause ? 'pause' : 'play'));
       playOrPause = !playOrPause;
       this.playButton = playButtonChange(playOrPause);
+      setTimeout(this.getPlayerInfo, 1500);
     },
     async getPlayerInfo() {
       const result = await axios(options('info'));
