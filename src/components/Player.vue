@@ -35,6 +35,9 @@ function playButtonChange(current) {
 
 export default {
   name: 'Player',
+  created() {
+    this.getPlayerInfo();
+  },
   data() {
     return {
       playButton: playOrPause ? 'Pause' : 'Play',
@@ -43,13 +46,13 @@ export default {
   },
   methods: {
     onClickNext() {
-      axios(options('next'));
+      axios(options('next')).then(this.getPlayerInfo);
     },
     onClickPrev() {
-      axios(options('prev'));
+      axios(options('prev')).then(this.getPlayerInfo);
     },
     onClickPlay() {
-      axios(options(playOrPause ? 'pause' : 'play'));
+      axios(options(playOrPause ? 'pause' : 'play')).then(this.getPlayerInfo);
       playOrPause = !playOrPause;
       this.playButton = playButtonChange(playOrPause);
     },

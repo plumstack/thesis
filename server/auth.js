@@ -5,6 +5,14 @@ const dotenv = require('dotenv');
 const User = require('../database/user.js');
 const app = require('./index');
 
+const scope = [
+  'user-read-email',
+  'streaming',
+  'user-modify-playback-state',
+  'user-read-currently-playing',
+  'user-read-playback-state',
+];
+
 dotenv.config({ silent: true });
 
 app.use(session({ secret: 'tampa vice', resave: false, saveUninitialized: false }));
@@ -42,7 +50,7 @@ app.get('/auth/loggedin', (req, res) => {
   } else res.send({ loggedIn: false });
 });
 
-app.get('/auth/spotify', passport.authenticate('spotify', { scope: ['user-read-email'], showDialog: true }), (req) => req);
+app.get('/auth/spotify', passport.authenticate('spotify', { scope, showDialog: true }), (req) => req);
 
 app.get(
   '/auth/spotify/callback*',
