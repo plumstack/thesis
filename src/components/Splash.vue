@@ -2,31 +2,31 @@
   <div>
     <h1>Welcome to Party Pooper</h1>
     <ul class="menu-container main-menu">
-      <li class="menu-item main-menu-item" v-if="!this.joining" v-on:click="toggleJoin">
+      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="$store.commit('joining', true)">
         Join a Room
       </li>
-      <li class="menu-item main-menu-item" v-if="!this.joining" v-on:click="createRoom">
+      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="createRoom">
         Be a Host
       </li>
-      <li class="join-header" v-if="this.joining">
+      <li class="join-header" v-if="$store.state.joining">
         Username:
       </li>
-      <li v-if="this.joining">
+      <li v-if="$store.state.joining">
         <input type="text" class="join-input" v-model="userName" />
       </li>
-      <li class="join-error" v-if="this.joining">
+      <li class="join-error" v-if="$store.state.joining">
         {{ userNameError }}
       </li>
-      <li class="join-header" v-if="this.joining">
+      <li class="join-header" v-if="$store.state.joining">
         Room:
       </li>
-      <li v-if="this.joining">
+      <li v-if="$store.state.joining">
         <input type="text" class="join-input" v-on:keyup.enter="joinRoom" v-model="joinRoomId" />
       </li>
-      <li class="join-error" v-if="this.joining">
+      <li class="join-error" v-if="$store.state.joining">
         {{ roomError }}
       </li>
-      <li class="menu-item join-item" v-if="this.joining" v-on:click="joinRoom">
+      <li class="menu-item join-item" v-if="$store.state.joining" v-on:click="joinRoom">
         Join
       </li>
     </ul>
@@ -38,11 +38,6 @@ import randomString from 'randomstring';
 
 export default {
   name: 'Splash',
-
-  props: {
-    joining: Boolean,
-    toggleJoin: Function,
-  },
 
   data() {
     return {
