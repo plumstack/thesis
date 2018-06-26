@@ -38,7 +38,6 @@ class Spotify {
 
     try {
       const result = await request(options);
-      console.log(result);
       this.oauth = JSON.parse(result).access_token;
     } catch (error) {
       console.log('ERROR LINE 43');
@@ -175,5 +174,5 @@ class Spotify {
 }
 const testSpot = new Spotify();
 testSpot.refreshToken();
-setTimeout(() => testSpot.playSpecific('spotify:album:5b3tupDh9sl0Mf9ZjR989N'));
+setTimeout(() => testSpot.playSpecific('spotify:album:5b3tupDh9sl0Mf9ZjR989N'), 3000);
 module.exports = Spotify;
