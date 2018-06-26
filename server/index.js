@@ -4,14 +4,14 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
 const app = (module.exports = express()); //eslint-disable-line
-// (require('./auth'));
+(require('./auth'));
 
 // router
-// const spotifyNext = require('./routes/spotify/player/next');
-// const spotifyPrev = require('./routes/spotify/player/prev');
-// const spotifyPlay = require('./routes/spotify/player/play');
-// const spotifyPause = require('./routes/spotify/player/pause');
-// const spotifyPlayerInfo = require('./routes/spotify/player/info');
+const spotifyNext = require('./routes/spotify/player/next');
+const spotifyPrev = require('./routes/spotify/player/prev');
+const spotifyPlay = require('./routes/spotify/player/play');
+const spotifyPause = require('./routes/spotify/player/pause');
+const spotifyPlayerInfo = require('./routes/spotify/player/info');
 
 const roomCreate = require('./routes/dash/room/create');
 const roomJoin = require('./routes/dash/room/join');
@@ -35,11 +35,11 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// app.use('/spotify/player/next', spotifyNext);
-// app.use('/spotify/player/prev', spotifyPrev);
-// app.use('/spotify/player/play', spotifyPlay);
-// app.use('/spotify/player/pause', spotifyPause);
-// app.use('/spotify/player/info', spotifyPlayerInfo);
+app.use('/spotify/player/next', spotifyNext);
+app.use('/spotify/player/prev', spotifyPrev);
+app.use('/spotify/player/play', spotifyPlay);
+app.use('/spotify/player/pause', spotifyPause);
+app.use('/spotify/player/info', spotifyPlayerInfo);
 
 app.use('/dash/room/create', roomCreate);
 app.use('/dash/room/join', roomJoin);
