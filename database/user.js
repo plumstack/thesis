@@ -33,7 +33,7 @@ User.findOrCreate = function findCreate(info, cb) {
       });
 
       return newUser.save((error) => {
-        if (err) return cb(error, null);
+        if (error) return cb(error, null);
         return cb(null, newUser);
       });
     }
