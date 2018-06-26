@@ -54,7 +54,7 @@ app.get('/auth/loggedin', (req, res) => {
   if (req.isAuthenticated()) {
     User.sessionCheck(req.sessionID)
       .then((user) => {
-        res.send({ loggedIn: true, history: user.history });
+        res.send({ loggedIn: true, username: user.username });
       })
       .catch(console.error);
   } else res.send({ loggedIn: false });
