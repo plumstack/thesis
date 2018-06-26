@@ -1,7 +1,7 @@
 <template>
   <div class="room">
     <h2>Room {{ roomId }}</h2>
-    <Player />
+    <Player :roomId="roomId"/>
   </div>
 </template>
 
