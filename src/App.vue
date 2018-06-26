@@ -21,10 +21,6 @@ export default {
     loginRoute() {
       this.$router.push({ path: '/login' });
     },
-
-    toggleJoin() {
-      this.joining = true;
-    },
   },
 };
 </script>
