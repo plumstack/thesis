@@ -13,6 +13,8 @@ const spotifyPlay = require('./routes/spotify/player/play');
 const spotifyPause = require('./routes/spotify/player/pause');
 const spotifyPlayerInfo = require('./routes/spotify/player/info');
 
+const roomCreate = require('./routes/dash/room/create');
+const roomJoin = require('./routes/dash/room/join');
 const roomInfo = require('./routes/dash/room/info');
 
 dotenv.config({ silent: true });
@@ -39,6 +41,8 @@ app.use('/spotify/player/play', spotifyPlay);
 app.use('/spotify/player/pause', spotifyPause);
 app.use('/spotify/player/info', spotifyPlayerInfo);
 
+app.use('/dash/room/create', roomCreate);
+app.use('/dash/room/join', roomJoin);
 app.use('/dash/room/info', roomInfo);
 
 

@@ -12,6 +12,15 @@ const scope = [
   'user-modify-playback-state',
   'user-read-currently-playing',
   'user-read-playback-state',
+  'user-library-read',
+  'playlist-read-private',
+  'user-library-modify',
+  'playlist-modify-public',
+  'user-read-recently-played',
+  'user-read-private',
+  'playlist-modify-private',
+  'user-top-read',
+  'user-read-birthdate',
 ];
 
 dotenv.config({ silent: true });

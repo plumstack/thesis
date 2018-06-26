@@ -34,14 +34,24 @@
 </template>
 
 <script>
+import axios from 'axios';
 import randomString from 'randomstring';
+
+const url = '/dash/room/';
+
+function options(meth, body) {
+  return {
+    method: 'POST',
+    url: `${url}${meth}`,
+    data: body,
+  };
+}
 
 export default {
   name: 'Splash',
 
   data() {
     return {
-      newRoom: '',
       userName: '',
       joinRoomId: '',
       userNameError: '',
@@ -51,12 +61,14 @@ export default {
 
   methods: {
     createRoom() {
-      this.newRoom = randomString.generate({
+      const newRoom = randomString.generate({
         length: 5,
         capitalization: 'lowercase',
         readable: true,
       });
-      this.$router.push({ path: `/room/${this.newRoom}` });
+
+      axios(options('create', { roomId: newRoom, userName: 'host' }));
+      this.$router.push({ path: `/room/${newRoom}` });
     },
 
     joinRoom() {
@@ -82,6 +94,7 @@ export default {
         this.userNameError = 'Enter a username';
       }
       if (!this.userNameError && !this.roomError) {
+        axios(options('join', { roomId: this.joinRoomId, userName: this.userName }));
         this.$router.push({ path: `/room/${this.joinRoomId}` });
       }
     },
