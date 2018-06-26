@@ -175,5 +175,5 @@ class Spotify {
 }
 const testSpot = new Spotify();
 testSpot.refreshToken();
-setTimeout(() => testSpot.playSpecific('spotify:album:5b3tupDh9sl0Mf9ZjR989N'));
+// setTimeout(() => testSpot.playSpecific('spotify:album:5b3tupDh9sl0Mf9ZjR989N'));
 module.exports = Spotify;
