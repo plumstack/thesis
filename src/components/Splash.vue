@@ -2,11 +2,13 @@
   <div>
     <h1>Welcome to Party Pooper</h1>
     <ul class="menu-container main-menu">
-      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="$store.commit('joining', true)">
+      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="$store.commit('setJoining', true)">
         Join a Room
       </li>
-      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="createRoom">
-        Be a Host
+      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="hostRoom">
+        <form id="loginForm" action="http://localhost:8082/auth/spotify" method="GET">
+          Host a Room
+        </form>
       </li>
       <li class="join-header" v-if="$store.state.joining">
         Username:
@@ -35,14 +37,12 @@
 
 <script>
 import axios from 'axios';
-import randomString from 'randomstring';
 
-const url = '/dash/room/';
-
-function options(meth, body) {
+const roomUrl = '/dash/room/';
+function roomOptions(meth, body) {
   return {
     method: 'POST',
-    url: `${url}${meth}`,
+    url: `${roomUrl}${meth}`,
     data: body,
   };
 }
@@ -60,15 +60,8 @@ export default {
   },
 
   methods: {
-    createRoom() {
-      const newRoom = randomString.generate({
-        length: 5,
-        capitalization: 'lowercase',
-        readable: true,
-      });
-
-      axios(options('create', { roomId: newRoom, userName: 'host' }));
-      this.$router.push({ path: `/room/${newRoom}` });
+    hostRoom() {
+      document.getElementById('loginForm').submit();
     },
 
     joinRoom() {
@@ -94,7 +87,8 @@ export default {
         this.userNameError = 'Enter a username';
       }
       if (!this.userNameError && !this.roomError) {
-        axios(options('join', { roomId: this.joinRoomId, userName: this.userName }));
+        this.$store.commit('setUserName', this.userName);
+        axios(roomOptions('join', { roomId: this.joinRoomId, userName: this.userName }));
         this.$router.push({ path: `/room/${this.joinRoomId}` });
       }
     },
@@ -103,60 +97,60 @@ export default {
 </script>
 
 <style scoped>
-  .main-menu {
-    margin: auto;
-    width: 40%;
-  }
+.main-menu {
+  margin: auto;
+  width: 40%;
+}
 
-  .main-menu-item {
-    font-size: 3vw;
-    font-weight: 700;
-    padding: 12px;
-    margin: 10px;
-    border: 2px solid #fff;
-    border-radius: 15px;
-  }
+.main-menu-item {
+  font-size: 3vw;
+  font-weight: 700;
+  padding: 12px;
+  margin: 10px;
+  border: 2px solid #fff;
+  border-radius: 15px;
+}
 
-  .join-header {
-    font-size: 2.5vw;
-    color: #fff;
-    text-align: left;
-    margin-left: 15%;
-    margin-top: 20px;
-    margin-bottom: 0;
-  }
+.join-header {
+  font-size: 2.5vw;
+  color: #fff;
+  text-align: left;
+  margin-left: 15%;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
 
-  .join-input{
-    overflow: auto;
-    width: 75%;
-    font-size: 3vw;
-    font-weight: 700;
-    color: #fff;
-    padding: 5px;
-    margin: 3px 10px 0px 10px;
-    background: rgba(255, 255, 255, .2);
-    border: 2px solid #fff;
-    border-radius: 15px;
-  }
+.join-input {
+  overflow: auto;
+  width: 75%;
+  font-size: 3vw;
+  font-weight: 700;
+  color: #fff;
+  padding: 5px;
+  margin: 3px 10px 0px 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid #fff;
+  border-radius: 15px;
+}
 
-  .join-input:focus {
-    outline: none;
-    color: #db7095;
-    background: #fff;
-  }
+.join-input:focus {
+  outline: none;
+  color: #db7095;
+  background: #fff;
+}
 
-  .join-item {
-    font-size: 3vw;
-    font-weight: 700;
-    width: 20%;
-    padding: 12px;
-    margin: auto;
-    margin-top: 15px;
-    border: 2px solid #fff;
-    border-radius: 15px;
-  }
+.join-item {
+  font-size: 3vw;
+  font-weight: 700;
+  width: 20%;
+  padding: 12px;
+  margin: auto;
+  margin-top: 15px;
+  border: 2px solid #fff;
+  border-radius: 15px;
+}
 
-  .join-error {
-    color: #900;
-  }
+.join-error {
+  color: #900;
+}
 </style>

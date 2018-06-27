@@ -6,8 +6,8 @@ const dotenv = require('dotenv');
 const app = (module.exports = express()); //eslint-disable-line
 const io = require('socket.io').listen(8083);
 
-//eslint-disable-line
 (require('./auth'));
+(require('http').Server(app));
 
 // router
 const spotifyNext = require('./routes/spotify/player/next');
@@ -19,6 +19,7 @@ const spotifyPlayerInfo = require('./routes/spotify/player/info');
 const roomCreate = require('./routes/dash/room/create');
 const roomJoin = require('./routes/dash/room/join');
 const roomInfo = require('./routes/dash/room/info');
+const roomMembers = require('./routes/dash/room/members');
 
 dotenv.config({ silent: true });
 
@@ -47,6 +48,7 @@ app.use('/spotify/player/info', spotifyPlayerInfo);
 app.use('/dash/room/create', roomCreate);
 app.use('/dash/room/join', roomJoin);
 app.use('/dash/room/info', roomInfo);
+app.use('/dash/room/members', roomMembers);
 
 
 // ========
@@ -66,13 +68,14 @@ const rooms = {
       name2: -1,
     },
     totalVotes() {
+
       return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
     },
   },
   */
 };
 
-
+/* eslint-disable no-param-reassign */
 io.sockets.on('connection', (socket) => {
   console.log('zocket connection happened my dudez ID#: ', socket.id);
   socket.on('join room', (data) => {
@@ -128,6 +131,7 @@ io.sockets.on('connection', (socket) => {
     }
   });
 });
+/* eslint-enable no-param-reassign */
 
 // ========
 // End Sockets

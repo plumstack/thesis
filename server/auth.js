@@ -2,6 +2,7 @@ const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
 const session = require('express-session');
 const dotenv = require('dotenv');
+const randomString = require('randomstring');
 const User = require('../database/user.js');
 const app = require('./index');
 
@@ -53,7 +54,7 @@ app.get('/auth/loggedin', (req, res) => {
   if (req.isAuthenticated()) {
     User.sessionCheck(req.sessionID)
       .then((user) => {
-        res.send({ loggedIn: true, history: user.history });
+        res.send({ loggedIn: true, username: user.username });
       })
       .catch(console.error);
   } else res.send({ loggedIn: false });
@@ -67,9 +68,13 @@ app.get(
     failureRedirect: '/login',
   }),
   (req, res) => {
-    console.log('---');
+    const newRoom = randomString.generate({
+      length: 5,
+      capitalization: 'lowercase',
+      readable: true,
+    });
     const { user } = req._passport.session; //eslint-disable-line
-    User.sessionAdd(user, req.sessionID);
-    res.redirect('/');
+    User.sessionAdd(user, req.sessionID, newRoom);
+    res.redirect(`http://localhost:8080/#/room/${newRoom}`);
   },
 );

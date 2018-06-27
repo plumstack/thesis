@@ -19,6 +19,7 @@ class Spotify {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.oauth}`,
     };
+    this.refreshToken();
     // this.getUserInfo().then(() => this.newPlaylist());
   }
 
@@ -38,7 +39,6 @@ class Spotify {
 
     try {
       const result = await request(options);
-      console.log(result);
       this.oauth = JSON.parse(result).access_token;
     } catch (error) {
       console.log('ERROR LINE 43');
@@ -80,7 +80,7 @@ class Spotify {
       const result = await request(options);
       console.log(result);
     } catch (error) {
-      console.error(error);
+      console.error('SEARCH ERROR');
     }
   }
 
@@ -101,7 +101,7 @@ class Spotify {
       this.playlist = JSON.parse(result);
       return result;
     } catch (error) {
-      console.error(error);
+      console.error('MODIFY PLAYER ERROR');
       return this.failure;
     }
   }
@@ -118,7 +118,7 @@ class Spotify {
       this.userInfo = JSON.parse(results);
       return results;
     } catch (error) {
-      console.error(error);
+      console.error('USERINFOERROR');
       return this.failure;
     }
   }
@@ -141,7 +141,7 @@ class Spotify {
       await request(options);
       return this.success;
     } catch (error) {
-      console.error(error);
+      console.error('MODIFY PLAYER ERROR');
       return this.failure;
     }
   }

@@ -61,11 +61,12 @@ User.sessionAdd = (username, session) => {
   });
 };
 
-User.sessionCheck = (session) =>
-  new Promise((res, rej) => {
-    User.findOne({ session }, (err, user) => {
-      if (err) rej(err);
-      res(user);
-    });
-  });
+User.sessionCheck = async function sessionCheck(session) {
+  try {
+    const result = await User.findOne({ session });
+    return result;
+  } catch (error) {
+    return console.error(error);
+  }
+};
 module.exports = User;
