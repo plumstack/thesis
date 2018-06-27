@@ -3,7 +3,7 @@
     <h2>Room {{ roomId }}</h2>
     <Player />
   <div>
-  YO YO USER # {{tempUser}}
+  YO YO USER #: {{tempUser}}
   </div>
   <div>
     TOTAL VOTES: {{votes}}
@@ -75,10 +75,10 @@ export default {
       // eslint-disable-next-line
       alert(alertMsg);
     },
-    weak(){
+    weak() {
       // eslint-disable-next-line
       alert('THIS SONG IS TRASH');
-      // Trigger skip from routes / player / next.js 
+      // Trigger skip from routes / player / next.js
     },
   },
   methods: {

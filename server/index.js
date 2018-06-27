@@ -59,21 +59,18 @@ app.use('/dash/room/info', roomInfo);
 // will refactor into db later:.
 // User[username]: vote 1 = up, -1 = down
 const rooms = {
-  // Example:
+  /*
+  Example:
   roomName: {
     users: {
       name1: 1,
       name2: -1,
     },
     totalVotes() {
-      const total = 0;
-      for (const user in this.users) {
-        total += this.users[user];
-      }
-      return total;
-      // return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
+      return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
     },
   },
+  */
 };
 
 
@@ -87,16 +84,7 @@ io.sockets.on('connection', (socket) => {
       rooms[data.room] = {
         users: {},
         totalVotes() {
-          let total = 0;
-          // eslint-disable-next-line
-          /*
-          for (const user in this.users) {
-            total += this.users[user];
-            console.log('Calculating new tot: ', total);
-          }
-          */
-          return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
-          // return total;
+          return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0);
         },
       };
       rooms[data.room].users[data.user] = 0;
