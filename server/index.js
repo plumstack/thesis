@@ -71,6 +71,7 @@ const rooms = {
         total += this.users[user];
       }
       return total;
+      // return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
     },
   },
 };
@@ -92,6 +93,7 @@ io.sockets.on('connection', (socket) => {
             total += this.users[user];
             console.log('Calculating new tot: ', total);
           }
+          // return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
           return total;
         },
       };
