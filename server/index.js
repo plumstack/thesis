@@ -4,7 +4,10 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
 const app = (module.exports = express()); //eslint-disable-line
+const io = require('socket.io').listen(8083);
+
 (require('./auth'));
+(require('http').Server(app));
 
 // router
 const spotifyNext = require('./routes/spotify/player/next');
@@ -45,6 +48,93 @@ app.use('/dash/room/create', roomCreate);
 app.use('/dash/room/join', roomJoin);
 app.use('/dash/room/info', roomInfo);
 
+
+// ========
+// Sockets
+// ========
+
+// Temporary room obj for persistent data
+// as users come in and out of rooms
+// will refactor into db later:.
+// User[username]: vote 1 = up, -1 = down
+const rooms = {
+  // Example:
+  roomName: {
+    users: {
+      name1: 1,
+      name2: -1,
+    },
+    totalVotes() {
+      return Object.keys(this.users).reduce((acc, el) => acc + this.users[el], 0);
+    },
+  },
+};
+
+/* eslint-disable no-param-reassign */
+io.sockets.on('connection', (socket) => {
+  console.log('A socket connection happened my dude');
+  socket.on('join room', (data) => {
+    console.log('joining room ', data.room, 'user: ', data.user);
+
+    // if room is new:
+    if (!rooms[data.room]) {
+      rooms[data.room] = {
+        users: {},
+        totalVotes() {
+          let total = 0;
+          // eslint-disable-next-line
+          for (const user in this.users) {
+            total += this.users[user];
+            console.log('Calculating new tot: ', total);
+          }
+          // return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
+          return total;
+        },
+      };
+      rooms[data.room].users[data.user] = 0;
+      console.log('New Room Created: ', rooms[data.room]);
+    } else {
+      rooms[data.room].users[data.user] = 0;
+      console.log('New User in Room: ', rooms[data.room]);
+      socket.room = data.room;
+      // Having trouble with broadcast.emit, using emit for now:
+      io.sockets.in(socket.room).emit('newComer', data.user);
+    }
+    socket.room = data.room;
+    socket.join(data.room);
+  });
+  socket.on('get count', (roomNum) => {
+    console.log('Socket get count for room: ', roomNum);
+    socket.room = roomNum;
+    const votes = rooms[roomNum].totalVotes();
+    io.sockets.in(socket.room).emit('voteUpdate', { vote: votes });
+  });
+  socket.on('vote', (vote) => {
+    rooms[vote.room].users[vote.user] = 1;
+    socket.room = vote.room;
+    const votes = rooms[vote.room].totalVotes();
+    console.log('Upvote, state of room: ', rooms[vote.room]);
+    // console.log('Total Votes: ', votes);
+    io.sockets.in(socket.room).emit('voteUpdate', { vote: votes });
+  });
+  socket.on('down', (vote) => {
+    rooms[vote.room].users[vote.user] = -1;
+    socket.room = vote.room;
+    const votes = rooms[vote.room].totalVotes();
+    console.log('Downvote, state of room: ', rooms[vote.room]);
+    // console.log('Total Votes: ', votes);
+    io.sockets.in(socket.room).emit('voteUpdate', { vote: votes });
+    const totalUsers = Object.keys(rooms[vote.room].users).length;
+    if (votes === totalUsers * -1) {
+      io.sockets.in(socket.room).emit('weak');
+    }
+  });
+});
+/* eslint-enable no-param-reassign */
+
+// ========
+// End Sockets
+// ========
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}!`);
