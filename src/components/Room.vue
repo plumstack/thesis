@@ -12,29 +12,30 @@
         </tr>
       </table>
     </div>
-  <div>
-
-  YO YO USER: {{ $store.state.userName }}
-  </div>
-  <div>
-    TOTAL VOTES: {{votes}}
-  </div>
-  <div>
-    YOUR CURRENT VOTE: {{userVoted}}
-  </div>
-  <div>ILL:
-  <button v-on:click = "userVote()">
-    UpVote
-  </button>
-  </div>
-  <div>WEAK:
-  <button v-on:click = "downVote()">
-    DownVote
-  </button>
-  </div>
-  <button v-on:click = "checkData()">
-    Check Data
-  </button>
+    <div>
+      User: {{ $store.state.userName }}
+    </div>
+    <div>
+      TOTAL VOTES: {{votes}}
+    </div>
+    <div>
+      YOUR CURRENT VOTE: {{ userVoted }}
+    </div>
+    <div>
+      ILL:
+      <button v-on:click = "userVote()">
+        UpVote
+      </button>
+    </div>
+    <div>
+      WEAK:
+      <button v-on:click = "downVote()">
+        DownVote
+      </button>
+    </div>
+    <button v-on:click = "checkData()">
+      Check Data
+    </button>
   </div>
 </template>
 
@@ -42,7 +43,6 @@
 import VueSocketio from 'vue-socket.io';
 import Vue from 'vue';
 import Player from './Player.vue';
-
 
 // Injects dependencies through middleware:
 Vue.use(VueSocketio, 'http://localhost:8083');
@@ -98,20 +98,24 @@ export default {
       this.$socket.emit('join room', { user: this.tempUser, room: this.room });
       this.connected = true;
     },
+    
     disconnect() {
       console.log('Sockets: disconnect:', this.tempUser);
       this.connected = false;
     },
+    
     voteUpdate(count) {
       console.log('votes updated: ', count);
       this.votes = count.vote;
     },
+    
     newComer(newb) {
       // eslint-disable-next-line
       const alertMsg = 'USER: ' + newb + ' HAS ARRIVED!';
       // eslint-disable-next-line
       // alert(alertMsg);
     },
+    
     weak() {
       console.log('THIS SONG IS TRASH');
       // Trigger skip from routes / player / next.js IF THE HOST CLIENT
@@ -129,17 +133,21 @@ export default {
       this.$socket.emit('vote', { user: this.$store.state.userName, room: this.room });
       this.userVoted = 'ILL';
     },
+    
     checkData() {
       console.log('room: ', this.room, 'votes: ', this.votes, 'user: ', this.$store.state.userName);
     },
+    
     joinRoom() {
       console.log('Joining Room: ', this.room);
       // Add the user: username to the object once passed
       this.$socket.emit('join room', { user: this.$store.state.userName, room: this.room });
     },
+    
     getVotes() {
       this.$socket.emit('get count', this.room);
     },
+    
     downVote() {
       this.$socket.emit('down', { user: this.$store.state.userName, room: this.room });
       this.userVoted = 'WEAK';
