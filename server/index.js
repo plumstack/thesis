@@ -3,8 +3,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
-const app = (module.exports = express());
-const http = require('http').Server(app);
+const app = (module.exports = express()); //eslint-disable-line
 const io = require('socket.io').listen(8083);
 
 //eslint-disable-line
@@ -75,7 +74,7 @@ const rooms = {
 
 
 io.sockets.on('connection', (socket) => {
-  console.log('A socket connection happened my dude');
+  console.log('zocket connection happened my dudez');
   socket.on('join room', (data) => {
     console.log('joining room ', data.room, 'user: ', data.user);
 
@@ -84,7 +83,7 @@ io.sockets.on('connection', (socket) => {
       rooms[data.room] = {
         users: {},
         totalVotes() {
-          return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0);
+          return Object.keys(this.users).reduce((acc, el) => acc + this.users[el], 0);
         },
       };
       rooms[data.room].users[data.user] = 0;
@@ -96,6 +95,7 @@ io.sockets.on('connection', (socket) => {
       // Having trouble with broadcast.emit, using emit for now:
       io.sockets.in(socket.room).emit('newComer', data.user);
     }
+    socket.user = data.user;
     socket.room = data.room;
     socket.join(data.room);
   });
@@ -124,6 +124,11 @@ io.sockets.on('connection', (socket) => {
     if (votes === totalUsers * -1) {
       io.sockets.in(socket.room).emit('weak');
     }
+  });
+  socket.on('disconnect', () => {
+    console.log('Disconnect triggered', socket.user, ' in ', socket.room);
+    delete rooms[socket.room].users[socket.user];
+    console.log('Updated room', rooms[socket.room]);
   });
 });
 

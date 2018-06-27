@@ -60,9 +60,15 @@ export default {
   },
   sockets: {
     connect() {
+      console.log('Sockets: connect');
+      console.log('Joining Room: ', this.room);
+      // Add the user: username to the object once passed
+      this.$socket.emit('join room', { user: this.tempUser, room: this.room });
       this.connected = true;
     },
     disconnect() {
+      console.log('Sockets: disconnect:', this.tempUser);
+      this.$socket.emit('leave', { user: this.tempUser, room: this.room });
       this.connected = false;
     },
     voteUpdate(count) {
@@ -88,11 +94,6 @@ export default {
     },
     checkData() {
       console.log('room: ', this.room, 'votes: ', this.votes, 'user: ', this.tempUser);
-    },
-    joinRoom() {
-      console.log('Joining Room: ', this.room);
-      // Add the user: username to the object once passed
-      this.$socket.emit('join room', { user: this.tempUser, room: this.room });
     },
     getVotes() {
       this.$socket.emit('get count', this.room);
