@@ -2,10 +2,14 @@
   <div>
     <h1>Welcome to Party Pooper</h1>
     <ul class="menu-container main-menu">
-      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="$store.commit('joining', true)">
+      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="$store.commit('setJoining', true)">
         Join a Room
       </li>
-      <Login />
+      <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="hostRoom">
+        <form id="loginForm" action="http://localhost:8082/auth/spotify" method="GET">
+          Host a Room
+        </form>
+      </li>
       <li class="join-header" v-if="$store.state.joining">
         Username:
       </li>
@@ -33,16 +37,12 @@
 
 <script>
 import axios from 'axios';
-import randomString from 'randomstring';
 
-import Login from './Login.vue';
-
-const url = '/dash/room/';
-
-function options(meth, body) {
+const roomUrl = '/dash/room/';
+function roomOptions(meth, body) {
   return {
     method: 'POST',
-    url: `${url}${meth}`,
+    url: `${roomUrl}${meth}`,
     data: body,
   };
 }
@@ -58,20 +58,10 @@ export default {
       roomError: '',
     };
   },
-  components: {
-    Login,
-  },
 
   methods: {
-    createRoom() {
-      const newRoom = randomString.generate({
-        length: 5,
-        capitalization: 'lowercase',
-        readable: true,
-      });
-
-      axios(options('create', { roomId: newRoom, userName: 'host' }));
-      this.$router.push({ path: `/room/${newRoom}` });
+    hostRoom() {
+      document.getElementById('loginForm').submit();
     },
 
     joinRoom() {
@@ -97,7 +87,8 @@ export default {
         this.userNameError = 'Enter a username';
       }
       if (!this.userNameError && !this.roomError) {
-        axios(options('join', { roomId: this.joinRoomId, userName: this.userName }));
+        this.$store.commit('setUserName', this.userName);
+        axios(roomOptions('join', { roomId: this.joinRoomId, userName: this.userName }));
         this.$router.push({ path: `/room/${this.joinRoomId}` });
       }
     },
