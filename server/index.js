@@ -74,10 +74,9 @@ const rooms = {
 
 
 io.sockets.on('connection', (socket) => {
-  console.log('zocket connection happened my dudez');
+  console.log('zocket connection happened my dudez ID#: ', socket.id);
   socket.on('join room', (data) => {
     console.log('joining room ', data.room, 'user: ', data.user);
-
     // if room is new:
     if (!rooms[data.room]) {
       rooms[data.room] = {
@@ -91,44 +90,42 @@ io.sockets.on('connection', (socket) => {
     } else {
       rooms[data.room].users[data.user] = 0;
       console.log('New User in Room: ', rooms[data.room]);
-      socket.room = data.room;
       // Having trouble with broadcast.emit, using emit for now:
-      io.sockets.in(socket.room).emit('newComer', data.user);
+      io.sockets.in(data.room).emit('newComer', data.user);
     }
-    socket.user = data.user;
-    socket.room = data.room;
+    socket.user = data.user; //eslint-disable-line
+    socket.tempRoom = data.room; //eslint-disable-line
     socket.join(data.room);
   });
   socket.on('get count', (roomNum) => {
     console.log('Socket get count for room: ', roomNum);
-    socket.room = roomNum;
     const votes = rooms[roomNum].totalVotes();
-    io.sockets.in(socket.room).emit('voteUpdate', { vote: votes });
+    io.sockets.in(roomNum).emit('voteUpdate', { vote: votes });
   });
   socket.on('vote', (vote) => {
     rooms[vote.room].users[vote.user] = 1;
-    socket.room = vote.room;
     const votes = rooms[vote.room].totalVotes();
     console.log('Upvote, state of room: ', rooms[vote.room]);
     // console.log('Total Votes: ', votes);
-    io.sockets.in(socket.room).emit('voteUpdate', { vote: votes });
+    io.sockets.in(vote.room).emit('voteUpdate', { vote: votes });
   });
   socket.on('down', (vote) => {
     rooms[vote.room].users[vote.user] = -1;
-    socket.room = vote.room;
     const votes = rooms[vote.room].totalVotes();
     console.log('Downvote, state of room: ', rooms[vote.room]);
     // console.log('Total Votes: ', votes);
-    io.sockets.in(socket.room).emit('voteUpdate', { vote: votes });
+    io.sockets.in(vote.room).emit('voteUpdate', { vote: votes });
     const totalUsers = Object.keys(rooms[vote.room].users).length;
     if (votes === totalUsers * -1) {
-      io.sockets.in(socket.room).emit('weak');
+      io.sockets.in(vote.room).emit('weak');
     }
   });
   socket.on('disconnect', () => {
-    console.log('Disconnect triggered', socket.user, ' in ', socket.room);
-    delete rooms[socket.room].users[socket.user];
-    console.log('Updated room', rooms[socket.room]);
+    console.log('Disconnect triggered', socket.tempRoom);
+    if (rooms[socket.tempRoom]) {
+      delete rooms[socket.tempRoom].users[socket.user];
+      console.log('Updated room', rooms[socket.tempRoom]);
+    }
   });
 });
 

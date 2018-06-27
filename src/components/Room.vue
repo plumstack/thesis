@@ -28,11 +28,12 @@
 </template>
 
 <script>
+import VueSocketio from 'vue-socket.io';
 import Vue from 'vue';
 import Player from './Player.vue';
-// eslint-disable-next-line
-import VueSocketio from 'vue-socket.io';
 
+
+// Injects dependencies through middleware:
 Vue.use(VueSocketio, 'http://localhost:8083');
 
 const tempUserId = Math.floor((Math.random() * 10) + 1);
@@ -52,7 +53,7 @@ export default {
     };
   },
   async created() {
-    await this.joinRoom();
+    // await this.joinRoom();
     this.getVotes();
   },
   components: {
@@ -68,7 +69,6 @@ export default {
     },
     disconnect() {
       console.log('Sockets: disconnect:', this.tempUser);
-      this.$socket.emit('leave', { user: this.tempUser, room: this.room });
       this.connected = false;
     },
     voteUpdate(count) {
@@ -82,9 +82,8 @@ export default {
       alert(alertMsg);
     },
     weak() {
-      // eslint-disable-next-line
-      alert('THIS SONG IS TRASH');
-      // Trigger skip from routes / player / next.js
+      console.log('THIS SONG IS TRASH');
+      // Trigger skip from routes / player / next.js IF THE HOST CLIENT
     },
   },
   methods: {
