@@ -14,7 +14,7 @@ export default {
 
   methods: {
     homeRoute() {
-      this.$store.commit('joining', false);
+      this.$store.commit('setJoining', false);
       this.$router.push({ path: '/' });
     },
 

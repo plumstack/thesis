@@ -27,11 +27,15 @@ Room.create = function create(roomId, userName) {
 Room.join = async function join(roomId, userName) {
   try {
     await Room.findOneAndUpdate({ roomid: roomId }, { $push: { members: userName } });
-    console.log('Success');
     return;
   } catch (err) {
     console.log('Error adding member');
   }
+};
+
+Room.getMembers = async function getMembers(roomId) {
+  const members = await Room.findOne({ roomid: roomId }, 'members');
+  return members;
 };
 
 module.exports = Room;
