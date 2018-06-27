@@ -1,7 +1,7 @@
 <template>
   <div class="room" align="center">
     <h2>Room {{ roomId }}</h2>
-    <Player />
+    <Player :roomId="roomId"/>
   <div>
   YO YO USER # {{tempUser}}
   </div>
@@ -29,9 +29,8 @@
 
 <script>
 import Vue from 'vue';
-import Player from './Player.vue';
-// eslint-disable-next-line
 import VueSocketio from 'vue-socket.io';
+import Player from './Player.vue';
 
 Vue.use(VueSocketio, 'http://localhost:8083');
 
@@ -75,10 +74,10 @@ export default {
       // eslint-disable-next-line
       alert(alertMsg);
     },
-    weak(){
+    weak() {
       // eslint-disable-next-line
       alert('THIS SONG IS TRASH');
-      // Trigger skip from routes / player / next.js 
+      // Trigger skip from routes / player / next.js
     },
   },
   methods: {

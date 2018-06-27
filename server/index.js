@@ -3,12 +3,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
-const app = (module.exports = express());
-const http = require('http').Server(app);
+const app = (module.exports = express()); //eslint-disable-line
 const io = require('socket.io').listen(8083);
 
-//eslint-disable-line
 (require('./auth'));
+(require('http').Server(app));
 
 // router
 const spotifyNext = require('./routes/spotify/player/next');
@@ -66,17 +65,12 @@ const rooms = {
       name2: -1,
     },
     totalVotes() {
-      const total = 0;
-      for (const user in this.users) {
-        total += this.users[user];
-      }
-      return total;
-      // return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
+      return Object.keys(this.users).reduce((acc, el) => acc + this.users[el], 0);
     },
   },
 };
 
-
+/* eslint-disable no-param-reassign */
 io.sockets.on('connection', (socket) => {
   console.log('A socket connection happened my dude');
   socket.on('join room', (data) => {
@@ -136,6 +130,7 @@ io.sockets.on('connection', (socket) => {
     }
   });
 });
+/* eslint-enable no-param-reassign */
 
 // ========
 // End Sockets

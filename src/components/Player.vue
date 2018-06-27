@@ -21,12 +21,6 @@ import axios from 'axios';
 
 const url = '/spotify/player/';
 let playOrPause = true;
-function options(meth) {
-  return {
-    method: 'GET',
-    url: `${url}${meth}`,
-  };
-}
 
 function playButtonChange(current) {
   if (current) return 'Pause';
@@ -42,22 +36,35 @@ export default {
     return {
       playButton: playOrPause ? 'Pause' : 'Play',
       playerInfo: {},
+      search: '',
     };
   },
+  props: {
+    roomId: { type: String, required: true },
+  },
   methods: {
+    options(meth) {
+      return {
+        method: 'GET',
+        url: `${url}${meth}`,
+        params: {
+          roomId: this.roomId,
+        },
+      };
+    },
     onClickNext() {
-      axios(options('next')).then(this.getPlayerInfo);
+      axios(this.options('next')).then(this.getPlayerInfo);
     },
     onClickPrev() {
-      axios(options('prev')).then(this.getPlayerInfo);
+      axios(this.options('prev')).then(this.getPlayerInfo);
     },
     onClickPlay() {
-      axios(options(playOrPause ? 'pause' : 'play')).then(this.getPlayerInfo);
+      axios(this.options(playOrPause ? 'pause' : 'play')).then(this.getPlayerInfo);
       playOrPause = !playOrPause;
       this.playButton = playButtonChange(playOrPause);
     },
     async getPlayerInfo() {
-      const result = await axios(options('info'));
+      const result = await axios(this.options('info'));
       this.playerInfo = result.data;
     },
   },
@@ -79,7 +86,7 @@ export default {
 }
 
 .song-title {
-  color: #6495ED;
+  color: #6495ed;
   font-size: 2vw;
   margin-bottom: 0;
 }
