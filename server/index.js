@@ -89,12 +89,14 @@ io.sockets.on('connection', (socket) => {
         totalVotes() {
           let total = 0;
           // eslint-disable-next-line
+          /*
           for (const user in this.users) {
             total += this.users[user];
             console.log('Calculating new tot: ', total);
           }
-          // return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
-          return total;
+          */
+          return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
+          // return total;
         },
       };
       rooms[data.room].users[data.user] = 0;
