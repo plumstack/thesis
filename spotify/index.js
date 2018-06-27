@@ -80,7 +80,7 @@ class Spotify {
       const result = await request(options);
       console.log(result);
     } catch (error) {
-      // console.error(error);
+      console.error(error);
     }
   }
 
@@ -101,7 +101,7 @@ class Spotify {
       this.playlist = JSON.parse(result);
       return result;
     } catch (error) {
-      // console.error(error);
+      console.error(error);
       return this.failure;
     }
   }
@@ -118,7 +118,7 @@ class Spotify {
       this.userInfo = JSON.parse(results);
       return results;
     } catch (error) {
-      // console.error(error);
+      console.error(error);
       return this.failure;
     }
   }
@@ -141,7 +141,7 @@ class Spotify {
       await request(options);
       return this.success;
     } catch (error) {
-      // console.error(error);
+      console.error(error);
       return this.failure;
     }
   }
