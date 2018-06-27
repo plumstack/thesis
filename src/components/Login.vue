@@ -22,7 +22,6 @@ export default {
 <style scoped>
 h1 {
   font-family: 'Montserrat', sans-serif;
-  align: center;
   margin-left: auto;
   margin-right: auto;
   color: #fff;
