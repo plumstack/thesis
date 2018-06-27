@@ -118,6 +118,7 @@ io.sockets.on('connection', (socket) => {
     socket.room = vote.room;
     const votes = rooms[vote.room].totalVotes();
     console.log('Upvote, state of room: ', rooms[vote.room]);
+    // console.log('Total Votes: ', votes);
     io.sockets.in(socket.room).emit('voteUpdate', { vote: votes });
   });
   socket.on('down', (vote) => {
@@ -125,6 +126,7 @@ io.sockets.on('connection', (socket) => {
     socket.room = vote.room;
     const votes = rooms[vote.room].totalVotes();
     console.log('Downvote, state of room: ', rooms[vote.room]);
+    // console.log('Total Votes: ', votes);
     io.sockets.in(socket.room).emit('voteUpdate', { vote: votes });
     const totalUsers = Object.keys(rooms[vote.room].users).length;
     if (votes === totalUsers * -1) {
