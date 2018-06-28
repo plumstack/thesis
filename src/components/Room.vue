@@ -41,7 +41,7 @@
       </button>
       </div>
     </div>
-      <Search />
+    <Search />
   </div>
 </template>
 
