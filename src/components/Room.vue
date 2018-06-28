@@ -43,9 +43,11 @@
 </template>
 
 <script>
+
+import Vue from 'vue';
 import axios from 'axios';
 import VueSocketio from 'vue-socket.io';
-import Vue from 'vue';
+
 import Player from './Player.vue';
 
 // Injects dependencies through middleware:
@@ -141,6 +143,11 @@ export default {
     },
     getVotes() {
       this.$socket.emit('get count', this.room);
+    },
+    joinRoom() {
+      console.log('Joining Room: ', this.room);
+      // Add the user: username to the object once passed
+      this.$socket.emit('join room', { user: this.$store.state.userName, room: this.room });
     },
     downVote() {
       this.$socket.emit('down', { user: this.$store.state.userName, room: this.room });
