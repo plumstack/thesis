@@ -16,6 +16,9 @@
       User: {{ $store.state.userName }}
     </div>
     <div>
+      Host: {{ $store.state.isHost }}
+    </div>
+    <div>
       TOTAL VOTES: {{votes}}
     </div>
     <div>
@@ -40,6 +43,7 @@
 </template>
 
 <script>
+
 import Vue from 'vue';
 import axios from 'axios';
 import VueSocketio from 'vue-socket.io';
@@ -74,18 +78,17 @@ export default {
       members: [],
     };
   },
-
   async created() {
+    console.log('Room.Vue - creating:', this.roomId);
+    await this.joinRoomVue();
+    this.getMembers();
+    this.getVotes();
     if (!this.$store.state.userName) {
       this.$store.commit('setHost');
       const sessionInfo = await axios.get('/auth/loggedin');
       this.$store.commit('setUserName', sessionInfo.data.username);
       axios(roomOptions('create', { roomId: this.roomId, userName: sessionInfo.data.username }));
     }
-
-    this.getMembers();
-    this.joinRoom();
-    this.getVotes();
   },
 
   components: {
@@ -94,62 +97,58 @@ export default {
 
   sockets: {
     connect() {
-      console.log('Sockets: connect');
-      console.log('Joining Room: ', this.room);
-      // Add the user: username to the object once passed
-      this.$socket.emit('join room', { user: this.tempUser, room: this.room });
+      console.log('Sockets: connecting');
       this.connected = true;
     },
-
     disconnect() {
       console.log('Sockets: disconnect:', this.tempUser);
       this.connected = false;
     },
-
     voteUpdate(count) {
       console.log('votes updated: ', count);
       this.votes = count.vote;
     },
-
     newComer(newb) {
-      // eslint-disable-next-line
-      const alertMsg = 'USER: ' + newb + ' HAS ARRIVED!';
-      // eslint-disable-next-line
-      // alert(alertMsg);
+      console.log('USER: ', newb, ' HAS ARRIVED!');
     },
-
     weak() {
       console.log('THIS SONG IS TRASH');
-      // Trigger skip from routes / player / next.js IF THE HOST CLIENT
     },
   },
 
   methods: {
+    // joinRoomVue be refactored into sockets: connect()
+    // But error is happening - socket is connecting from Splash.vue
+    joinRoomVue() {
+      const userData = {
+        user: this.$store.state.userName,
+        room: this.room,
+        host: this.$store.state.isHost,
+      };
+      console.log('Joining Room: ', userData);
+      this.$socket.emit('join room', userData);
+    },
     async getMembers() {
       const members = await axios(roomOptions('members', { roomId: this.roomId }));
       console.log('MEMBERS: ', members);
       this.members = members.data;
     },
-
     userVote() {
       this.$socket.emit('vote', { user: this.$store.state.userName, room: this.room });
       this.userVoted = 'ILL';
     },
-
     checkData() {
-      console.log('room: ', this.room, 'votes: ', this.votes, 'user: ', this.$store.state.userName);
+      console.log('Client Data\n room: ', this.room, 'votes: ', this.votes, 'user: ', this.$store.state.userName);
+      this.$socket.emit('check data');
     },
-
+    getVotes() {
+      this.$socket.emit('get count', this.room);
+    },
     joinRoom() {
       console.log('Joining Room: ', this.room);
       // Add the user: username to the object once passed
       this.$socket.emit('join room', { user: this.$store.state.userName, room: this.room });
     },
-
-    getVotes() {
-      this.$socket.emit('get count', this.room);
-    },
-
     downVote() {
       this.$socket.emit('down', { user: this.$store.state.userName, room: this.room });
       this.userVoted = 'WEAK';

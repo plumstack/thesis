@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const Spotify = require('../spotify/index.js');
 
 const app = (module.exports = express()); //eslint-disable-line
 const io = require('socket.io').listen(8083);
@@ -57,8 +58,9 @@ app.use('/dash/room/members', roomMembers);
 
 // Temporary room obj for persistent data
 // as users come in and out of rooms
-// will refactor into db later:.
-// User[username]: vote 1 = up, -1 = down
+// will refactor into cache (Redis) later.
+// Upon end of song, should log data to DB.
+
 const rooms = {
   /*
   Example:
@@ -68,9 +70,9 @@ const rooms = {
       name2: -1,
     },
     totalVotes() {
-
       return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
     },
+    host: 'name1'
   },
   */
 };
@@ -79,7 +81,7 @@ const rooms = {
 io.sockets.on('connection', (socket) => {
   console.log('zocket connection happened my dudez ID#: ', socket.id);
   socket.on('join room', (data) => {
-    console.log('joining room ', data.room, 'user: ', data.user);
+    console.log('joining room ', data);
     // if room is new:
     if (!rooms[data.room]) {
       rooms[data.room] = {
@@ -89,10 +91,18 @@ io.sockets.on('connection', (socket) => {
         },
       };
       rooms[data.room].users[data.user] = 0;
+      if (data.host) {
+        rooms[data.room].host = data.user;
+      } else {
+        rooms[data.room].host = undefined;
+      }
       console.log('New Room Created: ', rooms[data.room]);
     } else {
       rooms[data.room].users[data.user] = 0;
-      console.log('New User in Room: ', rooms[data.room]);
+      if (data.host) {
+        rooms[data.room].host = data.user;
+      }
+      console.log('New User in Room: ', data.room, '\n State: ', rooms[data.room]);
       // Having trouble with broadcast.emit, using emit for now:
       io.sockets.in(data.room).emit('newComer', data.user);
     }
@@ -121,7 +131,14 @@ io.sockets.on('connection', (socket) => {
     const totalUsers = Object.keys(rooms[vote.room].users).length;
     if (votes === totalUsers * -1) {
       io.sockets.in(vote.room).emit('weak');
+
+      // Skip Song, not currently working:
+      const newSpot = new Spotify();
+      newSpot.nextPlayer();
     }
+  });
+  socket.on('check data', () => {
+    console.log(' === Temp Server Data === \n', rooms);
   });
   socket.on('disconnect', () => {
     console.log('Disconnect triggered', socket.tempRoom);
