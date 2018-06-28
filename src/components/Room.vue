@@ -1,44 +1,47 @@
 <template>
-  <div class="room" align="center">
-    <h2>Room {{ roomId }}</h2>
-    <div class="content">
-      <Player class="content-item" :roomId="roomId"/>
-      <table class="content-item members-table">
-        <tr>
-          <th>Room Members</th>
-        </tr>
-        <tr v-for="(member, ind) in members" :key="ind">
-          <td>{{ member }}</td>
-        </tr>
-      </table>
-    </div>
-    <div>
-      User: {{ $store.state.userName }}
-    </div>
-    <div>
-      Host: {{ $store.state.isHost }}
-    </div>
-    <div>
-      TOTAL VOTES: {{votes}}
-    </div>
-    <div>
-      YOUR CURRENT VOTE: {{ userVoted }}
-    </div>
-    <div>
-      ILL:
-      <button v-on:click = "userVote()">
-        UpVote
+  <div>
+    <div class="room" align="center">
+      <h2>Room {{ roomId }}</h2>
+      <div class="content">
+        <Player class="content-item" :roomId="roomId"/>
+        <table class="content-item members-table">
+          <tr>
+            <th>Room Members</th>
+          </tr>
+          <tr v-for="(member, ind) in members" :key="ind">
+            <td>{{ member }}</td>
+          </tr>
+        </table>
+      </div>
+      <div>
+        User: {{ $store.state.userName }}
+      </div>
+      <div>
+        Host: {{ $store.state.isHost }}
+      </div>
+      <div>
+        TOTAL VOTES: {{votes}}
+      </div>
+      <div>
+        YOUR CURRENT VOTE: {{ userVoted }}
+      </div>
+      <div>
+        ILL:
+        <button v-on:click = "userVote()">
+          UpVote
+        </button>
+      </div>
+      <div>
+        WEAK:
+        <button v-on:click = "downVote()">
+          DownVote
+        </button>
+        <button v-on:click = "checkData()">
+        Check Data
       </button>
+      </div>
     </div>
-    <div>
-      WEAK:
-      <button v-on:click = "downVote()">
-        DownVote
-      </button>
-    </div>
-    <button v-on:click = "checkData()">
-      Check Data
-    </button>
+    <Search />
   </div>
 </template>
 
@@ -49,6 +52,7 @@ import axios from 'axios';
 import VueSocketio from 'vue-socket.io';
 
 import Player from './Player.vue';
+import Search from './Search.vue';
 
 // Injects dependencies through middleware:
 Vue.use(VueSocketio, 'http://localhost:8083');
@@ -93,6 +97,7 @@ export default {
 
   components: {
     Player,
+    Search,
   },
 
   sockets: {
