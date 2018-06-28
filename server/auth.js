@@ -50,17 +50,18 @@ passport.use(new SpotifyStrategy(
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.get('/auth/loggedin', (req, res) => {
-  if (req.isAuthenticated()) {
-    User.sessionCheck(req.sessionID)
-      .then((user) => {
-        res.send({ loggedIn: true, username: user.username });
-      })
-      .catch(console.error);
-  } else res.send({ loggedIn: false });
+app.get('/auth/loggedin', async (req, res) => {
+  try {
+    if (req.isAuthenticated()) {
+      const result = User.sessionCheck(req.sessionID);
+      res.send({ loggedIn: true, username: result.username });
+    } else res.send({ loggedIn: false });
+  } catch (error) {
+    console.error(error);
+  }
 });
 
-app.get('/auth/spotify', passport.authenticate('spotify', { scope, showDialog: true }), (req) => req);
+app.get('/auth/spotify', passport.authenticate('spotify', { scope, showDialog: false }), (req) => req);
 
 app.get(
   '/auth/spotify/callback*',

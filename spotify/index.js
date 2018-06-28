@@ -152,25 +152,33 @@ class Spotify {
       url: `${this.spotifyurl}/me/player/?market=ES`,
       headers: this.headers,
     };
-
-    const playerInfoData = await request(options).catch(console.error);
-    const data = playerInfoData ? JSON.parse(playerInfoData) : null;
-    const playerInfo = data
-      ? {
-        ok: true,
-        playing: true,
-        title: data.item.name,
-        albumTitle: data.item.album.name,
-        albumArt: data.item.album.images[0].url,
-        artist: data.item.artists[0].name,
-        artistFeature: data.item.artists.slice(1).map((item) => item.name),
-        device: data.device.name,
-        url: data.context.href,
-        shuffle: data.shuffle_state,
+    try {
+      const playerInfoData = await request(options);
+      const data = playerInfoData ? JSON.parse(playerInfoData) : null;
+      const playerInfo = data
+        ? {
+          ok: true,
+          playing: true,
+          title: data.item.name,
+          albumTitle: data.item.album.name,
+          albumArt: data.item.album.images[0].url,
+          artist: data.item.artists[0].name,
+          artistFeature: data.item.artists.slice(1).map((item) => item.name),
+          device: data.device.name,
+          url: data.context.href,
+          shuffle: data.shuffle_state,
+        }
+        : null;
+      if (playerInfo) return playerInfo;
+      return Object.assign(this.failure, { playing: false });
+    } catch (error) {
+      if (error.statusCode === 401) {
+        this.refreshToken();
+        this.getPlayerInfo();
       }
-      : null;
-    if (playerInfo) return playerInfo;
-    return Object.assign(this.failure, { playing: false });
+      console.log(error);
+      return error;
+    }
   }
 }
 const testSpot = new Spotify();
