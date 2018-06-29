@@ -88,6 +88,7 @@ export default {
       }
       if (!this.userNameError && !this.roomError) {
         this.$store.commit('setUserName', this.userName);
+        this.$store.commit('setHost', false);
         axios(roomOptions('join', { roomId: this.joinRoomId, userName: this.userName }));
         this.$router.push({ path: `/room/${this.joinRoomId}` });
       }

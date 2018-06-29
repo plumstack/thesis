@@ -14,7 +14,7 @@
 
     <!-- Table Rows -->
     <tr class = "alternative_row" v-for="track in searchResults" :key="track.id">
-        <td><img :src = "track.album.images[2].url"></td>
+        <td><img :src="track.album.images[2].url" class="album-image"></td>
         <td>{{ track.name }}</td>
         <td>{{ track.artists[0].name }}</td>
         <td>{{ convertAMilli(track.duration_ms) }}</td>
@@ -55,35 +55,47 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .search {
   margin: auto;
+  margin-top: 20px;
   width: 100%;
   color: white;
-  background: linear-gradient(340deg, #daa360, #db7095);
-  align:center;
 }
+
 .search-results{
     width: 70%;
     margin-left:15%;
     margin-right:15%;
+    border-collapse: collapse;
 }
+
 .table-header{
     height: 75px;
 }
+
 .alternative_row:nth-child(even){
-    color: #0ff;
+    background: rgba(255, 255, 255, .2);
 }
+
 .alternative_row:hover{
     color: #ff1493;
 }
+
 td {
     text-align: center;
-    height: 65px;
+    vertical-align: center;
+    padding: 0px;
 }
-.cue{
+
+.album-image {
+  padding-top: 4px;
+}
+
+.cue {
     color: #0ff;
 }
+
 input[type=text] {
     background-color: rgba(255, 255, 255, 0.2);
     border: 2px solid #fff;
@@ -102,6 +114,7 @@ input[type=text] {
     margin-left: auto;
     margin-right: auto;
 }
+
 input[type=text]:focus {
   width: 60%;
   outline: none;
@@ -109,4 +122,7 @@ input[type=text]:focus {
   background: #fff;
 }
 
+::placeholder {
+  color: rgba(255, 255, 255, .35);
+}
 </style>
