@@ -78,6 +78,7 @@ export default {
       }
       if (!this.userNameError && !this.roomError) {
         this.$store.commit('setUserName', this.userName);
+        this.$store.commit('setHost', false);
         this.$router.push({ path: `/room/${this.joinRoomId}` });
       }
     },

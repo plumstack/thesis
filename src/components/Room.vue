@@ -1,46 +1,23 @@
 <template>
-  <div>
-    <div class="room" align="center">
-      <h2>Room {{ roomId }}</h2>
-      <div class="content">
-        <Player class="content-item" :roomId="roomId"/>
-        <table class="content-item members-table">
-          <tr>
-            <th>Room Members</th>
-          </tr>
-          <tr v-for="(member, ind) in members" :key="ind">
-            <td>{{ member }}</td>
-          </tr>
-        </table>
-      </div>
-      <div>
-        User: {{ $store.state.userName }}
-      </div>
-      <div>
-        Host: {{ $store.state.isHost }}
-      </div>
-      <div>
-        TOTAL VOTES: {{votes}}
-      </div>
-      <div>
-        YOUR CURRENT VOTE: {{ userVoted }}
-      </div>
-      <div>
-        ILL:
-        <button v-on:click = "userVote()">
-          UpVote
-        </button>
-      </div>
-      <div>
-        WEAK:
-        <button v-on:click = "downVote()">
-          DownVote
-        </button>
-        <button v-on:click = "checkData()">
-        Check Data
-      </button>
-      </div>
+  <div class="room" align="center">
+    <h2>Room {{ roomId }}</h2>
+    <div class="content">
+      <Player class="content-item" :roomId="roomId"/>
     </div>
+    <table class="members-table">
+      <p class="username">Username: {{ $store.state.userName }}</p>
+      <tr>
+        <th>Room Members</th>
+      </tr>
+      <tr v-for="(member, ind) in members" :key="ind">
+        <td>{{ member }}</td>
+      </tr>
+    </table>
+    <ul class="menu-container voting-menu">
+      <li class="menu-item voting-item vote-up" v-on:click = "userVote()">Upvote</li>
+      <li class="menu-item voting-item vote-down" v-on:click = "downVote()">Downvote</li>
+      <li class="voting-item score">Track Score: {{ votes }}</li>
+    </ul>
     <Search />
   </div>
 </template>
@@ -75,7 +52,7 @@ export default {
   async created() {
     console.log('Room.Vue - creating:', this.roomId);
     if (!this.$store.state.userName) {
-      this.$store.commit('setHost');
+      this.$store.commit('setHost', true);
       const sessionInfo = await axios.get('/auth/loggedin');
       this.$store.commit('setUserName', sessionInfo.data.username);
     }
@@ -172,7 +149,47 @@ h2 {
   margin: 10px 50px;
 }
 
-.members-table {
-  color: #fff;
-}
+  .voting-menu {
+    display: inline-block;
+    background: rgba(255, 255, 255, .5);
+    border-radius: 15px;
+  }
+
+  .voting-item {
+    display: inline-block;
+    font-weight: 700;
+    padding: 10px;
+    margin: 10px 10px;
+    font-size: 1.5vw;
+    border-radius: 10px;
+  }
+
+  .vote-up {
+    background: #5cd65c;
+  }
+
+  .vote-down {
+    background: #f66;
+  }
+
+  .score {
+    color: #000;
+    background: transparent;
+  }
+
+  .vote-up:hover {
+    color: #db7095;
+  }
+  .vote-down:hover {
+    color: #daa360;
+  }
+
+  .members-table {
+    font-size: 1.25vw;
+    position: absolute;
+    text-align: center;
+    top: 5%;
+    right: 8%;
+    color: #fff;
+  }
 </style>

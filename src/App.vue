@@ -31,7 +31,7 @@ export default {
 
 html {
   height: 100%;
-  background: linear-gradient(20deg,#db7095,#daa360);
+  background: linear-gradient(20deg,#db7095,#daa360) fixed;
 }
 
 body{
@@ -82,5 +82,6 @@ h1 {
 .menu-item:hover {
   color: #db7095;
   background: #fff;
+  cursor: pointer;
 }
 </style>

@@ -18,8 +18,8 @@ const mutations = {
     state.userName = userName;    // eslint-disable-line
   },
 
-  setHost(state) {                // eslint-disable-line
-    state.isHost = true;          // eslint-disable-line
+  setHost(state, bool) {                // eslint-disable-line
+    state.isHost = bool;          // eslint-disable-line
   },
 };
 
