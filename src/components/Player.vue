@@ -29,9 +29,6 @@ function playButtonChange(current) {
 
 export default {
   name: 'Player',
-  created() {
-    this.getPlayerInfo();
-  },
   data() {
     return {
       playButton: playOrPause ? 'Pause' : 'Play',

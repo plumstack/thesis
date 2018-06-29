@@ -156,7 +156,7 @@ class Spotify {
       console.log(data);
       return data;
     } catch (error) {
-      console.log('error');
+      console.log('error AHHHHH');
       return error;
     }
   }

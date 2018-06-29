@@ -32,6 +32,7 @@ export default {
   },
   sockets: {
     memberListUpdate(members) {
+      console.log(members);
       this.members = Object.values(members);
     },
   },
@@ -45,7 +46,7 @@ export default {
       this.isHost = true;
     },
   },
-  async created() {
+  mounted() {
     if (this.$route.query.host) return this.createRoom();
     return this.joinRoom();
   },
