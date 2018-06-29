@@ -53,7 +53,7 @@ passport.deserializeUser(User.deserializeUser());
 app.get('/auth/loggedin', async (req, res) => {
   try {
     if (req.isAuthenticated()) {
-      const result = User.sessionCheck(req.sessionID);
+      const result = await User.sessionCheck(req.sessionID);
       res.send({ loggedIn: true, username: result.username });
     } else res.send({ loggedIn: false });
   } catch (error) {
@@ -61,7 +61,7 @@ app.get('/auth/loggedin', async (req, res) => {
   }
 });
 
-app.get('/auth/spotify', passport.authenticate('spotify', { scope, showDialog: false }), (req) => req);
+app.get('/auth/spotify', passport.authenticate('spotify', { scope, showDialog: true }), (req) => req);
 
 app.get(
   '/auth/spotify/callback*',
