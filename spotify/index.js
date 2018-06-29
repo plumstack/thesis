@@ -139,7 +139,7 @@ class Spotify {
       await request(options);
       return this.success;
     } catch (error) {
-      console.error('MODIFY PLAYER ERROR');
+      console.error(error);
       return this.failure;
     }
   }

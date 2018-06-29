@@ -2,14 +2,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const redis = require('redis');
+const bluebird = require('bluebird');
 const Spotify = require('../spotify/index.js');
 
 const app = (module.exports = express()); //eslint-disable-line
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
-(require('./auth'));
-(require('./rooms')(io, Spotify));
+bluebird.promisifyAll(redis);
+const client = redis.createClient({
+  host: process.env.REDIS_HOST,
+  auth_pass: process.env.REDIS_PASS,
+});
+
+(require('./auth'))(client);
+(require('./sockets')(io, Spotify, client));
 
 // router
 const spotifyNext = require('./routes/spotify/player/next');
