@@ -5,13 +5,12 @@ const btoa = require('btoa');
 dotenv.config({ silent: true });
 
 class Spotify {
-  constructor() {
+  constructor(oauth, refresh) {
     this.key = process.env.SPOTIFY_ID;
     this.secret = process.env.SPOTIFY_SECRET;
-    this.oauth = process.env.OAUTH;
+    this.oauth = oauth;
     this.spotifyurl = 'https://api.spotify.com/v1';
-    this.auth_token = '';
-    this.refresh_token = '';
+    this.refresh_token = refresh;
     this.success = { ok: true };
     this.failure = { ok: false };
     this.headers = {
@@ -19,7 +18,6 @@ class Spotify {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.oauth}`,
     };
-    this.refreshToken();
     // this.getUserInfo().then(() => this.newPlaylist());
   }
 
@@ -141,7 +139,7 @@ class Spotify {
       await request(options);
       return this.success;
     } catch (error) {
-      console.error('MODIFY PLAYER ERROR');
+      console.error(error);
       return this.failure;
     }
   }
@@ -149,28 +147,18 @@ class Spotify {
   async getPlayerInfo() {
     const options = {
       method: 'GET',
-      url: `${this.spotifyurl}/me/player/?market=ES`,
+      url: `${this.spotifyurl}/me/player/currently-playing`,
       headers: this.headers,
     };
-
-    const playerInfoData = await request(options).catch(console.error);
-    const data = playerInfoData ? JSON.parse(playerInfoData) : null;
-    const playerInfo = data
-      ? {
-        ok: true,
-        playing: true,
-        title: data.item.name,
-        albumTitle: data.item.album.name,
-        albumArt: data.item.album.images[0].url,
-        artist: data.item.artists[0].name,
-        artistFeature: data.item.artists.slice(1).map((item) => item.name),
-        device: data.device.name,
-        url: data.context.href,
-        shuffle: data.shuffle_state,
-      }
-      : null;
-    if (playerInfo) return playerInfo;
-    return Object.assign(this.failure, { playing: false });
+    try {
+      const playerInfoData = await request(options);
+      const data = playerInfoData ? JSON.parse(playerInfoData) : null;
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.log('error AHHHHH');
+      return error;
+    }
   }
 }
 const testSpot = new Spotify();

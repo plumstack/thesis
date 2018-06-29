@@ -49,8 +49,8 @@ User.findOrCreate = function findCreate(info, cb) {
   });
 };
 
-User.sessionAdd = (username, session) => {
-  User.findOne({ username }, (err, user) => {
+User.sessionAdd = async (username, session) => {
+  await User.findOne({ username }, (err, user) => {
     if (err) return console.log(err);
     const newUser = user;
     newUser.session = session;

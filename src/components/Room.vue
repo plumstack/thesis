@@ -23,7 +23,6 @@
 </template>
 
 <script>
-
 import Vue from 'vue';
 import axios from 'axios';
 import VueSocketio from 'vue-socket.io';
@@ -32,23 +31,14 @@ import Player from './Player.vue';
 import Search from './Search.vue';
 
 // Injects dependencies through middleware:
-Vue.use(VueSocketio, 'http://localhost:8083');
+Vue.use(VueSocketio, 'http://localhost:8082');
 
-const roomUrl = '/dash/room/';
-function roomOptions(meth, body) {
-  return {
-    method: 'POST',
-    url: `${roomUrl}${meth}`,
-    data: body,
-  };
-}
+// const roomUrl = '/dash/room/';
 
 export default {
   name: 'Room',
 
-  props: [
-    'roomId',
-  ],
+  props: ['roomId'],
 
   data() {
     return {
@@ -56,20 +46,19 @@ export default {
       votes: 'LOADING',
       connected: false,
       userVoted: 'Neutral',
-      members: [],
+      members: {},
     };
   },
   async created() {
     console.log('Room.Vue - creating:', this.roomId);
-    await this.joinRoomVue();
-    this.getMembers();
-    this.getVotes();
     if (!this.$store.state.userName) {
       this.$store.commit('setHost', true);
       const sessionInfo = await axios.get('/auth/loggedin');
       this.$store.commit('setUserName', sessionInfo.data.username);
-      axios(roomOptions('create', { roomId: this.roomId, userName: sessionInfo.data.username }));
     }
+    await this.joinRoomVue();
+    this.getMembers();
+    this.getVotes();
   },
 
   components: {
@@ -110,17 +99,19 @@ export default {
       console.log('Joining Room: ', userData);
       this.$socket.emit('join room', userData);
     },
-    async getMembers() {
-      const members = await axios(roomOptions('members', { roomId: this.roomId }));
-      console.log('MEMBERS: ', members);
-      this.members = members.data;
-    },
     userVote() {
       this.$socket.emit('vote', { user: this.$store.state.userName, room: this.room });
       this.userVoted = 'ILL';
     },
     checkData() {
-      console.log('Client Data\n room: ', this.room, 'votes: ', this.votes, 'user: ', this.$store.state.userName);
+      console.log(
+        'Client Data\n room: ',
+        this.room,
+        'votes: ',
+        this.votes,
+        'user: ',
+        this.$store.state.userName,
+      );
       this.$socket.emit('check data');
     },
     getVotes() {
@@ -140,23 +131,23 @@ export default {
 </script>
 
 <style scoped>
-  h2 {
-    font-family: "Kalam";
-    color: #fff;
-    text-align: center;
-    font-size: 5vw;
-    margin: 2px;
-  }
+h2 {
+  font-family: 'Kalam';
+  color: #fff;
+  text-align: center;
+  font-size: 5vw;
+  margin: 2px;
+}
 
-  .content {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-  }
+.content {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
 
-  .content-item {
-    margin: 10px 50px;
-  }
+.content-item {
+  margin: 10px 50px;
+}
 
   .voting-menu {
     display: inline-block;
