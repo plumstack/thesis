@@ -7,6 +7,9 @@
       </ul>
       <img class="album-art" :src="playerInfo.item.album.images[0].url" />
     </div>
+    <div id="progress-bar">
+      <div id="progress"></div>
+    </div>
     <ul class="menu-container controls" v-if="isHost" >
       <li class="menu-item controls-item" v-on:click="onClickPlay()">{{ playButton }}//TODO</li>
       <li class="menu-item controls-item" v-on:click="onClickNext()">Next //TODO</li>
@@ -16,6 +19,8 @@
 </template>
 
 <script>
+import Tock from 'tocktimer';
+
 let playOrPause = true;
 
 function playButtonChange(current) {
@@ -29,18 +34,52 @@ export default {
     return {
       playButton: playOrPause ? 'Pause' : 'Play',
       search: '',
+      timer: '',
+      duration: 0,
+      baseline: 0,
     };
   },
+
   props: {
     roomId: { type: String, required: true },
     isHost: { type: Boolean, required: true },
     getInfoPressed: { type: Function, required: true },
     playerInfo: { type: Object, required: false },
   },
+
+  mounted() {
+    this.timer = new Tock({
+      interval: 50,
+      callback: () => {
+        const elapsed = this.baseline + this.timer.lap();
+        console.log(this.timer.lap());
+        const progress = document.getElementById('progress');
+        const percent = (elapsed / this.duration) * 100;
+        const width = percent <= 100 ? percent : 100;
+        progress.style.width = `${width}%`;
+      },
+    });
+    this.timer.start();
+  },
+
+  watch: {
+    playerInfo(newInfo) {
+      const dur = newInfo.item.duration_ms;
+      const el = newInfo.progress_ms;
+
+      this.duration = dur;
+      this.baseline = el;
+
+      this.timer.reset();
+      this.timer.start();
+    },
+  },
+
   methods: {
     onClickNext() {
       // TODO
     },
+
     onClickPlay() {
       // TODO
       playOrPause = !playOrPause;
@@ -54,7 +93,7 @@ export default {
 .player-info {
   margin: auto;
   width: 80%;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .song-info-item {
@@ -75,6 +114,20 @@ export default {
   margin: auto;
   height: 45%;
   width: 45%;
+}
+
+#progress-bar {
+  width: 80%;
+  background: #fff;
+  text-align: left;
+  border-radius: 5px;
+}
+
+#progress {
+  height: 10px;
+  background: linear-gradient(90deg,#0ff,#6495ed);
+  margin-bottom: 20px;
+  border-radius: 5px;
 }
 
 .controls-item {
