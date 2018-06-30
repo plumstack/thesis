@@ -59,6 +59,7 @@ export default {
       vote: 0,
       votes: 0,
       curQueue: [],
+      hasSkipped: false,
     };
   },
   sockets: {
@@ -69,6 +70,9 @@ export default {
       this.searchRes = JSON.parse(results).tracks.items;
     },
     infoResponse(results) {
+      if (this.playerInfo.item && this.playerInfo.item.id !== results.item.id) {
+        this.hasSkipped = false;
+      }
       this.playerInfo = results;
     },
     queueUpdate(queue) {
@@ -98,11 +102,14 @@ export default {
       this.$socket.emit('upvote', { room: this.room, user: this.username });
     },
     skip() {
-      this.$socket.emit('skipVote', {
-        room: this.room,
-        user: this.username,
-        trackid: this.playerInfo.item.id,
-      });
+      if (!this.hasSkipped) {
+        this.$socket.emit('skipVote', {
+          room: this.room,
+          user: this.username,
+          trackid: this.playerInfo.item.id,
+        });
+      }
+      this.hasSkipped = true;
     },
     queue(song) {
       this.$store.commit('setSearching', false);

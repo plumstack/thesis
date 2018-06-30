@@ -106,8 +106,7 @@ module.exports = (io, Spotify, redis) => {
 
       if (rooms[roomID].skip) rooms[roomID].skip += 1;
       else rooms[roomID].skip = 1;
-
-      if (rooms[roomID].skip >= Math.floor(memberLength / 2)) {
+      if (rooms[roomID].skip > Math.floor(memberLength / 2)) {
         playNextSong(roomID);
       }
     });

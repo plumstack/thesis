@@ -8,18 +8,14 @@
       <img class="album-art" :src="playerInfo.item.album.images[0].url" />
     </div>
     <ul class="menu-container controls" v-if="isHost" >
-      <li class="menu-item controls-item" v-on:click="onClickPrev()">Prev</li>
-      <li class="menu-item controls-item" v-on:click="onClickPlay()">{{ playButton }}</li>
-      <li class="menu-item controls-item" v-on:click="onClickNext()">Next</li>
+      <li class="menu-item controls-item" v-on:click="onClickPlay()">{{ playButton }}//TODO</li>
+      <li class="menu-item controls-item" v-on:click="onClickNext()">Next //TODO</li>
       <li class="menu-item controls-item" v-on:click="getInfoPressed">GetInfo</li>
     </ul>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-
-const url = '/spotify/player/';
 let playOrPause = true;
 
 function playButtonChange(current) {
@@ -42,23 +38,11 @@ export default {
     playerInfo: { type: Object, required: false },
   },
   methods: {
-    options(meth) {
-      return {
-        method: 'GET',
-        url: `${url}${meth}`,
-        params: {
-          roomId: this.roomId,
-        },
-      };
-    },
     onClickNext() {
-      axios(this.options('next')).then(this.getPlayerInfo);
-    },
-    onClickPrev() {
-      axios(this.options('prev')).then(this.getPlayerInfo);
+      // TODO
     },
     onClickPlay() {
-      axios(this.options(playOrPause ? 'pause' : 'play')).then(this.getPlayerInfo);
+      // TODO
       playOrPause = !playOrPause;
       this.playButton = playButtonChange(playOrPause);
     },
