@@ -80,6 +80,7 @@ export default {
   methods: {
     joinRoom() {
       this.$socket.emit('joinRoom', { user: this.username, room: this.room });
+      this.$socket.emit('getInfo');
     },
     createRoom() {
       this.$socket.emit('createRoom', { user: this.username, room: this.room });
