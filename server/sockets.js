@@ -6,21 +6,23 @@ module.exports = (io, Spotify, redis) => {
 
   const playNextSong = async (roomID) => {
     const nextSong = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 1);
-    redis.zrem(`${roomID}:queue`, nextSong[0]);
-    rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
-    rooms[roomID].skip = 0;
-    const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-    io.sockets.in(roomID).emit('queueUpdate', result);
+    if (nextSong.length) {
+      redis.zrem(`${roomID}:queue`, nextSong[0]);
+      rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
+      rooms[roomID].skip = 0;
+      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+      io.sockets.in(roomID).emit('queueUpdate', result);
+    }
   };
 
-  const setTimer = (roomId, duration, elapsed) => {
-    timers[roomId] = new Tock({
+  const setTimer = (roomID, duration, elapsed) => {
+    timers[roomID] = new Tock({
       countdown: true,
       complete: () => {
-        playNextSong(roomId);
+        playNextSong(roomID);
       },
     });
-    timers[roomId].start(duration - elapsed - 500);
+    timers[roomID].start(duration - elapsed - 500);
   };
 
   io.on('connection', (socket) => {
@@ -81,7 +83,7 @@ module.exports = (io, Spotify, redis) => {
       const roomID = socket.room;
       const result = await rooms[roomID].Spotify.getPlayerInfo();
       io.sockets.in(roomID).emit('infoResponse', result);
-      setTimer(roomID, result.item.duration_ms, result.progress_ms, redis);
+      setTimer(roomID, result.item.duration_ms, result.progress_ms);
     });
 
     socket.on('queue', async (roomInfo) => {
