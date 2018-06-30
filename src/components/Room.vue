@@ -1,0 +1,195 @@
+<template>
+  <div class="room" align="center">
+    <h2>Room {{ roomId }}</h2>
+    <div class="content">
+      <Player class="content-item" :roomId="roomId"/>
+    </div>
+    <table class="members-table">
+      <p class="username">Username: {{ $store.state.userName }}</p>
+      <tr>
+        <th>Room Members</th>
+      </tr>
+      <tr v-for="(member, ind) in members" :key="ind">
+        <td>{{ member }}</td>
+      </tr>
+    </table>
+    <ul class="menu-container voting-menu">
+      <li class="menu-item voting-item vote-up" v-on:click = "userVote()">Upvote</li>
+      <li class="menu-item voting-item vote-down" v-on:click = "downVote()">Downvote</li>
+      <li class="voting-item score">Track Score: {{ votes }}</li>
+    </ul>
+    <Search />
+  </div>
+</template>
+
+<script>
+import Vue from 'vue';
+import axios from 'axios';
+import VueSocketio from 'vue-socket.io';
+
+import Player from './Player.vue';
+import Search from './Search.vue';
+
+// Injects dependencies through middleware:
+Vue.use(VueSocketio, 'http://localhost:8082');
+
+// const roomUrl = '/dash/room/';
+
+export default {
+  name: 'Room',
+
+  props: ['roomId'],
+
+  data() {
+    return {
+      room: this.roomId,
+      votes: 'LOADING',
+      connected: false,
+      userVoted: 'Neutral',
+      members: {},
+    };
+  },
+  async created() {
+    console.log('Room.Vue - creating:', this.roomId);
+    if (!this.$store.state.userName) {
+      this.$store.commit('setHost', true);
+      const sessionInfo = await axios.get('/auth/loggedin');
+      this.$store.commit('setUserName', sessionInfo.data.username);
+    }
+    await this.joinRoomVue();
+    this.getMembers();
+    this.getVotes();
+  },
+
+  components: {
+    Player,
+    Search,
+  },
+
+  sockets: {
+    connect() {
+      console.log('Sockets: connecting');
+      this.connected = true;
+    },
+    disconnect() {
+      console.log('Sockets: disconnect:', this.tempUser);
+      this.connected = false;
+    },
+    voteUpdate(count) {
+      console.log('votes updated: ', count);
+      this.votes = count.vote;
+    },
+    newComer(newb) {
+      console.log('USER: ', newb, ' HAS ARRIVED!');
+    },
+    weak() {
+      console.log('THIS SONG IS TRASH');
+    },
+  },
+
+  methods: {
+    // joinRoomVue be refactored into sockets: connect()
+    // But error is happening - socket is connecting from Splash.vue
+    joinRoomVue() {
+      const userData = {
+        user: this.$store.state.userName,
+        room: this.room,
+        host: this.$store.state.isHost,
+      };
+      console.log('Joining Room: ', userData);
+      this.$socket.emit('join room', userData);
+    },
+    userVote() {
+      this.$socket.emit('vote', { user: this.$store.state.userName, room: this.room });
+      this.userVoted = 'ILL';
+    },
+    checkData() {
+      console.log(
+        'Client Data\n room: ',
+        this.room,
+        'votes: ',
+        this.votes,
+        'user: ',
+        this.$store.state.userName,
+      );
+      this.$socket.emit('check data');
+    },
+    getVotes() {
+      this.$socket.emit('get count', this.room);
+    },
+    joinRoom() {
+      console.log('Joining Room: ', this.room);
+      // Add the user: username to the object once passed
+      this.$socket.emit('join room', { user: this.$store.state.userName, room: this.room });
+    },
+    downVote() {
+      this.$socket.emit('down', { user: this.$store.state.userName, room: this.room });
+      this.userVoted = 'WEAK';
+    },
+  },
+};
+</script>
+
+<style scoped>
+h2 {
+  font-family: 'Kalam';
+  color: #fff;
+  text-align: center;
+  font-size: 5vw;
+  margin: 2px;
+}
+
+.content {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.content-item {
+  margin: 10px 50px;
+}
+
+  .voting-menu {
+    display: inline-block;
+    background: rgba(255, 255, 255, .5);
+    border-radius: 15px;
+  }
+
+  .voting-item {
+    display: inline-block;
+    font-weight: 700;
+    padding: 10px;
+    margin: 10px 10px;
+    font-size: 1.5vw;
+    border-radius: 10px;
+  }
+
+  .vote-up {
+    background: #5cd65c;
+  }
+
+  .vote-down {
+    background: #f66;
+  }
+
+  .score {
+    color: #000;
+    background: transparent;
+  }
+
+  .vote-up:hover {
+    color: #db7095;
+  }
+  .vote-down:hover {
+    color: #daa360;
+  }
+
+  .members-table {
+    font-size: 1.25vw;
+    position: absolute;
+    text-align: center;
+    top: 5%;
+    right: 8%;
+    color: #fff;
+  }
+</style>

@@ -1,0 +1,66 @@
+{
+  "name": "spotify-social-night",
+  "version": "0.1.0",
+  "description": "Spotify integrated DJing app for social nights",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "server": "nodemon server/index.js",
+    "lint": "eslint ./ --cache --ignore-path .gitignore --ext vue --ext js",
+    "precommit-message": "echo 'Pre-commit checks...' && exit 0"
+  },
+  "pre-commit": [
+    "precommit-message",
+    "lint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plumstack/thesis.git"
+  },
+  "author": "johnstonjacob, chungrob, panetters",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plumstack/thesis/issues"
+  },
+  "homepage": "https://github.com/plumstack/thesis#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.3",
+    "btoa": "^1.2.1",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "mongoose": "^5.1.6",
+    "passport": "^0.4.0",
+    "passport-local-mongoose": "^5.0.1",
+    "passport-spotify": "^1.0.0",
+    "pre-commit": "^1.2.2",
+    "randomstring": "^1.1.5",
+    "redis": "^2.8.0",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
+    "socket.io": "^2.1.1",
+    "tocktimer": "^1.0.12",
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1",
+    "vue-socket.io": "^2.1.1-b",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0-beta.15",
+    "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
+    "@vue/cli-service": "^3.0.0-beta.15",
+    "@vue/eslint-config-airbnb": "^3.0.0-rc.3",
+    "eslint-plugin-import": "^2.12.0",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "proxy": "http://localhost:8082",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
