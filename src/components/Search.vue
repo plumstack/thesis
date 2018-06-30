@@ -29,7 +29,7 @@
 import dummyData from './exampleSearchData';
 
 export default {
-  name: 'Player',
+  name: 'Search',
   created() {
   },
   data() {

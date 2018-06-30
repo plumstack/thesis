@@ -7,7 +7,7 @@
       </ul>
       <img class="album-art" :src="playerInfo.albumArt" />
     </div>
-    <ul class="menu-container controls" v-if="$store.state.isHost" >
+    <ul class="menu-container controls" v-if="isHost" >
       <li class="menu-item controls-item" v-on:click="onClickPrev()">Prev</li>
       <li class="menu-item controls-item" v-on:click="onClickPlay()">{{ playButton }}</li>
       <li class="menu-item controls-item" v-on:click="onClickNext()">Next</li>
@@ -38,6 +38,7 @@ export default {
   },
   props: {
     roomId: { type: String, required: true },
+    isHost: { type: Boolean, required: true },
   },
   methods: {
     options(meth) {
