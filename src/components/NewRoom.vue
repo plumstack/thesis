@@ -15,11 +15,11 @@
       </tr>
     </table>
     <ul class="menu-container voting-menu">
-      <li class="menu-item voting-item vote-up" v-on:click = "userVote()">Upvote</li>
-      <li class="menu-item voting-item vote-down" v-on:click = "downVote()">Downvote</li>
+      <!-- <li class="menu-item voting-item vote-up" v-on:click="upvote">Upvote</li>  -->
+      <li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li>
       <li class="voting-item score">Track Score: {{ votes }}</li>
     </ul>
-    <Search :searchInput="searchInput" :searchRes="searchRes" />
+    <Search :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
   </div>
 </template>
 
@@ -47,24 +47,26 @@ export default {
       isHost: false,
       searchRes: {},
       playerInfo: {},
+      vote: 0,
+      votes: 0,
     };
   },
   sockets: {
     memberListUpdate(members) {
-      console.log(members);
       this.members = Object.values(members);
     },
     searchResponse(results) {
       this.searchRes = JSON.parse(results).tracks.items;
     },
     infoResponse(results) {
-      console.log(results);
       this.playerInfo = results;
+    },
+    queueUpdate(queue) {
+      console.log(queue, typeof queue);
     },
   },
   methods: {
     joinRoom() {
-      console.log('joined room');
       this.$socket.emit('joinRoom', { user: this.username, room: this.room });
     },
     createRoom() {
@@ -76,6 +78,15 @@ export default {
     },
     getInfoPressed() {
       this.$socket.emit('getInfo', { room: this.room });
+    },
+    upvote() {
+      this.$socket.emit('upvote', { room: this.room, user: this.username });
+    },
+    skip() {
+      this.$socket.emit('skipVote', { room: this.room, user: this.username, trackid: this.playerInfo.item.id });
+    },
+    queue(song) {
+      this.$socket.emit('queue', { room: this.room, user: this.username, song });
     },
   },
   mounted() {
