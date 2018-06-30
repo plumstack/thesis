@@ -7,6 +7,7 @@ const state = {
   joining: false,
   userName: '',
   isHost: false,
+  searching: false,
 };
 
 const mutations = {
@@ -18,8 +19,12 @@ const mutations = {
     state.userName = userName;    // eslint-disable-line
   },
 
-  setHost(state, bool) {                // eslint-disable-line
+  setHost(state, bool) {          // eslint-disable-line
     state.isHost = bool;          // eslint-disable-line
+  },
+
+  setSearching(state, bool) {     // eslint-disable-line
+    state.searching = bool;       // eslint-disable-line
   },
 };
 

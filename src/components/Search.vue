@@ -1,13 +1,12 @@
 <template>
   <div class="search" align="center">
     <input type="text" placeholder="Search for Songs" v-on:keyup.enter="search" v-model="searchQuery"/>
-    <table  class="search-results">
+    <table v-if="searchQuery" class="search-results">
       <!-- Table Headers: -->
       <tr class="table-header">
         <th>  <!-- artwork --> </th>
         <th>Track</th>
         <th>Artist</th>
-        <th>Duration</th>
         <th>Album</th>
         <th>Add</th>
       </tr>
@@ -17,7 +16,6 @@
         <td><img :src="track.album.images[2].url" class="album-image"></td>
         <td>{{ track.name }}</td>
         <td>{{ track.artists[0].name }}</td>
-        <td>{{ convertAMilli(track.duration_ms) }}</td>
         <td>{{ track.album.name }}</td>
         <td><button v-on:click="queue(track)">+</button></td>
     </tr>
@@ -113,7 +111,7 @@ input[type=text] {
 }
 
 input[type=text]:focus {
-  width: 60%;
+  width: 45%;
   outline: none;
   color: #db7095;
   background: #fff;

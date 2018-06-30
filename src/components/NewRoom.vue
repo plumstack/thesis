@@ -19,7 +19,14 @@
       <li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li>
       <li class="voting-item score">Track Score: {{ votes }}</li>
     </ul>
-    <Search :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
+    <ul class="menu-container bottom-toggle">
+      <li class="menu-item toggle-button" v-bind:class="{ active: !$store.state.searching }"
+        v-on:click="$store.commit('setSearching', false)">Queue</li>
+      <li class="menu-item toggle-button" v-bind:class="{ active: $store.state.searching }"
+        v-on:click="$store.commit('setSearching', true)">Search</li>
+    </ul>
+    <Queue v-if="!$store.state.searching" :curQueue="curQueue"/>
+    <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
   </div>
 </template>
 
@@ -29,6 +36,7 @@ import VueSocketio from 'vue-socket.io';
 
 import Player from './Player.vue';
 import Search from './Search.vue';
+import Queue from './Queue.vue';
 
 Vue.use(VueSocketio, 'http://localhost:8082');
 export default {
@@ -37,6 +45,7 @@ export default {
   components: {
     Player,
     Search,
+    Queue,
   },
   data() {
     return {
@@ -49,6 +58,7 @@ export default {
       playerInfo: {},
       vote: 0,
       votes: 0,
+      curQueue: [],
     };
   },
   sockets: {
@@ -62,7 +72,9 @@ export default {
       this.playerInfo = results;
     },
     queueUpdate(queue) {
-      console.log(queue, typeof queue);
+      const parsed = queue.map((track) => JSON.parse(track));
+      console.log(parsed);
+      this.curQueue = parsed;
     },
   },
   methods: {
@@ -86,6 +98,7 @@ export default {
       this.$socket.emit('skipVote', { room: this.room, user: this.username, trackid: this.playerInfo.item.id });
     },
     queue(song) {
+      this.$store.commit('setSearching', false);
       this.$socket.emit('queue', { room: this.room, user: this.username, song });
     },
   },
@@ -147,8 +160,22 @@ h2 {
 .vote-up:hover {
   color: #db7095;
 }
+
 .vote-down:hover {
   color: #daa360;
+}
+
+.toggle-button {
+  display: inline-block;
+  font-size: 1.5vw;
+  padding: 5px 10px;
+  margin: 5px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.toggle-button:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .members-table {
@@ -158,5 +185,10 @@ h2 {
   top: 5%;
   right: 8%;
   color: #fff;
+}
+
+.active {
+  color: #db7095;
+  background: #fff;
 }
 </style>
