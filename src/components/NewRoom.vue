@@ -61,6 +61,9 @@ export default {
     infoResponse(results) {
       this.playerInfo = results;
     },
+    queueUpdate(queue) {
+      console.log(queue, typeof queue);
+    },
   },
   methods: {
     joinRoom() {
