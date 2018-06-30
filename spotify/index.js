@@ -134,7 +134,7 @@ class Spotify {
       url: `${this.spotifyurl}/me/player/${mod}`,
       headers: this.headers,
     };
-    if (trackid) options.body = JSON.stringify({ context_uri: trackid });
+    if (trackid) options.body = JSON.stringify({ uris: [trackid] });
     try {
       await request(options);
       return this.success;

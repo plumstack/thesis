@@ -1,18 +1,5 @@
 module.exports = (io, Spotify, redis) => {
   const rooms = {
-    /*
-   Example:
-   roomName: {
-     users: {
-       name1: 1,
-       name2: -1,
-     },
-     totalVotes() {
-       return Object.keys(this.users).reduce((acc, el) => acc += this.users[el], 0)
-     },
-     host: 'name1'
-   },
-   */
   };
 
   io.on('connection', (socket) => {
@@ -73,6 +60,11 @@ module.exports = (io, Spotify, redis) => {
       const roomID = socket.room;
       const result = await rooms[roomID].Spotify.getPlayerInfo();
       io.sockets.in(roomID).emit('infoResponse', result);
+    });
+
+    socket.on('queue', (roomInfo) => {
+      const roomID = roomInfo.room;
+      rooms[roomID].Spotify.playSpecific(roomInfo.song);
     });
   });
 };
