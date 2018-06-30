@@ -89,8 +89,8 @@ export default {
 .album-art {
   display: block;
   margin: auto;
-  height: 15%;
-  width: 15%;
+  height: 45%;
+  width: 45%;
 }
 
 .controls-item {
