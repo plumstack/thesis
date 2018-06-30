@@ -25,7 +25,8 @@
       <li class="menu-item toggle-button" v-bind:class="{ active: $store.state.searching }"
         v-on:click="$store.commit('setSearching', true)">Search</li>
     </ul>
-    <Queue v-if="!$store.state.searching" :curQueue="curQueue" :queueUpvote="queueUpvote"/>
+    <Queue v-if="!$store.state.searching" :curQueue="curQueue"
+    :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
     <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
   </div>
 </template>
@@ -117,6 +118,9 @@ export default {
     },
     queueUpvote(song) {
       this.$socket.emit('queueUpvote', { room: this.room, user: this.username, song });
+    },
+    queueDownvote(song) {
+      this.$socket.emit('queueDownvote', { room: this.room, song });
     },
   },
   mounted() {

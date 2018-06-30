@@ -11,22 +11,20 @@
       </div>
     </li>
     <li class="queue-track-list" v-for="track in curQueue" :key="track.id">
-      <div class="queue-track">
-        <img :src="track.album.images[2].url" class="album-image">
-        <div class="track-item">{{ track.name }}</div>
-        <div class="track-item">{{ track.artists[0].name }}</div>
-        <div class="track-item">{{ track.album.name }}</div>
-        <div class="queue-button queue-vote up" v-on:click="queueUpvote(track)">^</div>
-        <div class="queue-button queue-vote down" v-on:click="queueDownvote(track)">V</div>
-      </div>
+      <QueueItem :track="track" :queueUpvote="queueUpvote" :queueDownvote="queueDownvote"/>
     </li>
   </ul>
 </template>
 
 <script>
+import QueueItem from './QueueItem.vue';
+
 export default {
   name: 'Queue',
-  props: ['curQueue', 'queueUpvote'],
+  props: ['curQueue', 'queueUpvote', 'queueDownvote'],
+  components: {
+    QueueItem,
+  },
 };
 </script>
 
@@ -43,7 +41,7 @@ export default {
 }
 
 .queue-track-list:nth-child(even) {
-  background: rgba(255, 255, 255, .2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .queue-track {

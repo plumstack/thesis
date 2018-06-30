@@ -121,5 +121,16 @@ module.exports = (io, Spotify, redis) => {
 
       io.sockets.in(roomID).emit('queueUpdate', newQueue);
     });
+
+    socket.on('queueDownvote', async (roomInfo) => {
+      const roomID = roomInfo.room;
+      await redis
+        .zincrbyAsync(`${roomID}:queue`, -1, JSON.stringify(roomInfo.song))
+        .catch(console.error);
+
+      const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+
+      io.sockets.in(roomID).emit('queueUpdate', newQueue);
+    });
   });
 };
