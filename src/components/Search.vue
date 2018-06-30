@@ -19,7 +19,7 @@
         <td>{{ track.artists[0].name }}</td>
         <td>{{ convertAMilli(track.duration_ms) }}</td>
         <td>{{ track.album.name }}</td>
-        <td><button>+</button></td>
+        <td><button v-on:click="queue(track.uri)">+</button></td>
     </tr>
     </table>
   </div>
@@ -38,7 +38,7 @@ export default {
       searchQuery: '',
     };
   },
-  props: ['searchInput', 'searchRes'],
+  props: ['searchInput', 'searchRes', 'queue'],
   methods: {
     search() {
       this.searchInput(this.searchQuery);
