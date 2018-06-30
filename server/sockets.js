@@ -68,6 +68,12 @@ module.exports = (io, Spotify, redis) => {
       io.sockets.in(roomID).emit('queueUpdate', result);
     });
 
+    socket.on('getQueue', async (roomInfo) => {
+      const roomID = roomInfo.room;
+      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+      io.sockets.in(roomID).emit('queueUpdate', result);
+    });
+
     socket.on('skipVote', async (roomInfo) => {
       const roomID = roomInfo.room;
       const currentMembers = await redis.getAsync(`${roomID}:members`);
@@ -82,7 +88,20 @@ module.exports = (io, Spotify, redis) => {
       if (rooms[roomID].skip >= Math.floor(memberLength / 2)) {
         rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
         rooms[roomID].skip = 0;
+        const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+        io.sockets.in(roomID).emit('queueUpdate', result);
       }
+    });
+
+    socket.on('queueUpvote', async (roomInfo) => {
+      const roomID = roomInfo.room;
+      await redis
+        .zincrbyAsync(`${roomID}:queue`, 1, JSON.stringify(roomInfo.song))
+        .catch(console.error);
+
+      const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+
+      io.sockets.in(roomID).emit('queueUpdate', newQueue);
     });
   });
 };

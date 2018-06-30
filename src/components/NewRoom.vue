@@ -25,7 +25,7 @@
       <li class="menu-item toggle-button" v-bind:class="{ active: $store.state.searching }"
         v-on:click="$store.commit('setSearching', true)">Search</li>
     </ul>
-    <Queue v-if="!$store.state.searching" :curQueue="curQueue"/>
+    <Queue v-if="!$store.state.searching" :curQueue="curQueue" :queueUpvote="queueUpvote"/>
     <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
   </div>
 </template>
@@ -85,6 +85,8 @@ export default {
     createRoom() {
       this.$socket.emit('createRoom', { user: this.username, room: this.room });
       this.isHost = true;
+      this.$socket.emit('getInfo', { room: this.room });
+      this.$socket.emit('getQueue', { room: this.room });
     },
     searchInput(search) {
       this.$socket.emit('searchInput', { user: this.username, room: this.room, search });
@@ -96,11 +98,18 @@ export default {
       this.$socket.emit('upvote', { room: this.room, user: this.username });
     },
     skip() {
-      this.$socket.emit('skipVote', { room: this.room, user: this.username, trackid: this.playerInfo.item.id });
+      this.$socket.emit('skipVote', {
+        room: this.room,
+        user: this.username,
+        trackid: this.playerInfo.item.id,
+      });
     },
     queue(song) {
       this.$store.commit('setSearching', false);
       this.$socket.emit('queue', { room: this.room, user: this.username, song });
+    },
+    queueUpvote(song) {
+      this.$socket.emit('queueUpvote', { room: this.room, user: this.username, song });
     },
   },
   mounted() {

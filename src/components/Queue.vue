@@ -16,8 +16,8 @@
         <div class="track-item">{{ track.name }}</div>
         <div class="track-item">{{ track.artists[0].name }}</div>
         <div class="track-item">{{ track.album.name }}</div>
-        <div class="queue-button queue-vote up"></div>
-        <div class="queue-button queue-vote down"></div>
+        <div class="queue-button queue-vote up" v-on:click="queueUpvote(track)">^</div>
+        <div class="queue-button queue-vote down" v-on:click="queueDownvote(track)">V</div>
       </div>
     </li>
   </ul>
@@ -26,7 +26,7 @@
 <script>
 export default {
   name: 'Queue',
-  props: ['curQueue'],
+  props: ['curQueue', 'queueUpvote'],
 };
 </script>
 
