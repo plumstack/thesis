@@ -73,8 +73,8 @@ export default {
     },
     queueUpdate(queue) {
       const parsed = queue.map((track) => JSON.parse(track));
-      console.log(parsed);
       this.curQueue = parsed;
+      setTimeout(this.getInfoPressed, 2000);
     },
   },
   methods: {
