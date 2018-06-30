@@ -70,7 +70,7 @@ class Spotify {
       qs: {
         q,
         type: 'track',
-        limit: 5,
+        limit: 8,
       },
     };
 

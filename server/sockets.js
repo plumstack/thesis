@@ -1,6 +1,5 @@
 module.exports = (io, Spotify, redis) => {
-  const rooms = {
-  };
+  const rooms = {};
 
   io.on('connection', (socket) => {
     socket.on('createRoom', async (roomInfo) => {
@@ -62,9 +61,13 @@ module.exports = (io, Spotify, redis) => {
       io.sockets.in(roomID).emit('infoResponse', result);
     });
 
-    socket.on('queue', (roomInfo) => {
+    socket.on('queue', async (roomInfo) => {
       const roomID = roomInfo.room;
-      rooms[roomID].Spotify.playSpecific(roomInfo.song);
+      redis.zadd(`${roomID}:queue`, 0, JSON.stringify(roomInfo.song));
+
+      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+
+      io.sockets.in(roomID).emit('queueUpdate', result);
     });
   });
 };
