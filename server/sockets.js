@@ -64,5 +64,10 @@ module.exports = (io, Spotify, redis) => {
 
       redis.setAsync(`${roomID}:members`, JSON.stringify(newMembers));
     });
+
+    socket.on('searchInput', async (searchInfo) => {
+      const result = await rooms[searchInfo.room].Spotify.search(searchInfo.search);
+      socket.emit('searchResponse', result);
+    });
   });
 };

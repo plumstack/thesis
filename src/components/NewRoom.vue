@@ -2,10 +2,10 @@
   <div class="room" align="center">
     <h2>Room {{ roomId }}</h2>
     <div class="content">
-      <Player class="content-item" isHost="isHost" :roomId="roomId" />
+      <Player class="content-item" :isHost="isHost" :roomId="roomId" />
     </div>
     <table class="members-table">
-      <p class="username">Username: {{ $store.state.userName }}</p>
+      <p class="username">Username: {{ username }}</p>
       <tr>
         <th>Room Members</th>
       </tr>
@@ -18,7 +18,7 @@
       <li class="menu-item voting-item vote-down" v-on:click = "downVote()">Downvote</li>
       <li class="voting-item score">Track Score: {{ votes }}</li>
     </ul>
-    <Search />
+    <Search :searchInput="searchInput" :searchRes="searchRes" />
   </div>
 </template>
 
@@ -44,12 +44,16 @@ export default {
       connected: false,
       members: [],
       isHost: false,
+      searchRes: {},
     };
   },
   sockets: {
     memberListUpdate(members) {
       console.log(members);
       this.members = Object.values(members);
+    },
+    searchResponse(results) {
+      this.searchRes = JSON.parse(results).tracks.items;
     },
   },
   methods: {
@@ -60,6 +64,9 @@ export default {
     createRoom() {
       this.$socket.emit('createRoom', { user: this.username, room: this.room });
       this.isHost = true;
+    },
+    searchInput(search) {
+      this.$socket.emit('searchInput', { user: this.username, room: this.room, search });
     },
   },
   mounted() {
