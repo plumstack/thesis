@@ -78,7 +78,8 @@ class Spotify {
       const result = await request(options);
       return result;
     } catch (error) {
-      return console.error('SEARCH ERROR');
+      await this.refreshToken();
+      return this.search(q);
     }
   }
 
