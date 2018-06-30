@@ -2,7 +2,8 @@
   <div class="room" align="center">
     <h2>Room {{ roomId }}</h2>
     <div class="content">
-      <Player class="content-item" :isHost="isHost" :roomId="roomId" />
+      <Player class="content-item" :isHost="isHost"
+      :roomId="roomId" :getInfoPressed="getInfoPressed" :playerInfo="playerInfo" />
     </div>
     <table class="members-table">
       <p class="username">Username: {{ username }}</p>
@@ -45,6 +46,7 @@ export default {
       members: [],
       isHost: false,
       searchRes: {},
+      playerInfo: {},
     };
   },
   sockets: {
@@ -54,6 +56,10 @@ export default {
     },
     searchResponse(results) {
       this.searchRes = JSON.parse(results).tracks.items;
+    },
+    infoResponse(results) {
+      console.log(results);
+      this.playerInfo = results;
     },
   },
   methods: {
@@ -67,6 +73,9 @@ export default {
     },
     searchInput(search) {
       this.$socket.emit('searchInput', { user: this.username, room: this.room, search });
+    },
+    getInfoPressed() {
+      this.$socket.emit('getInfo', { room: this.room });
     },
   },
   mounted() {

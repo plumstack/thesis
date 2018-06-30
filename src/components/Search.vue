@@ -9,7 +9,7 @@
         <th>Artist</th>
         <th>Duration</th>
         <th>Album</th>
-        <th>Cue</th>
+        <th>Add</th>
       </tr>
 
     <!-- Table Rows -->
@@ -19,7 +19,7 @@
         <td>{{ track.artists[0].name }}</td>
         <td>{{ convertAMilli(track.duration_ms) }}</td>
         <td>{{ track.album.name }}</td>
-        <td>+</td>
+        <td><button>+</button></td>
     </tr>
     </table>
   </div>

@@ -153,7 +153,6 @@ class Spotify {
     try {
       const playerInfoData = await request(options);
       const data = playerInfoData ? JSON.parse(playerInfoData) : null;
-      console.log(data);
       return data;
     } catch (error) {
       console.log('error AHHHHH');

@@ -43,7 +43,6 @@ module.exports = (io, Spotify, redis) => {
       const currentMembers = await redis.getAsync(`${roomID}:members`);
 
       const newMembers = JSON.parse(currentMembers);
-      console.log(newMembers);
       newMembers[socket.id] = roomInfo.user;
 
       io.sockets.in(roomID).emit('memberListUpdate', newMembers);
@@ -68,6 +67,12 @@ module.exports = (io, Spotify, redis) => {
     socket.on('searchInput', async (searchInfo) => {
       const result = await rooms[searchInfo.room].Spotify.search(searchInfo.search);
       socket.emit('searchResponse', result);
+    });
+
+    socket.on('getInfo', async () => {
+      const roomID = socket.room;
+      const result = await rooms[roomID].Spotify.getPlayerInfo();
+      io.sockets.in(roomID).emit('infoResponse', result);
     });
   });
 };

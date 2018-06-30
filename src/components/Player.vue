@@ -1,17 +1,17 @@
 <template>
   <div class="player">
-    <div class="player-info">
+    <div v-if="playerInfo.item" class="player-info">
       <ul class="menu-container song-info">
-        <li class="song-info-item song-title">{{ playerInfo.title }}</li>
-        <li class="song-info-item">{{ playerInfo.artist }}</li>
+        <li class="song-info-item song-title">{{ playerInfo.item.name}}</li>
+        <li class="song-info-item">{{ playerInfo.item.artists[0].name }}</li>
       </ul>
-      <img class="album-art" :src="playerInfo.albumArt" />
+      <img class="album-art" :src="playerInfo.item.album.images[0].url" />
     </div>
     <ul class="menu-container controls" v-if="isHost" >
       <li class="menu-item controls-item" v-on:click="onClickPrev()">Prev</li>
       <li class="menu-item controls-item" v-on:click="onClickPlay()">{{ playButton }}</li>
       <li class="menu-item controls-item" v-on:click="onClickNext()">Next</li>
-      <li class="menu-item controls-item" v-on:click="getPlayerInfo()">GetInfo</li>
+      <li class="menu-item controls-item" v-on:click="getInfoPressed">GetInfo</li>
     </ul>
   </div>
 </template>
@@ -32,13 +32,14 @@ export default {
   data() {
     return {
       playButton: playOrPause ? 'Pause' : 'Play',
-      playerInfo: {},
       search: '',
     };
   },
   props: {
     roomId: { type: String, required: true },
     isHost: { type: Boolean, required: true },
+    getInfoPressed: { type: Function, required: true },
+    playerInfo: { type: Object, required: false },
   },
   methods: {
     options(meth) {
@@ -60,10 +61,6 @@ export default {
       axios(this.options(playOrPause ? 'pause' : 'play')).then(this.getPlayerInfo);
       playOrPause = !playOrPause;
       this.playButton = playButtonChange(playOrPause);
-    },
-    async getPlayerInfo() {
-      const result = await axios(this.options('info'));
-      this.playerInfo = result.data;
     },
   },
 };
