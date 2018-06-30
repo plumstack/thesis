@@ -64,10 +64,44 @@ module.exports = (io, Spotify, redis) => {
     socket.on('queue', async (roomInfo) => {
       const roomID = roomInfo.room;
       redis.zadd(`${roomID}:queue`, 0, JSON.stringify(roomInfo.song));
-
       const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-
       io.sockets.in(roomID).emit('queueUpdate', result);
+    });
+
+    socket.on('getQueue', async (roomInfo) => {
+      const roomID = roomInfo.room;
+      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+      io.sockets.in(roomID).emit('queueUpdate', result);
+    });
+
+    socket.on('skipVote', async (roomInfo) => {
+      const roomID = roomInfo.room;
+      const currentMembers = await redis.getAsync(`${roomID}:members`);
+      const memberLength = Object.keys(JSON.parse(currentMembers)).length;
+
+      const nextSong = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 1);
+      redis.zrem(`${roomID}:queue`, nextSong[0]);
+
+      if (rooms[roomID].skip) rooms[roomID].skip += 1;
+      else rooms[roomID].skip = 1;
+
+      if (rooms[roomID].skip >= Math.floor(memberLength / 2)) {
+        rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
+        rooms[roomID].skip = 0;
+        const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+        io.sockets.in(roomID).emit('queueUpdate', result);
+      }
+    });
+
+    socket.on('queueUpvote', async (roomInfo) => {
+      const roomID = roomInfo.room;
+      await redis
+        .zincrbyAsync(`${roomID}:queue`, 1, JSON.stringify(roomInfo.song))
+        .catch(console.error);
+
+      const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+
+      io.sockets.in(roomID).emit('queueUpdate', newQueue);
     });
   });
 };
