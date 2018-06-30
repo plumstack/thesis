@@ -106,8 +106,7 @@ module.exports = (io, Spotify, redis) => {
 
       if (rooms[roomID].skip) rooms[roomID].skip += 1;
       else rooms[roomID].skip = 1;
-
-      if (rooms[roomID].skip >= Math.floor(memberLength / 2)) {
+      if (rooms[roomID].skip > Math.floor(memberLength / 2)) {
         playNextSong(roomID);
       }
     });
@@ -116,6 +115,17 @@ module.exports = (io, Spotify, redis) => {
       const roomID = roomInfo.room;
       await redis
         .zincrbyAsync(`${roomID}:queue`, 1, JSON.stringify(roomInfo.song))
+        .catch(console.error);
+
+      const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+
+      io.sockets.in(roomID).emit('queueUpdate', newQueue);
+    });
+
+    socket.on('queueDownvote', async (roomInfo) => {
+      const roomID = roomInfo.room;
+      await redis
+        .zincrbyAsync(`${roomID}:queue`, -1, JSON.stringify(roomInfo.song))
         .catch(console.error);
 
       const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);

@@ -25,7 +25,8 @@
       <li class="menu-item toggle-button" v-bind:class="{ active: $store.state.searching }"
         v-on:click="$store.commit('setSearching', true)">Search</li>
     </ul>
-    <Queue v-if="!$store.state.searching" :curQueue="curQueue" :queueUpvote="queueUpvote"/>
+    <Queue v-if="!$store.state.searching" :curQueue="curQueue"
+    :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
     <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
   </div>
 </template>
@@ -59,6 +60,7 @@ export default {
       vote: 0,
       votes: 0,
       curQueue: [],
+      hasSkipped: false,
     };
   },
   sockets: {
@@ -69,6 +71,9 @@ export default {
       this.searchRes = JSON.parse(results).tracks.items;
     },
     infoResponse(results) {
+      if (this.playerInfo.item && this.playerInfo.item.id !== results.item.id) {
+        this.hasSkipped = false;
+      }
       this.playerInfo = results;
     },
     queueUpdate(queue) {
@@ -98,11 +103,14 @@ export default {
       this.$socket.emit('upvote', { room: this.room, user: this.username });
     },
     skip() {
-      this.$socket.emit('skipVote', {
-        room: this.room,
-        user: this.username,
-        trackid: this.playerInfo.item.id,
-      });
+      if (!this.hasSkipped) {
+        this.$socket.emit('skipVote', {
+          room: this.room,
+          user: this.username,
+          trackid: this.playerInfo.item.id,
+        });
+      }
+      this.hasSkipped = true;
     },
     queue(song) {
       this.$store.commit('setSearching', false);
@@ -110,6 +118,9 @@ export default {
     },
     queueUpvote(song) {
       this.$socket.emit('queueUpvote', { room: this.room, user: this.username, song });
+    },
+    queueDownvote(song) {
+      this.$socket.emit('queueDownvote', { room: this.room, song });
     },
   },
   mounted() {
