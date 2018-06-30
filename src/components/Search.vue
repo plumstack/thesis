@@ -1,7 +1,7 @@
 <template>
   <div class="search" align="center">
     <input type="text" placeholder="Search for Songs" v-on:keyup.enter="search" v-model="searchQuery"/>
-    <table class="search-results">
+    <table  class="search-results">
       <!-- Table Headers: -->
       <tr class="table-header">
         <th>  <!-- artwork --> </th>
@@ -9,42 +9,39 @@
         <th>Artist</th>
         <th>Duration</th>
         <th>Album</th>
-        <th>Cue</th>
+        <th>Add</th>
       </tr>
 
     <!-- Table Rows -->
-    <tr class = "alternative_row" v-for="track in searchResults" :key="track.id">
+    <tr class="alternative_row" v-for="track in searchRes" :key="track.id">
         <td><img :src="track.album.images[2].url" class="album-image"></td>
         <td>{{ track.name }}</td>
         <td>{{ track.artists[0].name }}</td>
         <td>{{ convertAMilli(track.duration_ms) }}</td>
         <td>{{ track.album.name }}</td>
-        <td>+</td>
+        <td><button>+</button></td>
     </tr>
     </table>
   </div>
 </template>
 
 <script>
-import dummyData from './exampleSearchData';
+// import dummyData from './exampleSearchData';
 
 export default {
-  name: 'Player',
+  name: 'Search',
   created() {
   },
   data() {
     return {
-      searchResults: dummyData.tracks.items,
+      searchResults: this.searchRes,
       searchQuery: '',
     };
   },
+  props: ['searchInput', 'searchRes'],
   methods: {
     search() {
-      console.log('Searching for: ', this.searchQuery);
-      /*
-      Upon return of search results:
-      this.searchResults = tracks.items;
-      */
+      this.searchInput(this.searchQuery);
     },
     convertAMilli(ms) {
       const minutes = Math.floor(ms / 60000).toString();

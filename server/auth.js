@@ -62,7 +62,7 @@ module.exports = (redis) => {
     }
   });
 
-  app.get('/auth/spotify', passport.authenticate('spotify', { scope, showDialog: true }), (req) => req);
+  app.get('/auth/spotify', passport.authenticate('spotify', { scope, showDialog: false }), (req) => req);
 
   app.get(
     '/auth/spotify/callback*',

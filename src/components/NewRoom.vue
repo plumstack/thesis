@@ -1,13 +1,30 @@
 <template>
-<div>
-  <Player v-if="isHost" roomId="roomId"></Player>
-  <ul><li :key="member" v-for="member in members">{{ member  }}</li></ul>
-</div>
+  <div class="room" align="center">
+    <h2>Room {{ roomId }}</h2>
+    <div class="content">
+      <Player class="content-item" :isHost="isHost"
+      :roomId="roomId" :getInfoPressed="getInfoPressed" :playerInfo="playerInfo" />
+    </div>
+    <table class="members-table">
+      <p class="username">Username: {{ username }}</p>
+      <tr>
+        <th>Room Members</th>
+      </tr>
+      <tr v-for="(member, ind) in members" :key="ind">
+        <td>{{ member }}</td>
+      </tr>
+    </table>
+    <ul class="menu-container voting-menu">
+      <li class="menu-item voting-item vote-up" v-on:click = "userVote()">Upvote</li>
+      <li class="menu-item voting-item vote-down" v-on:click = "downVote()">Downvote</li>
+      <li class="voting-item score">Track Score: {{ votes }}</li>
+    </ul>
+    <Search :searchInput="searchInput" :searchRes="searchRes" />
+  </div>
 </template>
 
 <script>
 import Vue from 'vue';
-// import axios from 'axios';
 import VueSocketio from 'vue-socket.io';
 
 import Player from './Player.vue';
@@ -28,12 +45,21 @@ export default {
       connected: false,
       members: [],
       isHost: false,
+      searchRes: {},
+      playerInfo: {},
     };
   },
   sockets: {
     memberListUpdate(members) {
       console.log(members);
       this.members = Object.values(members);
+    },
+    searchResponse(results) {
+      this.searchRes = JSON.parse(results).tracks.items;
+    },
+    infoResponse(results) {
+      console.log(results);
+      this.playerInfo = results;
     },
   },
   methods: {
@@ -45,6 +71,12 @@ export default {
       this.$socket.emit('createRoom', { user: this.username, room: this.room });
       this.isHost = true;
     },
+    searchInput(search) {
+      this.$socket.emit('searchInput', { user: this.username, room: this.room, search });
+    },
+    getInfoPressed() {
+      this.$socket.emit('getInfo', { room: this.room });
+    },
   },
   mounted() {
     if (this.$route.query.host) return this.createRoom();
@@ -52,6 +84,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 h2 {
@@ -72,7 +105,47 @@ h2 {
   margin: 10px 50px;
 }
 
+.voting-menu {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+}
+
+.voting-item {
+  display: inline-block;
+  font-weight: 700;
+  padding: 10px;
+  margin: 10px 10px;
+  font-size: 1.5vw;
+  border-radius: 10px;
+}
+
+.vote-up {
+  background: #5cd65c;
+}
+
+.vote-down {
+  background: #f66;
+}
+
+.score {
+  color: #000;
+  background: transparent;
+}
+
+.vote-up:hover {
+  color: #db7095;
+}
+.vote-down:hover {
+  color: #daa360;
+}
+
 .members-table {
+  font-size: 1.25vw;
+  position: absolute;
+  text-align: center;
+  top: 5%;
+  right: 8%;
   color: #fff;
 }
 </style>
