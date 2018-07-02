@@ -37,7 +37,7 @@ module.exports = (io, Spotify, redis) => {
         rooms[roomID].Spotify = new Spotify(spotifyInfo[0], spotifyInfo[1]);
         const membersSetup = {};
         membersSetup[socket.id] = roomInfo.user;
-        io.to(roomID).emit('memberListUpdate', membersSetup);
+        io.to(roomID).emit('memberListUpdate', { members: membersSetup });
         redis.set(`${roomID}:members`, JSON.stringify(membersSetup));
       } catch (error) {
         console.log(error);
@@ -55,7 +55,10 @@ module.exports = (io, Spotify, redis) => {
       const newMembers = JSON.parse(currentMembers);
       newMembers[socket.id] = roomInfo.user;
 
-      io.sockets.in(roomID).emit('memberListUpdate', newMembers);
+      const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+      console.log(queue);
+
+      io.sockets.in(roomID).emit('memberListUpdate', { members: newMembers, queue });
       redis.setAsync(`${roomID}:members`, JSON.stringify(newMembers));
     });
 
@@ -106,6 +109,8 @@ module.exports = (io, Spotify, redis) => {
 
       if (rooms[roomID].skip) rooms[roomID].skip += 1;
       else rooms[roomID].skip = 1;
+
+      io.sockets.in(roomID).emit('skip', { skips: rooms[roomID].skip, members: memberLength });
       if (rooms[roomID].skip > Math.floor(memberLength / 2)) {
         playNextSong(roomID);
       }

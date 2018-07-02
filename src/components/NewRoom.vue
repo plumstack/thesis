@@ -17,7 +17,7 @@
     <ul class="menu-container voting-menu">
       <!-- <li class="menu-item voting-item vote-up" v-on:click="upvote">Upvote</li>  -->
       <li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li>
-      <li class="voting-item score">Track Score: {{ votes }}</li>
+      <li class="voting-item score">Skip Votes: {{ votes }}</li>
     </ul>
     <ul class="menu-container bottom-toggle">
       <li class="menu-item toggle-button" v-bind:class="{ active: !$store.state.searching }"
@@ -58,14 +58,16 @@ export default {
       searchRes: {},
       playerInfo: {},
       vote: 0,
-      votes: 0,
+      votes: '0 / 1',
       curQueue: [],
       hasSkipped: false,
     };
   },
   sockets: {
     memberListUpdate(members) {
-      this.members = Object.values(members);
+      this.members = Object.values(members.members);
+      const parsed = members.queue.map((track) => JSON.parse(track));
+      this.curQueue = parsed;
     },
     searchResponse(results) {
       this.searchRes = JSON.parse(results).tracks.items;
@@ -73,6 +75,7 @@ export default {
     infoResponse(results) {
       if (this.playerInfo.item && this.playerInfo.item.id !== results.item.id) {
         this.hasSkipped = false;
+        this.votes = `0 / ${Math.floor(this.members.length)}`;
       }
       this.playerInfo = results;
     },
@@ -80,6 +83,9 @@ export default {
       const parsed = queue.map((track) => JSON.parse(track));
       this.curQueue = parsed;
       setTimeout(this.getInfoPressed, 2000);
+    },
+    skip(skipStatus) {
+      this.votes = `${skipStatus.skips} / ${Math.floor(this.members.length)}`;
     },
   },
   methods: {

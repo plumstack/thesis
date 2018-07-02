@@ -52,7 +52,6 @@ export default {
       interval: 50,
       callback: () => {
         const elapsed = this.baseline + this.timer.lap();
-        console.log(this.timer.lap());
         const progress = document.getElementById('progress');
         const percent = (elapsed / this.duration) * 100;
         const width = percent <= 100 ? percent : 100;
