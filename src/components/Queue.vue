@@ -63,14 +63,6 @@ export default {
 
 .queue-vote {
   width: 32px;
-  height: 32px;
-}
-
-.up {
-  background: green;
-}
-
-.down {
-  background: red;
+  margin-right: 3px;
 }
 </style>
