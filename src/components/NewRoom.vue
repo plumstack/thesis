@@ -82,7 +82,7 @@ export default {
     queueUpdate(queue) {
       const parsed = queue.map((track) => JSON.parse(track));
       this.curQueue = parsed;
-      setTimeout(this.getInfoPressed, 2000);
+      setTimeout(this.getInfoPressed, 1000);
     },
     skip(skipStatus) {
       this.votes = `${skipStatus.skips} / ${Math.floor(this.members.length)}`;
