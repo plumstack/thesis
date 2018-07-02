@@ -32,12 +32,13 @@ module.exports = (io, Spotify, redis) => {
         rooms[roomID] = {};
         socket.join(roomID);
         socket.room = roomID; // eslint-disable-line
+        const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
         const spotifyInfo = await redis.hmgetAsync(roomID, ['accesstoken', 'refreshtoken']);
         rooms[roomID].Spotify = new Spotify(spotifyInfo[0], spotifyInfo[1]);
         const membersSetup = {};
         membersSetup[socket.id] = roomInfo.user;
-        io.to(roomID).emit('memberListUpdate', { members: membersSetup });
+        io.to(roomID).emit('memberListUpdate', { members: membersSetup, queue });
         redis.set(`${roomID}:members`, JSON.stringify(membersSetup));
       } catch (error) {
         console.log(error);
