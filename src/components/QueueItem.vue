@@ -1,9 +1,9 @@
 <template>
       <div class="queue-track">
         <img :src="track.album.images[2].url" class="album-image">
-        <div class="track-item">{{ track.name }}</div>
-        <div class="track-item">{{ track.artists[0].name }}</div>
-        <div class="track-item">{{ track.album.name }}</div>
+        <div class="track-item song-title">{{ track.name }}
+          <div class="track-item song-info-item">{{ track.artists[0].name }}</div>
+        </div>
         <div class="queue-button queue-vote up" v-on:click="upvoteClicked(track)">^</div>
         <div class="queue-button queue-vote down" v-on:click="downvoteClicked(track)">V</div>
       </div>

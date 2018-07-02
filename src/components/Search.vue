@@ -4,19 +4,18 @@
     <table v-if="searchQuery" class="search-results">
       <!-- Table Headers: -->
       <tr class="table-header">
-        <th>  <!-- artwork --> </th>
-        <th>Track</th>
-        <th>Artist</th>
-        <th>Album</th>
-        <th>Add</th>
+         <th>  <!-- artwork --> </th>
+        <th><!-- Track --></th>
+        <th><!--Add --></th>
       </tr>
 
     <!-- Table Rows -->
     <tr class="alternative_row" v-for="track in searchRes" :key="track.id">
         <td><img :src="track.album.images[2].url" class="album-image"></td>
-        <td>{{ track.name }}</td>
-        <td>{{ track.artists[0].name }}</td>
-        <td>{{ track.album.name }}</td>
+        <td class="song-info-item song-title">
+          {{ track.name }}
+          <div class="song-info-item">{{ track.artists[0].name }}</div>
+        </td>
         <td><button v-on:click="queue(track)">+</button></td>
     </tr>
     </table>
