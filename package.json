@@ -1,10 +1,11 @@
-{
-  "name": "spotify-social-night",
+{  
+"name": "spotify-social-night",
   "version": "0.1.0",
   "description": "Spotify integrated DJing app for social nights",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "start": "node server/index.js",
     "build": "vue-cli-service build",
     "server": "nodemon server/index.js",
     "lint": "eslint ./ --cache --ignore-path .gitignore --ext vue --ext js",

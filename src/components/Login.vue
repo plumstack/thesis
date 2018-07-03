@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <form id="loginForm" action="http://localhost:8082/auth/spotify" method="GET">
+    <form id="loginForm" action="http://206.189.170.211:8082/auth/spotify" method="GET">
       <h1
         onclick="javascript:document.getElementById('loginForm').submit();"
         >Login with Spotify</h1>

@@ -39,7 +39,7 @@ import Player from './Player.vue';
 import Search from './Search.vue';
 import Queue from './Queue.vue';
 
-Vue.use(VueSocketio, 'http://localhost:8082');
+Vue.use(VueSocketio, '206.189.170.211:8585');
 export default {
   name: 'Room',
   props: ['roomId'],

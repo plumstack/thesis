@@ -16,8 +16,8 @@ const client = redis.createClient({
   auth_pass: process.env.REDIS_PASS,
 });
 
-(require('./auth'))(client);
-(require('./sockets')(io, Spotify, client));
+require('./auth')(client);
+require('./sockets')(io, Spotify, client);
 
 // router
 const spotifyNext = require('./routes/spotify/player/next');
@@ -40,6 +40,10 @@ app.use((req, res, next) => {
   next();
 });
 
+if (process.env.BUILD === 'PROD') {
+  app.use('/socialnights', express.static(`${__dirname}/../dist`));
+}
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -48,17 +52,16 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use('/socialnights/spotify/player/next', spotifyNext);
+app.use('/socialnights/spotify/player/prev', spotifyPrev);
+app.use('/socialnights/spotify/player/play', spotifyPlay);
+app.use('/socialnights/spotify/player/pause', spotifyPause);
+app.use('/socialnights/spotify/player/info', spotifyPlayerInfo);
 
-app.use('/spotify/player/next', spotifyNext);
-app.use('/spotify/player/prev', spotifyPrev);
-app.use('/spotify/player/play', spotifyPlay);
-app.use('/spotify/player/pause', spotifyPause);
-app.use('/spotify/player/info', spotifyPlayerInfo);
-
-app.use('/dash/room/create', roomCreate);
-app.use('/dash/room/join', roomJoin);
-app.use('/dash/room/info', roomInfo);
-app.use('/dash/room/members', roomMembers);
+app.use('/socialnights/dash/room/create', roomCreate);
+app.use('/socialnights/dash/room/join', roomJoin);
+app.use('/socialnights/dash/room/info', roomInfo);
+app.use('/socialnights/dash/room/members', roomMembers);
 
 server.listen(port, () => {
   console.log(`Server started on port ${port}!`);
