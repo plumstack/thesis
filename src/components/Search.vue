@@ -16,7 +16,7 @@
           {{ track.name }}
           <div class="song-info-item">{{ track.artists[0].name }}</div>
         </td>
-        <td><button v-on:click="queue(track)">+</button></td>
+        <td v-on:click="queue(track)" ><img src="../assets/queueAdd.png" class="queue-button-add"></td>
     </tr>
     </table>
   </div>
@@ -59,8 +59,8 @@ export default {
 
 .search-results{
     width: 70%;
-    margin-left:15%;
-    margin-right:15%;
+    margin-left:0%;
+    margin-right:0%;
     border-collapse: collapse;
 }
 
@@ -114,6 +114,13 @@ input[type=text]:focus {
   outline: none;
   color: #db7095;
   background: #fff;
+}
+
+.queue-button-add {
+  max-width: 32px;
+  max-height: 32px;
+  margin-right: 3px;
+  border-radius: 50%;
 }
 
 ::placeholder {
