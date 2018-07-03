@@ -4,20 +4,19 @@
     <table v-if="searchQuery" class="search-results">
       <!-- Table Headers: -->
       <tr class="table-header">
-        <th>  <!-- artwork --> </th>
-        <th>Track</th>
-        <th>Artist</th>
-        <th>Album</th>
-        <th>Add</th>
+         <th>  <!-- artwork --> </th>
+        <th><!-- Track --></th>
+        <th><!--Add --></th>
       </tr>
 
     <!-- Table Rows -->
     <tr class="alternative_row" v-for="track in searchRes" :key="track.id">
         <td><img :src="track.album.images[2].url" class="album-image"></td>
-        <td>{{ track.name }}</td>
-        <td>{{ track.artists[0].name }}</td>
-        <td>{{ track.album.name }}</td>
-        <td><button v-on:click="queue(track)">+</button></td>
+        <td class="song-info-item song-title">
+          {{ track.name }}
+          <div class="song-info-item">{{ track.artists[0].name }}</div>
+        </td>
+        <td v-on:click="queue(track)" ><img src="../assets/queueAdd.png" class="queue-button-add"></td>
     </tr>
     </table>
   </div>
@@ -60,8 +59,8 @@ export default {
 
 .search-results{
     width: 70%;
-    margin-left:15%;
-    margin-right:15%;
+    margin-left:0%;
+    margin-right:0%;
     border-collapse: collapse;
 }
 
@@ -115,6 +114,13 @@ input[type=text]:focus {
   outline: none;
   color: #db7095;
   background: #fff;
+}
+
+.queue-button-add {
+  max-width: 32px;
+  max-height: 32px;
+  margin-right: 3px;
+  border-radius: 50%;
 }
 
 ::placeholder {

@@ -1,14 +1,14 @@
 <template>
       <div class="queue-track">
         <img :src="track.album.images[2].url" class="album-image">
-        <div class="track-item">{{ track.name }}</div>
-        <div class="track-item">{{ track.artists[0].name }}</div>
-        <div class="track-item">{{ track.album.name }}</div>
+        <div class="track-item song-title">{{ track.name }}
+          <div class="track-item song-info-item">{{ track.artists[0].name }}</div>
+        </div>
         <div class="queue-button" v-on:click="upvoteClicked(track)">
-          <img src="../assets/queueUp.svg" class="queue-vote">
+          <img src="../assets/queueUp.svg" class="queue-vote" @click="$event.target.classList.toggle('voted')">
         </div>
         <div class="queue-button" v-on:click="downvoteClicked(track)">
-          <img src="../assets/queueDown.svg" class="queue-vote">
+          <img src="../assets/queueDown.svg" class="queue-vote" @click="$event.target.classList.toggle('voted')">
         </div>
       </div>
 </template>
@@ -68,13 +68,27 @@ queue-track-list:nth-child(even) {
   border-radius: 50%;
 }
 
+.voted {
+  width: 32px;
+  height: 32px;
+  margin-right: 3px;
+  background: #000000;
+  border-radius: 50%;
+}
+
 .queue-button:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, .6);
 }
 
 .queue-vote {
   padding: 4px;
   width: 24px;
   height: 24px;
+  opacity: 0.5;
 }
+
+.queue-voted {
+  /* background: #000000; */
+}
+
 </style>

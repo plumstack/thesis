@@ -3,9 +3,7 @@
     <li class="queue-header">
       <div class="queue-track">
         <div class="empty-image"></div>
-        <div class="track-item">Track</div>
-        <div class="track-item">Artist</div>
-        <div class="track-item">Album</div>
+        <div class="track-item"> <!-- Track --></div>
         <div class="queue-vote"></div>
         <div class="queue-vote"></div>
       </div>
