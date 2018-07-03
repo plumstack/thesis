@@ -85,7 +85,8 @@ module.exports = (io, Spotify, redis) => {
     });
 
     socket.on('queue', async (roomInfo) => {
-      roomInfo.song.clientInfo = { id: socket, user: roomInfo.user };
+      roomInfo.song.clientInfo = { id: socket.id, user: roomInfo.user };
+      console.log(roomInfo);
       const roomID = roomInfo.room;
       redis.zadd(`${roomID}:queue`, 0, JSON.stringify(roomInfo.song));
       const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
@@ -119,9 +120,12 @@ module.exports = (io, Spotify, redis) => {
         .catch(console.error);
 
       const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-
-      const currentVote = await redis.getAsync(`${roomID}:members:${socket}:votes`);
-      console.log(currentVote);
+      const songSocket = roomInfo.song.clientInfo.id;
+      console.log('Song Socket ID: ', songSocket);
+      const currentMems = await redis.getAsync(`${roomID}:members`);
+      // Doesn't work:
+      // const currentMember = await redis.getAsync(`${roomID}:members:${songSocket}`);
+      console.log('Current Mems: ', currentMems);
 
       /*
       await redis
