@@ -1,6 +1,6 @@
 <template>
   <div class="room-container">
-    <div class="room" align="center" v-if="$store.state.userName">
+    <div class="room" align="center" v-if="$store.state.username">
       <h2>Room {{ roomId }}</h2>
       <div class="content">
         <Player class="content-item" :isHost="isHost"
@@ -29,7 +29,7 @@
       :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
       <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
     </div>
-    <NameEntry v-if="!$store.state.userName" :joinRoom="joinRoom" />
+    <NameEntry v-if="!$store.state.username" :joinRoom="joinRoom" />
   </div>
 </template>
 
@@ -55,7 +55,7 @@ export default {
   data() {
     return {
       room: this.roomId,
-      username: this.$route.query.username || this.$store.state.userName,
+      username: this.$route.query.username || this.$store.state.username,
       connected: false,
       members: [],
       isHost: false,
