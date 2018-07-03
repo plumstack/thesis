@@ -1,11 +1,15 @@
 <template>
       <div class="queue-track">
         <img :src="track.album.images[2].url" class="album-image">
-        <div class="track-item song-title">{{ track.name }}
-          <div class="track-item song-info-item">{{ track.artists[0].name }}</div>
+        <div class="track-item">{{ track.name }}</div>
+        <div class="track-item">{{ track.artists[0].name }}</div>
+        <div class="track-item">{{ track.album.name }}</div>
+        <div class="queue-button" v-on:click="upvoteClicked(track)">
+          <img src="../assets/queueUp.svg" class="queue-vote">
         </div>
-        <div class="queue-button queue-vote up" v-on:click="upvoteClicked(track)">^</div>
-        <div class="queue-button queue-vote down" v-on:click="downvoteClicked(track)">V</div>
+        <div class="queue-button" v-on:click="downvoteClicked(track)">
+          <img src="../assets/queueDown.svg" class="queue-vote">
+        </div>
       </div>
 </template>
 
@@ -56,20 +60,21 @@ queue-track-list:nth-child(even) {
   flex-basis: 0;
 }
 
-.empty-image {
-  width: 64px;
+.queue-button {
+  width: 32px;
+  height: 32px;
+  margin-right: 3px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.queue-button:hover {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .queue-vote {
-  width: 32px;
-  height: 32px;
-}
-
-.up {
-  background: green;
-}
-
-.down {
-  background: red;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
 }
 </style>

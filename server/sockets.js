@@ -1,5 +1,3 @@
-const Tock = require('tocktimer');
-
 module.exports = (io, Spotify, redis) => {
   const rooms = {};
   const timers = {};
@@ -16,13 +14,8 @@ module.exports = (io, Spotify, redis) => {
   };
 
   const setTimer = (roomID, duration, elapsed) => {
-    timers[roomID] = new Tock({
-      countdown: true,
-      complete: () => {
-        playNextSong(roomID);
-      },
-    });
-    timers[roomID].start(duration - elapsed - 500);
+    if (timers[roomID]) { clearTimeout(timers[roomID]); }
+    timers[roomID] = setTimeout(() => playNextSong(roomID), duration - elapsed);
   };
 
   io.on('connection', (socket) => {
