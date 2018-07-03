@@ -7,11 +7,9 @@
     </div>
     <table class="members-table">
       <p class="username">Username: {{ username }}</p>
-      <tr>
-        <th>Room Members</th>
-      </tr>
+      <tr><th>Room Members</th></tr>
       <tr v-for="(member, ind) in members" :key="ind">
-        <td>{{ member }}</td>
+        <td>{{ member.user }}, Score: {{member.votes}}</td>
       </tr>
     </table>
     <ul class="menu-container voting-menu">

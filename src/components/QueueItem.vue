@@ -10,6 +10,7 @@
         <div class="queue-button" v-on:click="downvoteClicked(track)">
           <img src="../assets/queueDown.svg" class="queue-vote" @click="$event.target.classList.toggle('voted')">
         </div>
+        <div>{{ track.clientInfo }}</div>
       </div>
 </template>
 
@@ -25,6 +26,7 @@ export default {
   },
   methods: {
     downvoteClicked(track) {
+      console.log('Downvoted: ', track);
       if (!this.hasDownvoted) {
         this.hasDownvoted = true;
         this.hasUpvoted = false;
@@ -32,6 +34,7 @@ export default {
       }
     },
     upvoteClicked(track) {
+      console.log('Upvoted: ', track);
       if (!this.hasUpvoted) {
         this.hasUpvoted = true;
         this.hasDownvoted = false;

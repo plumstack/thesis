@@ -30,7 +30,7 @@ module.exports = (io, Spotify, redis) => {
         const spotifyInfo = await redis.hmgetAsync(roomID, ['accesstoken', 'refreshtoken']);
         rooms[roomID].Spotify = new Spotify(spotifyInfo[0], spotifyInfo[1]);
         const membersSetup = {};
-        membersSetup[socket.id] = roomInfo.user;
+        membersSetup[socket.id] = { user: roomInfo.user, votes: 0 };
         io.to(roomID).emit('memberListUpdate', { members: membersSetup, queue });
         redis.set(`${roomID}:members`, JSON.stringify(membersSetup));
       } catch (error) {
@@ -39,18 +39,19 @@ module.exports = (io, Spotify, redis) => {
     });
 
     socket.on('joinRoom', async (roomInfo) => {
+      console.log('joining room', roomInfo);
       const roomID = roomInfo.room;
 
       socket.join(roomID);
       socket.room = roomID; // eslint-disable-line
 
       const currentMembers = await redis.getAsync(`${roomID}:members`);
+      console.log('Current Members: ', currentMembers);
 
       const newMembers = JSON.parse(currentMembers);
-      newMembers[socket.id] = roomInfo.user;
+      newMembers[socket.id] = { user: roomInfo.user, votes: 0 };
 
       const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-      console.log(queue);
 
       io.sockets.in(roomID).emit('memberListUpdate', { members: newMembers, queue });
       redis.setAsync(`${roomID}:members`, JSON.stringify(newMembers));
@@ -84,6 +85,7 @@ module.exports = (io, Spotify, redis) => {
     });
 
     socket.on('queue', async (roomInfo) => {
+      roomInfo.song.clientInfo = { id: socket, user: roomInfo.user };
       const roomID = roomInfo.room;
       redis.zadd(`${roomID}:queue`, 0, JSON.stringify(roomInfo.song));
       const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
@@ -117,6 +119,18 @@ module.exports = (io, Spotify, redis) => {
         .catch(console.error);
 
       const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+
+      const currentVote = await redis.getAsync(`${roomID}:members:${socket}:votes`);
+      console.log(currentVote);
+
+      /*
+      await redis
+        .zincrbyAsync(`${roomID}:members:${socket}:votes`, 1, JSON.stringify(roomInfo.song))
+        .catch(console.error);
+
+      const currentMembers = await redis.getAsync(`${roomID}:members`);
+      console.log('Upvote: Current Members: ', currentMembers);
+      */
 
       io.sockets.in(roomID).emit('queueUpdate', newQueue);
     });
