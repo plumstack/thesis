@@ -26,11 +26,6 @@ const spotifyPlay = require('./routes/spotify/player/play');
 const spotifyPause = require('./routes/spotify/player/pause');
 const spotifyPlayerInfo = require('./routes/spotify/player/info');
 
-const roomCreate = require('./routes/dash/room/create');
-const roomJoin = require('./routes/dash/room/join');
-const roomInfo = require('./routes/dash/room/info');
-const roomMembers = require('./routes/dash/room/members');
-
 dotenv.config({ silent: true });
 
 const port = process.env.PORT || 8082;
@@ -54,11 +49,6 @@ app.use('/spotify/player/prev', spotifyPrev);
 app.use('/spotify/player/play', spotifyPlay);
 app.use('/spotify/player/pause', spotifyPause);
 app.use('/spotify/player/info', spotifyPlayerInfo);
-
-app.use('/dash/room/create', roomCreate);
-app.use('/dash/room/join', roomJoin);
-app.use('/dash/room/info', roomInfo);
-app.use('/dash/room/members', roomMembers);
 
 server.listen(port, () => {
   console.log(`Server started on port ${port}!`);
