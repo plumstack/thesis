@@ -4,10 +4,10 @@
       Username:
     </li>
     <li>
-      <input type="text" class="join-input" v-on:keyup.enter="submitName" v-model="userName" />
+      <input type="text" class="join-input" v-on:keyup.enter="submitName" v-model="username" />
     </li>
     <li class="join-error">
-      {{ userNameError }}
+      {{ usernameError }}
     </li>
     <li class="menu-item join-item" v-on:click="submitName">
       Join
@@ -22,8 +22,8 @@ export default {
 
   data() {
     return {
-      userName: '',
-      userNameError: '',
+      username: '',
+      usernameError: '',
     };
   },
 
@@ -33,20 +33,20 @@ export default {
 
   methods: {
     submitName() {
-      this.userNameError = '';
+      this.usernameError = '';
 
-      if (this.userName.length > 16) {
-        this.userNameError = 'Username must be under 16 characters';
+      if (this.username.length > 16) {
+        this.usernameError = 'Username must be under 16 characters';
       }
-      if (!/^[a-z0-9]+$/i.test(this.userName)) {
-        this.userNameError = 'Username can only use letters and numbers';
+      if (!/^[a-z0-9]+$/i.test(this.username)) {
+        this.usernameError = 'Username can only use letters and numbers';
       }
-      if (!this.userName.length) {
-        this.userNameError = 'Enter a username';
+      if (!this.username.length) {
+        this.usernameError = 'Enter a username';
       }
-      if (!this.userNameError) {
-        this.$store.commit('setUserName', this.userName);
-        this.joinRoom(this.userName);
+      if (!this.usernameError) {
+        this.$store.commit('setUserName', this.username);
+        this.joinRoom(this.username);
       }
     },
   },
