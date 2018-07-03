@@ -9,7 +9,7 @@
       <p class="username">Username: {{ username }}</p>
       <tr><th>Room Members</th></tr>
       <tr v-for="(member, ind) in members" :key="ind">
-        <td>{{ member.user }}, Score: {{member.votes}}</td>
+        <td>{{ member[0] }}, Score: {{member[1]}}</td>
       </tr>
     </table>
     <ul class="menu-container voting-menu">
@@ -63,7 +63,9 @@ export default {
   },
   sockets: {
     memberListUpdate(members) {
-      this.members = Object.values(members.members);
+      console.log('Incoming members Obj:', members);
+      this.members = members.members;
+      console.log('State of members on Client:', this.members);
       const parsed = members.queue.map((track) => JSON.parse(track));
       this.curQueue = parsed;
     },
