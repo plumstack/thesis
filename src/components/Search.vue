@@ -16,7 +16,7 @@
           {{ track.name }}
           <div class="song-info-item">{{ track.artists[0].name }}</div>
         </td>
-        <td v-on:click="queue(track)" ><img src="../assets/queueAdd.png" class="queue-button-add"></td>
+        <td v-on:click="queue(track)" ><img src="../assets/plus.svg" class="queue-button-add"></td>
     </tr>
     </table>
   </div>
