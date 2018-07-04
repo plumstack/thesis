@@ -55,8 +55,6 @@ module.exports = (io, Spotify, redis) => {
       await redis.zadd(`${roomID}:members`, 0, newMember);
 
       const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
-      console.log('All Redis Membs: ', allMembers);
-
       const formattedMembers = [];
       for (let i = 0; i < allMembers.length; i += 2) {
         formattedMembers.push([allMembers[i], allMembers[i + 1]]);
@@ -133,8 +131,6 @@ module.exports = (io, Spotify, redis) => {
         .catch(console.error);
 
       const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
-      console.log('Post-Vote redis members: ', allMembers);
-
       const formattedMembers = [];
       for (let i = 0; i < allMembers.length; i += 2) {
         formattedMembers.push([allMembers[i], allMembers[i + 1]]);
