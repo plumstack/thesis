@@ -1,3 +1,5 @@
+const Song = require('../database/song');
+
 module.exports = (io, Spotify, redis) => {
   const rooms = {};
   const timers = {};
@@ -96,9 +98,12 @@ module.exports = (io, Spotify, redis) => {
     });
 
     socket.on('queue', async (roomInfo) => {
-      roomInfo.song.clientInfo = { id: socket.id, user: roomInfo.user };
+
+      const songInfo = roomInfo.song;
+      songInfo.clientInfo = { id: socket.id, user: roomInfo.user };
       const roomID = roomInfo.room;
-      redis.zadd(`${roomID}:queue`, 0, JSON.stringify(roomInfo.song));
+      Song.add(roomID, songInfo);
+      redis.zadd(`${roomID}:queue`, 0, JSON.stringify(songInfo));
       const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
       io.sockets.in(roomID).emit('queueUpdate', result);
     });

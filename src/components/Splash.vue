@@ -14,10 +14,10 @@
         Username:
       </li>
       <li v-if="$store.state.joining">
-        <input type="text" class="join-input" v-model="userName" />
+        <input type="text" class="join-input" v-model="username" />
       </li>
       <li class="join-error" v-if="$store.state.joining">
-        {{ userNameError }}
+        {{ usernameError }}
       </li>
       <li class="join-header" v-if="$store.state.joining">
         Room:
@@ -42,9 +42,9 @@ export default {
 
   data() {
     return {
-      userName: '',
+      username: '',
       joinRoomId: '',
-      userNameError: '',
+      usernameError: '',
       roomError: '',
     };
   },
@@ -56,28 +56,28 @@ export default {
 
     joinRoom() {
       this.roomError = '';
-      this.userNameError = '';
+      this.usernameError = '';
 
       if (this.joinRoomId.length !== 5) {
         this.roomError = 'Room must be 5 characters';
       }
-      if (this.userName.length > 16) {
-        this.userNameError = 'Username must be under 16 characters';
+      if (this.username.length > 16) {
+        this.usernameError = 'Username must be under 16 characters';
       }
       if (!/^[a-z0-9]+$/i.test(this.joinRoomId)) {
         this.roomError = 'Room only uses letters and numbers';
       }
-      if (!/^[a-z0-9]+$/i.test(this.userName)) {
-        this.userNameError = 'Username can only use letters and numbers';
+      if (!/^[a-z0-9]+$/i.test(this.username)) {
+        this.usernameError = 'Username can only use letters and numbers';
       }
       if (!this.joinRoomId) {
         this.roomError = 'Enter a room ID';
       }
-      if (!this.userName.length) {
-        this.userNameError = 'Enter a username';
+      if (!this.username.length) {
+        this.usernameError = 'Enter a username';
       }
-      if (!this.userNameError && !this.roomError) {
-        this.$store.commit('setUserName', this.userName);
+      if (!this.usernameError && !this.roomError) {
+        this.$store.commit('setUserName', this.username);
         this.$store.commit('setHost', false);
         this.$router.push({ path: `/room/${this.joinRoomId}` });
       }

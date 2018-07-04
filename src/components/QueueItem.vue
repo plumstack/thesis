@@ -89,9 +89,4 @@ queue-track-list:nth-child(even) {
   height: 24px;
   opacity: 0.5;
 }
-
-.queue-voted {
-  /* background: #000000; */
-}
-
 </style>

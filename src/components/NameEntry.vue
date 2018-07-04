@@ -1,0 +1,104 @@
+<template>
+  <ul class="menu-container main-menu">
+    <li class="join-header">
+      Username:
+    </li>
+    <li>
+      <input type="text" class="join-input" v-on:keyup.enter="submitName" v-model="username" />
+    </li>
+    <li class="join-error">
+      {{ usernameError }}
+    </li>
+    <li class="menu-item join-item" v-on:click="submitName">
+      Join
+    </li>
+  </ul>
+</template>
+
+<script>
+
+export default {
+  name: 'NameEntry',
+
+  data() {
+    return {
+      username: '',
+      usernameError: '',
+    };
+  },
+
+  props: {
+    joinRoom: { type: Function, required: true },
+  },
+
+  methods: {
+    submitName() {
+      this.usernameError = '';
+
+      if (this.username.length > 16) {
+        this.usernameError = 'Username must be under 16 characters';
+      }
+      if (!/^[a-z0-9]+$/i.test(this.username)) {
+        this.usernameError = 'Username can only use letters and numbers';
+      }
+      if (!this.username.length) {
+        this.usernameError = 'Enter a username';
+      }
+      if (!this.usernameError) {
+        this.$store.commit('setUserName', this.username);
+        this.joinRoom(this.username);
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+.main-menu {
+  margin: auto;
+  width: 40%;
+}
+
+.join-header {
+  font-size: 2.5vw;
+  color: #fff;
+  text-align: left;
+  margin-left: 15%;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.join-input {
+  overflow: auto;
+  width: 75%;
+  font-size: 3vw;
+  font-weight: 700;
+  color: #fff;
+  padding: 5px;
+  margin: 3px 10px 0px 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid #fff;
+  border-radius: 15px;
+}
+
+.join-input:focus {
+  outline: none;
+  color: #db7095;
+  background: #fff;
+}
+
+.join-item {
+  font-size: 3vw;
+  font-weight: 700;
+  width: 20%;
+  padding: 12px;
+  margin: auto;
+  margin-top: 15px;
+  border: 2px solid #fff;
+  border-radius: 15px;
+}
+
+.join-error {
+  color: #900;
+}
+</style>

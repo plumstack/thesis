@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 const state = {
   joining: false,
-  userName: '',
+  username: '',
   isHost: false,
   searching: false,
 };
@@ -15,8 +15,8 @@ const mutations = {
     state.joining = bool;         // eslint-disable-line
   },
 
-  setUserName(state, userName) {  // eslint-disable-line
-    state.userName = userName;    // eslint-disable-line
+  setUserName(state, username) {  // eslint-disable-line
+    state.username = username;    // eslint-disable-line
   },
 
   setHost(state, bool) {          // eslint-disable-line

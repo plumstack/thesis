@@ -1,10 +1,35 @@
 <template>
-  <div class="room" align="center">
-    <h2>Room {{ roomId }}</h2>
-    <div class="content">
-      <Player class="content-item" :isHost="isHost"
-      :roomId="roomId" :getInfoPressed="getInfoPressed" :playerInfo="playerInfo" />
+  <div class="room-container">
+    <div class="room" align="center" v-if="$store.state.username">
+      <h2>Room {{ roomId }}</h2>
+      <div class="content">
+        <Player class="content-item" :isHost="isHost"
+        :roomId="roomId" :getInfoPressed="getInfoPressed" :playerInfo="playerInfo" />
+      </div>
+      <table class="members-table">
+        <p class="username">Username: {{ username }}</p>
+        <tr>
+          <th>Room Members</th>
+        </tr>
+        <tr v-for="(member, ind) in members" :key="ind">
+          <td>{{ member }}</td>
+        </tr>
+      </table>
+      <ul class="menu-container voting-menu">
+        <li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li>
+        <li class="voting-item score">Skip Votes: {{ votes }}</li>
+      </ul>
+      <ul class="menu-container bottom-toggle">
+        <li class="menu-item toggle-button" v-bind:class="{ active: !$store.state.searching }"
+          v-on:click="$store.commit('setSearching', false)">Queue</li>
+        <li class="menu-item toggle-button" v-bind:class="{ active: $store.state.searching }"
+          v-on:click="$store.commit('setSearching', true)">Search</li>
+      </ul>
+      <Queue v-if="!$store.state.searching" :curQueue="curQueue"
+      :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
+      <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
     </div>
+
     <table class="members-table">
       <p class="username">Username: {{ username }}</p>
       <tr><th>Room Members</th></tr>
@@ -26,6 +51,8 @@
     <Queue v-if="!$store.state.searching" :curQueue="curQueue"
     :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
     <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
+    <NameEntry v-if="!$store.state.username" :joinRoom="joinRoom" />
+
   </div>
 </template>
 
@@ -36,6 +63,7 @@ import VueSocketio from 'vue-socket.io';
 import Player from './Player.vue';
 import Search from './Search.vue';
 import Queue from './Queue.vue';
+import NameEntry from './NameEntry.vue';
 
 Vue.use(VueSocketio, 'http://localhost:8082');
 export default {
@@ -45,11 +73,12 @@ export default {
     Player,
     Search,
     Queue,
+    NameEntry,
   },
   data() {
     return {
       room: this.roomId,
-      username: this.$route.query.username || this.$store.state.userName,
+      username: this.$route.query.username || this.$store.state.username,
       connected: false,
       members: [],
       isHost: false,
@@ -87,9 +116,12 @@ export default {
     },
   },
   methods: {
-    joinRoom() {
-      this.$socket.emit('joinRoom', { user: this.username, room: this.room });
-      this.$socket.emit('getInfo');
+    joinRoom(newUser) {
+      const username = this.username || newUser;
+      if (username) {
+        this.$socket.emit('joinRoom', { user: username, room: this.room });
+        this.$socket.emit('getInfo');
+      }
     },
     createRoom() {
       this.$socket.emit('createRoom', { user: this.username, room: this.room });
@@ -128,7 +160,10 @@ export default {
     },
   },
   mounted() {
-    if (this.$route.query.host) return this.createRoom();
+    if (this.$route.query.host) {
+      this.$store.commit('setUserName', this.$route.query.username);
+      return this.createRoom();
+    }
     return this.joinRoom();
   },
 };
