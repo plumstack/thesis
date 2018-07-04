@@ -32,9 +32,6 @@ module.exports = (io, Spotify, redis) => {
         const spotifyInfo = await redis.hmgetAsync(roomID, ['accesstoken', 'refreshtoken']);
         rooms[roomID].Spotify = new Spotify(spotifyInfo[0], spotifyInfo[1]);
 
-        const membersSetup = {};
-        membersSetup[socket.id] = { user: roomInfo.user, score: 0 };
-
         const newMember = JSON.stringify(roomInfo.user);
         await redis.zadd(`${roomID}:members`, 0, newMember);
 
