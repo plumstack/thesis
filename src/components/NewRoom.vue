@@ -29,7 +29,30 @@
       :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
       <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
     </div>
+
+    <table class="members-table">
+      <p class="username">Username: {{ username }}</p>
+      <tr><th>Room Members</th></tr>
+      <tr v-for="(member, ind) in members" :key="ind">
+        <td>{{ JSON.parse(member[0]) }}, Score: {{member[1]}}</td>
+      </tr>
+    </table>
+    <ul class="menu-container voting-menu">
+      <!-- <li class="menu-item voting-item vote-up" v-on:click="upvote">Upvote</li>  -->
+      <li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li>
+      <li class="voting-item score">Skip Votes: {{ votes }}</li>
+    </ul>
+    <ul class="menu-container bottom-toggle">
+      <li class="menu-item toggle-button" v-bind:class="{ active: !$store.state.searching }"
+        v-on:click="$store.commit('setSearching', false)">Queue</li>
+      <li class="menu-item toggle-button" v-bind:class="{ active: $store.state.searching }"
+        v-on:click="$store.commit('setSearching', true)">Search</li>
+    </ul>
+    <Queue v-if="!$store.state.searching" :curQueue="curQueue"
+    :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
+    <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
     <NameEntry v-if="!$store.state.username" :joinRoom="joinRoom" />
+
   </div>
 </template>
 
@@ -69,7 +92,7 @@ export default {
   },
   sockets: {
     memberListUpdate(members) {
-      this.members = Object.values(members.members);
+      this.members = members.members;
       const parsed = members.queue.map((track) => JSON.parse(track));
       this.curQueue = parsed;
     },
