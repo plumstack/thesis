@@ -25,7 +25,6 @@ export default {
   },
   methods: {
     downvoteClicked(track) {
-      console.log('Downvoted: ', track);
       if (!this.hasDownvoted) {
         this.hasDownvoted = true;
         this.hasUpvoted = false;
@@ -33,7 +32,6 @@ export default {
       }
     },
     upvoteClicked(track) {
-      console.log('Upvoted: ', track);
       if (!this.hasUpvoted) {
         this.hasUpvoted = true;
         this.hasDownvoted = false;
