@@ -9,7 +9,7 @@
       <p class="username">Username: {{ username }}</p>
       <tr><th>Room Members</th></tr>
       <tr v-for="(member, ind) in members" :key="ind">
-        <td>{{ member[0] }}, Score: {{member[1]}}</td>
+        <td>{{ JSON.parse(member[0]) }}, Score: {{member[1]}}</td>
       </tr>
     </table>
     <ul class="menu-container voting-menu">

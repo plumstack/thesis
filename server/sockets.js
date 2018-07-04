@@ -27,22 +27,14 @@ module.exports = (io, Spotify, redis) => {
         socket.room = roomID; // eslint-disable-line
         const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
-
         const spotifyInfo = await redis.hmgetAsync(roomID, ['accesstoken', 'refreshtoken']);
         rooms[roomID].Spotify = new Spotify(spotifyInfo[0], spotifyInfo[1]);
 
         const membersSetup = {};
         membersSetup[socket.id] = { user: roomInfo.user, score: 0 };
 
-        const newMember = roomInfo.user;
+        const newMember = JSON.stringify(roomInfo.user);
         await redis.zadd(`${roomID}:members`, 0, newMember);
-
-        // await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores', (err, members) => {
-        //   for (let i = 0; i < members.length; i += 2) {
-        //     currentMembers[members[i]] = members[i + 1];
-        //     console.log('UPDATED MEMBERS: ', currentMembers);
-        //   }
-        // });
 
         const allMembers = [];
         const currentMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
@@ -62,21 +54,22 @@ module.exports = (io, Spotify, redis) => {
       socket.join(roomID);
       socket.room = roomID; // eslint-disable-line
 
-      const newMember = roomInfo.user;
-      await redis.zadd(`${roomID}:members`, 0, JSON.stringify(newMember));
+      const newMember = JSON.stringify(roomInfo.user);
+      await redis.zadd(`${roomID}:members`, 0, newMember);
+
+      const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
+      console.log('All Redis Membs: ', allMembers);
+
+      const formattedMembers = [];
+      for (let i = 0; i < allMembers.length; i += 2) {
+        formattedMembers.push([allMembers[i], allMembers[i + 1]]);
+      }
+      console.log('updated members: ', formattedMembers);
 
       const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
-      const currentMembers = {};
-      await redis.zrevrange(`${roomID}:members`, 0, -1, 'withscores', (err, members) => {
-        for (let i = 0; i < members.length; i += 2) {
-          currentMembers[members[i]] = members[i + 1];
-          console.log('UPDATED MEMBERS: ', currentMembers);
-        }
-      });
-
-      io.sockets.in(roomID).emit('memberListUpdate', { members: currentMembers, queue });
-      redis.setAsync(`${roomID}:members`, JSON.stringify(newMember));
+      io.sockets.in(roomID).emit('memberListUpdate', { members: formattedMembers, queue });
+      // redis.setAsync(`${roomID}:members`, JSON.stringify(newMember));
     });
 
     socket.on('disconnect', async () => {
@@ -136,48 +129,32 @@ module.exports = (io, Spotify, redis) => {
 
     socket.on('queueUpvote', async (roomInfo) => {
       const roomID = roomInfo.room;
+      console.log(typeof (roomInfo.song.clientInfo.user));
+
+      const songUser = JSON.stringify(roomInfo.song.clientInfo.user);
+      console.log('Song User: ', songUser);
+
+      await redis
+        .zincrbyAsync(`${roomID}:members`, 1, songUser)
+        .catch(console.error);
+
+      const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
+      console.log('All Membs from Redis: ', allMembers);
+
+      const formattedMembers = [];
+      for (let i = 0; i < allMembers.length; i += 2) {
+        formattedMembers.push([allMembers[i], allMembers[i + 1]]);
+        console.log('Formatted MEMBERS: ', formattedMembers);
+      }
+
       await redis
         .zincrbyAsync(`${roomID}:queue`, 1, JSON.stringify(roomInfo.song))
         .catch(console.error);
 
       const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-      const songSocket = JSON.stringify(roomInfo.song.clientInfo.id);
-      console.log('Song Socket ID: ', songSocket);
-
-      await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores', (err, members) => {
-        console.log('before vote: ', members);
-      });
-
-      // const currentMembers = [];
-
-      // await redis.zrevrange(`${roomID}:members`, 0, -1, 'withscores', (err, members) => {
-      //   console.log('inside redis', members);
-      //   for (let i = 0; i < members.length; i += 2) {
-      //     const newArr = [members[i], members[i + 1]];
-      //     currentMembers.push(newArr);
-      //     console.log('current members', currentMembers);
-      //   }
-      // });
-
-      await redis
-        .zincrbyAsync(`${roomID}:members`, 1, JSON.stringify(songSocket))
-        .catch(console.error);
-
-      const currentMembers = {};
-      await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores', (err, members) => {
-        for (let i = 0; i < members.length; i += 2) {
-          currentMembers[members[i]] = members[i + 1];
-          console.log('UPDATED MEMBERS: ', currentMembers);
-        }
-      });
-
-      /* Old way:
-      const singleMember = currentMems[JSON.parse(songSocket)];
-      singleMember.votes += 1;
-      console.log('Member associated with this song: ', singleMember);
-      */
 
       io.sockets.in(roomID).emit('queueUpdate', newQueue);
+      io.sockets.in(roomID).emit('memberListUpdate', { members: formattedMembers, newQueue });
     });
 
     socket.on('queueDownvote', async (roomInfo) => {
