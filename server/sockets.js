@@ -39,7 +39,6 @@ module.exports = (io, Spotify, redis) => {
         const allMembers = [];
         const currentMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
         allMembers.push(currentMembers);
-        console.log('Membs: ', allMembers);
 
         io.to(roomID).emit('memberListUpdate', { members: allMembers, queue });
       } catch (error) {
@@ -48,7 +47,6 @@ module.exports = (io, Spotify, redis) => {
     });
 
     socket.on('joinRoom', async (roomInfo) => {
-      console.log('joining room', roomInfo);
       const roomID = roomInfo.room;
 
       socket.join(roomID);
@@ -64,12 +62,10 @@ module.exports = (io, Spotify, redis) => {
       for (let i = 0; i < allMembers.length; i += 2) {
         formattedMembers.push([allMembers[i], allMembers[i + 1]]);
       }
-      console.log('updated members: ', formattedMembers);
 
       const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
       io.sockets.in(roomID).emit('memberListUpdate', { members: formattedMembers, queue });
-      // redis.setAsync(`${roomID}:members`, JSON.stringify(newMember));
     });
 
     socket.on('disconnect', async () => {
@@ -129,22 +125,19 @@ module.exports = (io, Spotify, redis) => {
 
     socket.on('queueUpvote', async (roomInfo) => {
       const roomID = roomInfo.room;
-      console.log(typeof (roomInfo.song.clientInfo.user));
 
       const songUser = JSON.stringify(roomInfo.song.clientInfo.user);
-      console.log('Song User: ', songUser);
 
       await redis
         .zincrbyAsync(`${roomID}:members`, 1, songUser)
         .catch(console.error);
 
       const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
-      console.log('All Membs from Redis: ', allMembers);
+      console.log('Post Vote all Membs from Redis: ', allMembers);
 
       const formattedMembers = [];
       for (let i = 0; i < allMembers.length; i += 2) {
         formattedMembers.push([allMembers[i], allMembers[i + 1]]);
-        console.log('Formatted MEMBERS: ', formattedMembers);
       }
 
       await redis

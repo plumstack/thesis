@@ -63,9 +63,7 @@ export default {
   },
   sockets: {
     memberListUpdate(members) {
-      console.log('Incoming members Obj:', members);
       this.members = members.members;
-      console.log('State of members on Client:', this.members);
       const parsed = members.queue.map((track) => JSON.parse(track));
       this.curQueue = parsed;
     },
