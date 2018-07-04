@@ -95,7 +95,6 @@ module.exports = (io, Spotify, redis) => {
     });
 
     socket.on('queue', async (roomInfo) => {
-
       const songInfo = roomInfo.song;
       songInfo.clientInfo = { id: socket.id, user: roomInfo.user };
       const roomID = roomInfo.room;
@@ -129,13 +128,12 @@ module.exports = (io, Spotify, redis) => {
       const roomID = roomInfo.room;
 
       const songUser = JSON.stringify(roomInfo.song.clientInfo.user);
-
       await redis
         .zincrbyAsync(`${roomID}:members`, 1, songUser)
         .catch(console.error);
 
       const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
-      console.log('Post Vote all Membs from Redis: ', allMembers);
+      console.log('Post-Vote redis members: ', allMembers);
 
       const formattedMembers = [];
       for (let i = 0; i < allMembers.length; i += 2) {
