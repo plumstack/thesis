@@ -7,6 +7,7 @@ module.exports = (io, Spotify, redis) => {
 
   const playNextSong = async (roomID) => {
     const nextSong = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 1);
+    console.log(nextSong.user);
     if (nextSong.length) {
       redis.zrem(`${roomID}:queue`, nextSong[0]);
       rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
@@ -108,8 +109,8 @@ module.exports = (io, Spotify, redis) => {
 
     socket.on('skipVote', async (roomInfo) => {
       const roomID = roomInfo.room;
-      const currentMembers = await redis.getAsync(`${roomID}:members`);
-      const memberLength = Object.keys(JSON.parse(currentMembers)).length;
+      const currentMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1);
+      const memberLength = currentMembers.length;
 
       if (rooms[roomID].skip) rooms[roomID].skip += 1;
       else rooms[roomID].skip = 1;
