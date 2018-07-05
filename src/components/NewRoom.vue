@@ -28,8 +28,8 @@
     <Queue v-if="!$store.state.searching" :curQueue="curQueue"
     :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
     <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
-    <NameEntry v-if="!$store.state.username" :joinRoom="joinRoom" />
     </div>
+    <NameEntry v-if="!$store.state.username" :joinRoom="joinRoom" />
   </div>
 </template>
 
