@@ -128,10 +128,8 @@ module.exports = (io, Spotify, redis) => {
 
       const songUser = JSON.stringify(roomInfo.song.clientInfo.user);
       const currentMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1);
-      console.log(currentMembers);
 
       const inRoom = currentMembers.indexOf(songUser);
-      console.log(inRoom);
 
       if (inRoom > -1) {
         await redis
