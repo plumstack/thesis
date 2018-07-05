@@ -7,7 +7,6 @@ module.exports = (io, Spotify, redis) => {
 
   const playNextSong = async (roomID) => {
     const nextSong = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 1);
-    console.log(nextSong.user);
     if (nextSong.length) {
       redis.zrem(`${roomID}:queue`, nextSong[0]);
       rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
