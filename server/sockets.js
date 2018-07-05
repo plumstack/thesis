@@ -34,6 +34,7 @@ module.exports = (io, Spotify, redis) => {
         rooms[roomID] = {};
         socket.join(roomID);
         socket.room = roomID; // eslint-disable-line
+        socket.username = roomInfo.user; // eslint-disable-line
         const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
         const spotifyInfo = await redis.hmgetAsync(roomID, ['accesstoken', 'refreshtoken']);
@@ -53,6 +54,7 @@ module.exports = (io, Spotify, redis) => {
       const roomID = roomInfo.room;
       socket.join(roomID);
       socket.room = roomID; // eslint-disable-line
+      socket.username = roomInfo.user; // eslint-disable-line
 
       const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
@@ -68,15 +70,21 @@ module.exports = (io, Spotify, redis) => {
       if (!socket.room) return;
 
       const roomID = socket.room;
-      const currentMembers = await redis.getAsync(`${roomID}:members`);
-      const newMembers = JSON.parse(currentMembers);
+
+      // const currentMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1);
+      // const newMembers = JSON.parse(currentMembers);
 
       socket.leave(roomID);
-      delete newMembers[socket.id];
+      // delete newMembers[socket.id];
 
-      io.sockets.in(roomID).emit('memberListUpdate', newMembers);
+      const removedUser = JSON.stringify(socket.username);
+      await redis.zremAsync(`${roomID}:members`, removedUser);
 
-      redis.setAsync(`${roomID}:members`, JSON.stringify(newMembers));
+      const formattedMembers = await getScores(roomID);
+      console.log(formattedMembers);
+
+      io.sockets.in(roomID).emit('memberListUpdate', { members: formattedMembers });
+      // redis.setAsync(`${roomID}:members`, JSON.stringify(newMembers));
     });
 
     socket.on('searchInput', async (searchInfo) => {
