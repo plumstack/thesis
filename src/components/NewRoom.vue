@@ -8,13 +8,14 @@
       </div>
       <table class="members-table">
       <p class="username">Username: {{ username }}</p>
-      <tr><th>Room Members</th></tr>
+      <tr>
+        <th>Room Members</th>
+      </tr>
       <tr v-for="(member, ind) in members" :key="ind">
         <td>{{ JSON.parse(member[0]) }}, Score: {{member[1]}}</td>
       </tr>
     </table>
     <ul class="menu-container voting-menu">
-      <!-- <li class="menu-item voting-item vote-up" v-on:click="upvote">Upvote</li>  -->
       <li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li>
       <li class="voting-item score">Skip Votes: {{ votes }}</li>
     </ul>
