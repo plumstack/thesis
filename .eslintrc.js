@@ -13,7 +13,6 @@ module.exports = {
     'arrow-parens': [2, "always"],
     'linebreak-style': 0,
     'max-len': [2, 120],
-    "no-param-reassign": 0,
   },
   parserOptions: {
     parser: 'babel-eslint'
