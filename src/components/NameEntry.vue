@@ -46,7 +46,7 @@ export default {
       }
       if (!this.usernameError) {
         this.$store.commit('setUserName', this.username);
-        this.joinRoom(this.username);
+        this.joinRoom(this.$store.state.username);
       }
     },
   },

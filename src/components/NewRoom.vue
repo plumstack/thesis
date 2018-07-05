@@ -96,6 +96,8 @@ export default {
     joinRoom(newUser) {
       const username = this.username || newUser;
       if (username) {
+        this.username = username;
+        console.log('Username is now: ', this.username);
         this.$socket.emit('joinRoom', { user: username, room: this.room });
         this.$socket.emit('getInfo');
       }

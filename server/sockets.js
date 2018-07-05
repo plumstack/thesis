@@ -51,16 +51,15 @@ module.exports = (io, Spotify, redis) => {
 
     socket.on('joinRoom', async (roomInfo) => {
       const roomID = roomInfo.room;
-
       socket.join(roomID);
       socket.room = roomID; // eslint-disable-line
+
+      const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
       const newMember = JSON.stringify(roomInfo.user);
       await redis.zadd(`${roomID}:members`, 0, newMember);
 
       const formattedMembers = await getScores(roomID);
-
-      const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
       io.sockets.in(roomID).emit('memberListUpdate', { members: formattedMembers, queue });
     });
