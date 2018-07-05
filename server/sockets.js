@@ -129,10 +129,7 @@ module.exports = (io, Spotify, redis) => {
         .catch(console.error);
 
       const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
-      const formattedMembers = [];
-      for (let i = 0; i < allMembers.length; i += 2) {
-        formattedMembers.push([allMembers[i], allMembers[i + 1]]);
-      }
+      const formattedMembers = chunk(allMembers, 2);
 
       await redis
         .zincrbyAsync(`${roomID}:queue`, 1, JSON.stringify(roomInfo.song))
