@@ -42,7 +42,6 @@ module.exports = (io, Spotify, redis) => {
 
         const newMember = JSON.stringify(roomInfo.user);
         await redis.zadd(`${roomID}:members`, 0, newMember);
-        
         const allMembers = await getScores(roomID);
 
         io.to(roomID).emit('memberListUpdate', { members: allMembers, queue });
