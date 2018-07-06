@@ -2,14 +2,12 @@
   <div class="search" align="center">
     <input type="text" placeholder="Search for Songs" v-on:keyup.enter="search" v-model="searchQuery"/>
     <table v-if="searchQuery" class="search-results">
-      <!-- Table Headers: -->
       <tr class="table-header">
          <th>  <!-- artwork --> </th>
         <th><!-- Track --></th>
         <th><!--Add --></th>
       </tr>
 
-    <!-- Table Rows -->
     <tr class="alternative_row" v-for="track in searchRes" :key="track.id">
         <td><img :src="track.album.images[2].url" class="album-image"></td>
         <td class="song-info-item song-title">
