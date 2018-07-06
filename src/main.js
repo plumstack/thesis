@@ -4,7 +4,7 @@ import store from './store/store';
 
 import App from './App.vue';
 import Splash from '../src/components/Splash.vue';
-import NewRoom from '../src/components/NewRoom.vue';
+import Room from '../src/components/Room.vue';
 import Login from '../src/components/Login.vue';
 
 Vue.config.productionTip = false;
@@ -13,7 +13,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: Splash },
-  { path: '/room/:roomId', component: NewRoom, props: true },
+  { path: '/room/:roomId', component: Room, props: true },
   { path: '/login', component: Login },
 ];
 
