@@ -5,21 +5,6 @@ module.exports = (io, Spotify, redis) => {
   const rooms = {};
   const timers = {};
 
-  const playNextSong = async (roomID) => {
-    const nextSong = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 1);
-    if (nextSong.length) {
-      redis.zrem(`${roomID}:queue`, nextSong[0]);
-      rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
-      rooms[roomID].skip = 0;
-      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-      io.sockets.in(roomID).emit('queueUpdate', result);
-    }
-  };
-
-  const setTimer = (roomID, duration, elapsed) => {
-    if (timers[roomID]) { clearTimeout(timers[roomID]); }
-    timers[roomID] = setTimeout(() => playNextSong(roomID), duration - elapsed);
-  };
 
   const getScores = async (roomID) => {
     const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
@@ -46,6 +31,31 @@ module.exports = (io, Spotify, redis) => {
       .catch(console.error);
   };
 
+  const playNextSong = async (roomID) => {
+    const nextSong = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 1);
+    if (nextSong.length) {
+      // Points:
+      const selector = nextSong.clientInfo.user;
+      console.log(selector);
+      const award = await getMembers(roomID).length * 10;
+      console.log(award);
+      await changePoints(roomID, selector, award);
+      await getScores(roomID);
+
+      // Queue Update:
+      redis.zrem(`${roomID}:queue`, nextSong[0]);
+      rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
+      rooms[roomID].skip = 0;
+      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+      io.sockets.in(roomID).emit('queueUpdate', result);
+    }
+  };
+
+  const setTimer = (roomID, duration, elapsed) => {
+    if (timers[roomID]) { clearTimeout(timers[roomID]); }
+    timers[roomID] = setTimeout(() => playNextSong(roomID), duration - elapsed);
+  };
+
   io.on('connection', (socket) => {
     socket.on('createRoom', async (roomInfo) => {
       try {
@@ -60,7 +70,7 @@ module.exports = (io, Spotify, redis) => {
         rooms[roomID].Spotify = new Spotify(spotifyInfo[0], spotifyInfo[1]);
 
         const newMember = JSON.stringify(roomInfo.user);
-        await redis.zadd(`${roomID}:members`, 0, newMember);
+        await redis.zadd(`${roomID}:members`, 100, newMember);
         const allMembers = await getScores(roomID);
 
         io.to(roomID).emit('memberListUpdate', { members: allMembers, queue });
@@ -78,7 +88,7 @@ module.exports = (io, Spotify, redis) => {
       const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
 
       const newMember = JSON.stringify(roomInfo.user);
-      await redis.zadd(`${roomID}:members`, 0, newMember);
+      await redis.zadd(`${roomID}:members`, 100, newMember);
 
       const allMembers = await getScores(roomID);
 
@@ -148,7 +158,7 @@ module.exports = (io, Spotify, redis) => {
       const inRoom = currentMembers.indexOf(songUser);
 
       if (inRoom > -1) {
-        await changePoints(roomID, songUser, 1);
+        await changePoints(roomID, songUser, 10);
       }
 
       const allScores = await getScores(roomID);
@@ -165,7 +175,7 @@ module.exports = (io, Spotify, redis) => {
       const inRoom = currentMembers.indexOf(songUser);
 
       if (inRoom > -1) {
-        await changePoints(roomID, songUser, -1);
+        await changePoints(roomID, songUser, -10);
       }
       const allScores = await getScores(roomID);
       io.sockets.in(roomID).emit('memberListUpdate', { members: allScores });
