@@ -150,7 +150,6 @@ export default {
 
 <style scoped>
 h2 {
-  font-family: 'Kalam';
   color: #fff;
   text-align: center;
   font-size: 5vw;
