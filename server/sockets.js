@@ -5,13 +5,13 @@ module.exports = (io, Spotify, redis) => {
   const rooms = {};
   const timers = {};
 
+  const getMembers = async (roomID) => redis.zrevrangeAsync(`${roomID}:members`, 0, -1);
+
   const getScores = async (roomID) => {
     const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
     const chunked = chunk(allMembers, 2);
     return chunked;
   };
-
-  const getMembers = async (roomID) => redis.zrevrangeAsync(`${roomID}:members`, 0, -1);
 
   const changePoints = async (roomID, username, points) => {
     await redis
