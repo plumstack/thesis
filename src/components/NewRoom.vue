@@ -108,3 +108,85 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+h2 {
+  color: #fff;
+  text-align: center;
+  font-size: 5vw;
+  margin: 2px;
+}
+
+.content {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.content-item {
+  margin: 10px 50px;
+}
+
+.voting-menu {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+}
+
+.voting-item {
+  display: inline-block;
+  font-weight: 700;
+  padding: 10px;
+  margin: 10px 10px;
+  font-size: 1.5vw;
+  border-radius: 10px;
+}
+
+.vote-up {
+  background: #5cd65c;
+}
+
+.vote-down {
+  background: #f66;
+}
+
+.score {
+  color: #000;
+  background: transparent;
+}
+
+.vote-up:hover {
+  color: #db7095;
+}
+
+.vote-down:hover {
+  color: #daa360;
+}
+
+.toggle-button {
+  display: inline-block;
+  font-size: 1.5vw;
+  padding: 5px 10px;
+  margin: 5px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.toggle-button:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.members-table {
+  font-size: 1.25vw;
+  position: absolute;
+  text-align: center;
+  top: 5%;
+  right: 8%;
+  color: #fff;
+}
+
+.active {
+  color: #db7095;
+  background: #fff;
+}
+</style>
