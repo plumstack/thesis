@@ -1,35 +1,45 @@
 const state = {
-  joining: false,
   username: '',
   userList: [],
-  searching: false,
+  roomID: '',
 };
 
 const getters = {
-  getUsername() {},
-  getUsersList() {},
+  getUsername: (s) => s.username,
+  getUsersList: (s) => s.userList,
+  getRoomID: (s) => s.roomID,
 };
 
 const actions = {
-  usernameVerify() {},
-  fetchUserlist() {},
-  leaveRoom() {},
-  updateUserlist() {},
+  usernameVerify({ rootState }, username) {
+    if (rootState.userList.contains(username)) return false;
+    return true;
+  },
+  updateUserlist({ commit }, userList) {
+    commit('setUserList', userList);
+  },
+  updateUsername({ commit }, username) {
+    commit('setUsername', username);
+  },
+  updateRoomID({ commit }, roomID) {
+    commit('setRoomID', roomID);
+  },
+  leaveRoom({ commit }) {
+    commit('setRoomID', '');
+    commit('setUserList', []);
+    commit('setUsername', '');
+  },
 };
 
 const mutations = {
-  setJoining(s, bool) {
-    s.joining = bool;
-  },
-
   setUsername(s, username) {
     s.username = username;
   },
-  setUserList() {},
-  clearUsername() {},
-  clearUserlist() {},
-  setSearching(s, bool) {
-    s.searching = bool;
+  setUserList(s, userList) {
+    s.userList = userList;
+  },
+  setRoomID(s, roomID) {
+    s.roomID = roomID;
   },
 };
 

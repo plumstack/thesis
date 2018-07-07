@@ -1,6 +1,6 @@
 <template>
   <div class="search" align="center">
-    <input type="text" placeholder="Search for Songs" v-on:keyup.enter="search" v-model="searchQuery"/>
+    <input type="text" placeholder="Search for Songs" @keyup.enter="onSongSearch" v-model="searchQuery"/>
     <table v-if="searchQuery" class="search-results">
       <tr class="table-header">
          <th>  <!-- artwork --> </th>
@@ -8,13 +8,13 @@
         <th><!--Add --></th>
       </tr>
 
-    <tr class="alternative_row" v-for="track in searchRes" :key="track.id">
+    <tr class="alternative_row" v-for="track in searchResults" :key="track.id">
         <td><img :src="track.album.images[2].url" class="album-image"></td>
         <td class="song-info-item song-title">
           {{ track.name }}
           <div class="song-info-item">{{ track.artists[0].name }}</div>
         </td>
-        <td v-on:click="queue(track)" ><img src="../assets/plus.svg" class="queue-button-add"></td>
+        <td @click="onQueueSong(track)" ><img src="../assets/plus.svg" class="queue-button-add"></td>
     </tr>
     </table>
   </div>
@@ -25,23 +25,18 @@
 
 export default {
   name: 'Search',
-  created() {
-  },
   data() {
     return {
-      searchResults: this.searchRes,
       searchQuery: '',
     };
   },
-  props: ['searchInput', 'searchRes', 'queue'],
+  props: ['searchResults'],
   methods: {
-    search() {
-      this.searchInput(this.searchQuery);
+    onSongSearch() {
+      this.$emit('songSearch', this.searchQuery);
     },
-    convertAMilli(ms) {
-      const minutes = Math.floor(ms / 60000).toString();
-      const seconds = ((ms % 60000) / 1000).toFixed(0).toString();
-      return `${minutes} : ${(seconds < 10 ? '0' : '')} ${seconds}`;
+    onQueueSong(track) {
+      this.$emit('queueSong', track);
     },
   },
 };

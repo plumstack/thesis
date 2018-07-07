@@ -1,163 +1,114 @@
-const Song = require('../database/song');
-const chunk = require('lodash.chunk');
+const Queue = require('./queue');
+const MemberList = require('./memberlist');
 
-module.exports = (io, Spotify, redis) => {
-  const rooms = {};
-  const timers = {};
+const roomList = {};
 
-  const playNextSong = async (roomID) => {
-    const nextSong = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 1);
-    if (nextSong.length) {
-      redis.zrem(`${roomID}:queue`, nextSong[0]);
-      rooms[roomID].Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
-      rooms[roomID].skip = 0;
-      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-      io.sockets.in(roomID).emit('queueUpdate', result);
-    }
-  };
+class Room {
+  constructor(roomID, Spotify, Redis) {
+    this.roomID = roomID;
+    this.Queue = new Queue(this.roomID, Spotify, Redis);
+    this.MemberList = new MemberList(this.roomID, Redis);
+    this.hostSessionID = 'TODO';
+    this.spotifyInit(Redis, Spotify);
+  }
 
-  const setTimer = (roomID, duration, elapsed) => {
-    if (timers[roomID]) { clearTimeout(timers[roomID]); }
-    timers[roomID] = setTimeout(() => playNextSong(roomID), duration - elapsed);
-  };
+  async updateAll() {
+    const newQueue = this.updateQueue();
+    const newMemberList = this.updateMemberList();
+    return Promise.all([newQueue, newMemberList]);
+  }
 
-  const getScores = async (roomID) => {
-    const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
-    const chunked = chunk(allMembers, 2);
-    return chunked;
-  };
+  async updateQueue() {
+    const newQueue = await this.Queue.get();
+    return newQueue.map((track) => JSON.parse(track));
+  }
 
+  async updateMemberList() {
+    const newMemberList = await this.MemberList.get();
+    return newMemberList;
+  }
+
+  async spotifyInit(Redis, Spotify) {
+    const tokens = await Redis.hmgetAsync(this.roomID, ['accesstoken', 'refreshtoken']);
+    const [accesstoken, refreshtoken] = tokens;
+    this.Spotify = new Spotify(accesstoken, refreshtoken);
+  }
+}
+
+module.exports = (io, Spotify, Redis) => { //eslint-disable-line 
   io.on('connection', (socket) => {
-    socket.on('createRoom', async (roomInfo) => {
-      try {
-        const roomID = roomInfo.room;
-        rooms[roomID] = {};
-        socket.join(roomID);
-        socket.room = roomID; // eslint-disable-line
-        socket.username = roomInfo.user; // eslint-disable-line
-        const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+    // HOST
+    socket.on('createRoom', async (newRoomInfo) => {
+      const { roomID, username } = newRoomInfo;
 
-        const spotifyInfo = await redis.hmgetAsync(roomID, ['accesstoken', 'refreshtoken']);
-        rooms[roomID].Spotify = new Spotify(spotifyInfo[0], spotifyInfo[1]);
-
-        const newMember = JSON.stringify(roomInfo.user);
-        await redis.zadd(`${roomID}:members`, 0, newMember);
-        const allMembers = await getScores(roomID);
-
-        io.to(roomID).emit('memberListUpdate', { members: allMembers, queue });
-      } catch (error) {
-        console.log(error);
-      }
-    });
-
-    socket.on('joinRoom', async (roomInfo) => {
-      const roomID = roomInfo.room;
       socket.join(roomID);
-      socket.room = roomID; // eslint-disable-line
-      socket.username = roomInfo.user; // eslint-disable-line
+      socket.username = username;
 
-      const queue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+      roomList[roomID] = new Room(roomID, Spotify, Redis);
+      await roomList[roomID].MemberList.join(username);
 
-      const newMember = JSON.stringify(roomInfo.user);
-      await redis.zadd(`${roomID}:members`, 0, newMember);
-
-      const allMembers = await getScores(roomID);
-
-      io.sockets.in(roomID).emit('memberListUpdate', { members: allMembers, queue });
+      roomList[roomID].updateAll()
+        .then(([newQueue, newMemberList]) => socket.emit('updateAll', { newQueue, newMemberList }));
     });
 
-    socket.on('disconnect', async () => {
-      if (!socket.room) return;
+    // socket.on('forceSkip');
+    // socket.on('forcePlay');
+    // socket.on('forceInfo');
 
-      const roomID = socket.room;
+    // MEMBER
+    socket.on('joinRoom', (joinedRoomInfo) => {
+      const { roomID, username } = joinedRoomInfo;
 
-      socket.leave(roomID);
+      socket.join(roomID);
+      socket.username = username;
 
-      const removedUser = JSON.stringify(socket.username);
-      await redis.zremAsync(`${roomID}:members`, removedUser);
+      roomList[roomID].MemberList.join(username);
 
-      const allMembers = await getScores(roomID);
-
-      io.sockets.in(roomID).emit('memberListUpdate', { members: allMembers });
+      roomList[roomID].updateAll()
+        .then(([newQueue, newMemberList]) => io.to(roomID).emit('updateAll', { newQueue, newMemberList }));
     });
 
-    socket.on('searchInput', async (searchInfo) => {
-      const result = await rooms[searchInfo.room].Spotify.search(searchInfo.search);
-      socket.emit('searchResponse', result);
-    });
+    socket.on('onQueueSong', async (addedToQueueInfo) => {
+      const { roomID, username, songInfo } = addedToQueueInfo;
+      if (roomList[roomID].Queue.songIsUnique(songInfo)) {
+        songInfo.addedBy = username;
 
-    socket.on('getInfo', async () => {
-      const roomID = socket.room;
-      const result = await rooms[roomID].Spotify.getPlayerInfo();
-      io.sockets.in(roomID).emit('infoResponse', result);
-      setTimer(roomID, result.item.duration_ms, result.progress_ms);
-    });
+        await roomList[roomID].Queue.addSong(songInfo);
 
-    socket.on('queue', async (roomInfo) => {
-      const songInfo = roomInfo.song;
-      songInfo.clientInfo = { id: socket.id, user: roomInfo.user };
-      const roomID = roomInfo.room;
-      Song.add(roomID, songInfo);
-      redis.zadd(`${roomID}:queue`, 0, JSON.stringify(songInfo));
-      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-      io.sockets.in(roomID).emit('queueUpdate', result);
-    });
-
-    socket.on('getQueue', async (roomInfo) => {
-      const roomID = roomInfo.room;
-      const result = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-      io.sockets.in(roomID).emit('queueUpdate', result);
-    });
-
-    socket.on('skipVote', async (roomInfo) => {
-      const roomID = roomInfo.room;
-      const currentMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1);
-      const memberLength = currentMembers.length;
-
-      if (rooms[roomID].skip) rooms[roomID].skip += 1;
-      else rooms[roomID].skip = 1;
-
-      io.sockets.in(roomID).emit('skip', { skips: rooms[roomID].skip, members: memberLength });
-      if (rooms[roomID].skip > Math.floor(memberLength / 2)) {
-        playNextSong(roomID);
+        roomList[roomID].updateQueue()
+          .then((newQueue) => io.to(roomID).emit('updateQueue', newQueue));
       }
     });
 
-    socket.on('queueUpvote', async (roomInfo) => {
-      const roomID = roomInfo.room;
+    socket.on('queueUpvote', async (queueUpvoteInfo) => {
+      const { roomID, songInfo } = queueUpvoteInfo;
 
-      const songUser = JSON.stringify(roomInfo.song.clientInfo.user);
-      const currentMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1);
+      await roomList[roomID].Queue.upvote(songInfo);
 
-      const inRoom = currentMembers.indexOf(songUser);
-
-      if (inRoom > -1) {
-        await redis
-          .zincrbyAsync(`${roomID}:members`, 1, songUser)
-          .catch(console.error);
-      }
-
-      const allScores = await getScores(roomID);
-
-      await redis
-        .zincrbyAsync(`${roomID}:queue`, 1, JSON.stringify(roomInfo.song))
-        .catch(console.error);
-
-      const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
-
-      io.sockets.in(roomID).emit('queueUpdate', newQueue);
-      io.sockets.in(roomID).emit('memberListUpdate', { members: allScores, newQueue });
+      roomList[roomID].updateQueue()
+        .then((newQueue) => io.to(roomID).emit('updateQueue', newQueue));
     });
 
-    socket.on('queueDownvote', async (roomInfo) => {
-      const roomID = roomInfo.room;
-      await redis
-        .zincrbyAsync(`${roomID}:queue`, -1, JSON.stringify(roomInfo.song))
-        .catch(console.error);
+    socket.on('queueDownvote', async (queueDownvoteInfo) => {
+      const { roomID, songInfo } = queueDownvoteInfo;
 
-      const newQueue = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 10);
+      await roomList[roomID].Queue.downvote(songInfo);
 
-      io.sockets.in(roomID).emit('queueUpdate', newQueue);
+      roomList[roomID].updateQueue()
+        .then((newQueue) => io.to(roomID).emit('updateQueue', newQueue));
     });
+
+    socket.on('skipVote', async (skipVoteInfo) => {
+      const { roomID } = skipVoteInfo;
+      await roomList[roomID].skipVote();
+    });
+
+    socket.on('songSearch', async (searchSongInfo) => {
+      const { roomID, query } = searchSongInfo;
+      const result = await roomList[roomID].Spotify.search(query);
+      socket.emit('songSearchResponse', result);
+    });
+    // socket.on('checkUsername');
+    // socket.on('reconnect'); // ???
   });
 };

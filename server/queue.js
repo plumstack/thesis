@@ -6,15 +6,24 @@ module.exports = class Queue {
     this.Redis = Redis;
   }
 
-  playNext(songID) {}
-
-  downvote(songID) {}
+  playNext(songID) {
+  }
 
   upvote(songID) {}
+  
+  downvote(songID) {}
 
-  addSong(songID) {}
 
-  get() {}
+  async addSong(songInfo) {
+    await this.Redis.zadd(`${this.roomID}:queue`, 0, JSON.stringify(songInfo));
+  }
 
-  songIsUnique() {}
+  async get() {
+    const result = await this.Redis.zrevrangeAsync(`${this.roomID}:queue`, 0, 10);
+    return result;
+  }
+
+  songIsUnique(songInfo) {
+    return true;
+  }
 };

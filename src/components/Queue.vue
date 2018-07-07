@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="curQueue.length" class="queue-list">
+  <ul v-if="currentQueue.length" class="queue-list">
     <li class="queue-header">
       <div class="queue-track">
         <div class="empty-image"></div>
@@ -8,8 +8,8 @@
         <div class="queue-vote"></div>
       </div>
     </li>
-    <li class="queue-track-list" v-for="track in curQueue" :key="track.id">
-      <QueueItem :track="track" :queueUpvote="queueUpvote" :queueDownvote="queueDownvote"/>
+    <li class="queue-track-list" v-for="track in currentQueue" :key="track.id">
+      <QueueItem :track="track" @queueUpvote="onQueueUpvote" @queueDownvote="onQueueDownvote"/>
     </li>
   </ul>
 </template>
@@ -19,9 +19,13 @@ import QueueItem from './QueueItem.vue';
 
 export default {
   name: 'Queue',
-  props: ['curQueue', 'queueUpvote', 'queueDownvote'],
+  props: ['currentQueue'],
   components: {
     QueueItem,
+  },
+  methods: {
+    onQueueUpvote() {},
+    onQueueDownvote() {},
   },
 };
 </script>

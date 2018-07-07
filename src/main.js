@@ -4,7 +4,7 @@ import store from './store/store';
 
 import App from './App.vue';
 import Splash from '../src/components/Splash.vue';
-import Room from '../src/components/Room.vue';
+import Room from '../src/components/NewRoom.vue';
 import Login from '../src/components/Login.vue';
 
 Vue.config.productionTip = false;

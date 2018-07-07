@@ -16,7 +16,7 @@
 <script>
 export default {
   name: 'QueueItem',
-  props: ['queueUpvote', 'track', 'queueDownvote'],
+  props: ['track'],
   data() {
     return {
       hasDownvoted: false,

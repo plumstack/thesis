@@ -4,10 +4,16 @@ module.exports = class MembersList {
     this.roomID = roomID;
     this.Redis = Redis;
   }
-  join(username){}
+  async join(username){
+    await this.Redis.zadd(`${this.roomID}:memberlist`, 0, username);
+  }
+
   leave(username){}
   upvote(username){}
   downvote(username){}
-  getSorted(){}
+  async get(){
+    const result = await this.Redis.zrevrangeAsync(`${this.roomID}:memberlist`, 0, -1);
+    return result;
+  }
 }
 
