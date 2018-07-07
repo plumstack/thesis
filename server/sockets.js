@@ -5,7 +5,6 @@ module.exports = (io, Spotify, redis) => {
   const rooms = {};
   const timers = {};
 
-
   const getScores = async (roomID) => {
     const allMembers = await redis.zrevrangeAsync(`${roomID}:members`, 0, -1, 'withscores');
     const chunked = chunk(allMembers, 2);
@@ -34,11 +33,11 @@ module.exports = (io, Spotify, redis) => {
   const playNextSong = async (roomID) => {
     const nextSong = await redis.zrevrangeAsync(`${roomID}:queue`, 0, 1);
     if (nextSong.length) {
-      // Points:
-      const selector = nextSong.clientInfo.user;
-      console.log(selector);
-      const award = await getMembers(roomID).length * 10;
-      console.log(award);
+      /* Points: */
+      const parsedInfo = JSON.parse(nextSong[0]);
+      const selector = JSON.stringify(parsedInfo.clientInfo.user);
+      const members = await getMembers(roomID);
+      const award = members.length * 20;
       await changePoints(roomID, selector, award);
       await getScores(roomID);
 
