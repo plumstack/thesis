@@ -1,7 +1,7 @@
 <template>
   <div class="room-container">
     <div class="room" align="center" v-if="$store.state.username">
-      <h2>Room {{ roomId }}</h2>
+      <h2><span class = "title1"> Room </span> <span class = "title2">{{ roomId }}</span></h2>
       <div class="content">
         <Player class="content-item" :isHost="isHost"
         :roomId="roomId" :getInfoPressed="getInfoPressed" :playerInfo="playerInfo" />
@@ -16,8 +16,8 @@
       </tr>
     </table>
     <ul class="menu-container voting-menu">
-      <li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li>
-      <li class="voting-item score">Skip Votes: {{ votes }}</li>
+      <li class="voting-item skip-score">Skip Votes: {{ votes }}</li>
+      <div><li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li></div>
     </ul>
     <ul class="menu-container bottom-toggle">
       <li class="menu-item toggle-button" v-bind:class="{ active: !$store.state.searching }"
@@ -150,13 +150,18 @@ export default {
 
 <style scoped>
 h2 {
-  font-family: 'Kalam';
-  color: #fff;
+  font-family: 'Helvetica';
+  font-weight: 100;
   text-align: center;
   font-size: 5vw;
   margin: 2px;
 }
-
+.title1{
+  color: #6495ed;
+}
+.title2{
+  color: #db7095
+}
 .content {
   display: flex;
   flex-flow: row wrap;
@@ -169,15 +174,15 @@ h2 {
 
 .voting-menu {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.5);
   border-radius: 15px;
+  border-color: #0ff;
+  color: #FFF
 }
 
 .voting-item {
   display: inline-block;
   font-weight: 700;
   padding: 10px;
-  margin: 10px 10px;
   font-size: 1.5vw;
   border-radius: 10px;
 }
@@ -190,8 +195,9 @@ h2 {
   background: #f66;
 }
 
-.score {
-  color: #000;
+.skip-score {
+  font-size: 4vw;
+  color: #fff;
   background: transparent;
 }
 
@@ -226,7 +232,7 @@ h2 {
 }
 
 .active {
-  color: #db7095;
-  background: #fff;
+  color: #fff;
+  background: #0ff;
 }
 </style>

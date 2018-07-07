@@ -1,11 +1,11 @@
 <template>
   <div class="player">
     <div v-if="playerInfo.item" class="player-info">
+      <img class="album-art" :src="playerInfo.item.album.images[0].url" />
       <ul class="menu-container song-info">
         <li class="song-info-item song-title">{{ playerInfo.item.name}}</li>
         <li class="song-info-item">{{ playerInfo.item.artists[0].name }}</li>
       </ul>
-      <img class="album-art" :src="playerInfo.item.album.images[0].url" />
     </div>
     <div id="progress-bar">
       <div id="progress"></div>
@@ -92,31 +92,31 @@ export default {
 .player-info {
   margin: auto;
   width: 80%;
-  margin-bottom: 20px;
+  margin-bottom: 3px;
 }
 
 .song-info-item {
-  font-size: 1.5vw;
-  font-weight: 700;
+  font-size: 50%;
+  /*font-weight: 700; */
   color: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .song-title {
   color: #6495ed;
-  font-size: 2vw;
+  font-size: 100%;
   margin-bottom: 0;
 }
 
 .album-art {
   display: block;
   margin: auto;
-  height: 45%;
-  width: 45%;
+  height: 85%;
+  width: 85%;
 }
 
 #progress-bar {
-  width: 80%;
+  width: 70%;
   background: #fff;
   text-align: left;
   border-radius: 5px;

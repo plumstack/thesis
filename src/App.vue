@@ -31,7 +31,7 @@ export default {
 
 html {
   height: 100%;
-  background: linear-gradient(20deg,#db7095,#daa360) fixed;
+  background: #111
 }
 
 body{
