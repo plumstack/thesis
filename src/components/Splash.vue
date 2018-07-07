@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Welcome to Party Pooper</h1>
+    <h1>Social <span class="flicker">Nights</span></h1>
     <ul class="menu-container main-menu">
       <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="$store.commit('setJoining', true)">
         Join a Room
@@ -87,17 +87,44 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  font-family: "Monoton";
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  font-size: 10vw;
+  margin: .5vw;
+  margin-bottom: 1vw;
+  text-shadow: 0 0 2.4vw #fff, 0 0 .8vw #ff1493;
+}
+
+.flicker {
+  animation: upper 10s linear infinite;
+}
+
+@keyframes upper {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 2.4vw #fff, 0 0 1.2vw #0ff;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.4;
+    text-shadow: none;
+  }
+}
+
 .main-menu {
   margin: auto;
-  width: 40%;
+  width: 50%;
 }
 
 .main-menu-item {
-  font-size: 3vw;
+  font-family: "Comfortaa";
+  width: 80%;
+  font-size: calc(.6em + 3vw);
   font-weight: 700;
   padding: 12px;
   margin: 10px;
-  border: 2px solid #fff;
   border-radius: 15px;
 }
 
