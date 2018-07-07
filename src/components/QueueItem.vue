@@ -4,11 +4,11 @@
         <div class="track-item song-title">{{ track.name }}
           <div class="track-item song-info-item">{{ track.artists[0].name }}</div>
         </div>
-        <div class="queue-button" v-on:click="upvoteClicked(track)">
-          <img src="../assets/queueUp.svg" class="queue-vote" @click="$event.target.classList.toggle('voted')">
+        <div class="queue-button" @click="onQueueUpvote(track)">
+          <img src="../assets/queueUp.svg" class="queue-vote" :class='{ voted: vote === 1}' />
         </div>
-        <div class="queue-button" v-on:click="downvoteClicked(track)">
-          <img src="../assets/queueDown.svg" class="queue-vote" @click="$event.target.classList.toggle('voted')">
+        <div class="queue-button" @click="onQueueDownvote(track)">
+          <img src="../assets/queueDown.svg" class="queue-vote" :class='{ voted: vote === -1}' />
         </div>
       </div>
 </template>
@@ -19,24 +19,27 @@ export default {
   props: ['track'],
   data() {
     return {
-      hasDownvoted: false,
-      hasUpvoted: false,
+      vote: 0,
     };
   },
   methods: {
-    downvoteClicked(track) {
-      if (!this.hasDownvoted) {
-        this.hasDownvoted = true;
-        this.hasUpvoted = false;
-        this.queueDownvote(track);
+    onQueueDownvote(track) {
+      if (this.vote !== -1) {
+        this.vote = -1;
+        this.$emit('queueVote', track, this.vote);
+      } else {
+        this.vote = 0;
+        this.$emit('queueVote', track, 1);
       }
     },
-    upvoteClicked(track) {
-      if (!this.hasUpvoted) {
-        this.hasUpvoted = true;
-        this.hasDownvoted = false;
-        this.queueUpvote(track);
-      } else console.log('you have voted!!!');
+    onQueueUpvote(track) {
+      if (this.vote !== 1) {
+        this.vote = 1;
+        this.$emit('queueVote', track, this.vote);
+      } else {
+        this.vote = 0;
+        this.$emit('queueVote', track, -1);
+      }
     },
   },
 };

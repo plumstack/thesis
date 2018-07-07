@@ -3,13 +3,13 @@
     <li class="queue-header">
       <div class="queue-track">
         <div class="empty-image"></div>
-        <div class="track-item"> <!-- Track --></div>
+        <div class="track-item"></div>
         <div class="queue-vote"></div>
         <div class="queue-vote"></div>
       </div>
     </li>
     <li class="queue-track-list" v-for="track in currentQueue" :key="track.id">
-      <QueueItem :track="track" @queueUpvote="onQueueUpvote" @queueDownvote="onQueueDownvote"/>
+      <QueueItem :track="track" @queueVote="onQueueVote"/>
     </li>
   </ul>
 </template>
@@ -24,8 +24,9 @@ export default {
     QueueItem,
   },
   methods: {
-    onQueueUpvote() {},
-    onQueueDownvote() {},
+    onQueueVote(track, vote) {
+      this.$emit('queueVote', track, vote);
+    },
   },
 };
 </script>

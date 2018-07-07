@@ -1,18 +1,14 @@
-/* eslint-disable */
 module.exports = class Queue {
-  constructor(roomID, Spotify, Redis) {
+  constructor(roomID) {
     this.roomID = roomID;
-    this.Spotify = Spotify;
-    this.Redis = Redis;
+    this.skipVotes = 0;
   }
 
-  playNext(songID) {
+  // playNext(songID) {}
+
+  async vote(songInfo, vote) {
+    await this.Redis.zincrbyAsync(`${this.roomID}:queue`, vote, JSON.stringify(songInfo));
   }
-
-  upvote(songID) {}
-  
-  downvote(songID) {}
-
 
   async addSong(songInfo) {
     await this.Redis.zadd(`${this.roomID}:queue`, 0, JSON.stringify(songInfo));
@@ -23,7 +19,17 @@ module.exports = class Queue {
     return result;
   }
 
-  songIsUnique(songInfo) {
+  songIsUnique(songInfo) { // eslint-disable-line
     return true;
+  }
+  skipVote() {
+    this.skipVotes += 1;
+    return this.skipVotes;
+  }
+
+  async playNext() {
+    const nextSong = await this.Redis.zrevrangeAsync(`${this.roomID}:queue`, 0, 0);
+    this.Spotify.playSpecific(JSON.parse(nextSong[0]).uri);
+    this.Redis.zremAsync(`${this.roomID}:queue`, nextSong[0]);
   }
 };

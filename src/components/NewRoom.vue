@@ -5,9 +5,9 @@
     <NameEntry />
   </div>
   <div class='room' align='center' v-else>
-      <Player class='content-item' />
+      <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
       <MemberList />
-      <SkipVoter />
+      <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
     <ul class='menu-container bottom-toggle'>
       <li class='menu-item toggle-button' :class='{ active: view === "Queue"}'
         @click="changeView('Queue')">Queue</li>
@@ -15,7 +15,7 @@
         @click='changeView("Search")'>Search</li>
     </ul>
     <Queue v-if='view === "Queue"'
-      @queueUpvote='onQueueUpvote' @queueDownvote='onQueueDownvote'
+      @queueVote='onQueueVote'
       :currentQueue='currentQueue'/>
     <Search v-else-if='view === "Search"'
       @songSearch='onSongSearch' @queueSong='onQueueSong'
@@ -55,6 +55,8 @@ export default {
       view: 'Queue',
       searchResults: [],
       currentQueue: [],
+      currentlyPlaying: {},
+      currentSkipVotes: 0,
     };
   },
   computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
@@ -69,15 +71,26 @@ export default {
     onQueueSong(songInfo) {
       this.$socket.emit('onQueueSong', { username: this.getUsername, roomID: this.getRoomID, songInfo });
     },
-    onQueueUpvote() {},
-    onQueueDownvote() {},
+    onQueueVote(songInfo, vote) {
+      this.$socket.emit('queueVote', { roomID: this.getRoomID, songInfo, vote });
+    },
+    onSkipVote() {
+      this.$socket.emit('skipVote', { roomID: this.getRoomID, memberCount: this.getUsersList.length });
+    },
   },
   sockets: {
     songSearchResponse(searchResults) {
       this.searchResults = JSON.parse(searchResults).tracks.items;
     },
-    updateAll({ newQueue, newMemberList }) {
+    updateAll({
+      newQueue,
+      newMemberList,
+      currentlyPlaying,
+      skipVotes,
+    }) {
       this.currentQueue = newQueue;
+      this.currentSkipVotes = skipVotes || this.currentSkipVotes;
+      this.currentlyPlaying = currentlyPlaying;
       this.updateUserlist(newMemberList);
     },
     updateQueue(newQueue) {
@@ -90,7 +103,8 @@ export default {
       this.updateRoomID(this.$route.path.slice(-5));
       return this.$socket.emit('createRoom', { username: this.getUsername, roomID: this.getRoomID });
     }
-    return this.$socket.emit();
+    this.updateRoomID(this.$route.path.slice(-5));
+    return this.$socket.emit('joinRoom', { username: this.getUsername, roomID: this.getRoomID });
   },
 };
 </script>

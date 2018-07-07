@@ -2,12 +2,14 @@ const state = {
   username: '',
   userList: [],
   roomID: '',
+  skipped: false,
 };
 
 const getters = {
   getUsername: (s) => s.username,
   getUsersList: (s) => s.userList,
   getRoomID: (s) => s.roomID,
+  getSkipped: (s) => s.skipped,
 };
 
 const actions = {
@@ -29,6 +31,12 @@ const actions = {
     commit('setUserList', []);
     commit('setUsername', '');
   },
+  voteToSkip({ commit, rootState }) {
+    if (!rootState.skipped) commit('setSkipped', true);
+  },
+  resetSkip({ commit }) {
+    commit('setSkipped', false);
+  },
 };
 
 const mutations = {
@@ -40,6 +48,9 @@ const mutations = {
   },
   setRoomID(s, roomID) {
     s.roomID = roomID;
+  },
+  setSkipped(s, vote) {
+    s.skipped = vote;
   },
 };
 
