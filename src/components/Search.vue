@@ -1,25 +1,22 @@
 <template>
   <div class="search" align="center">
-    <input type="text" placeholder="Search for Songs" v-on:keyup.enter="search" v-model="searchQuery"/>
-    <ul v-if="searchQuery" class="search-list">
-    <li class="search-header">
-      <div class="search-track">
-        <div class="empty-image"></div>
-        <div class="track-item"> <!-- Track --></div>
-        <div><!-- Empty div for button --></div>
-      </div>
-    </li>
-    <li class="search-track-list" v-for="track in searchRes" :key="track.id">
-      <div class="search-track">
-        <img :src="track.album.images[2].url" class="album-image">
-        <div class="song-info-item song-title">
-            {{ track.name }}
-            <div class="song-info-item">{{ track.artists[0].name }}</div>
-          </div>
-        <div v-on:click="queue(track)" ><img src="../assets/plus.svg" class="queue-button-add"></div>
-      </div>
-    </li>
-  </ul>
+    <input type="text" placeholder="Search for Songs" @keyup.enter="onSongSearch" v-model="searchQuery"/>
+    <table v-if="searchQuery" class="search-results">
+      <tr class="table-header">
+         <th>  <!-- artwork --> </th>
+        <th><!-- Track --></th>
+        <th><!--Add --></th>
+      </tr>
+
+    <tr class="alternative_row" v-for="track in searchResults" :key="track.id">
+        <td><img :src="track.album.images[2].url" class="album-image"></td>
+        <td class="song-info-item song-title">
+          {{ track.name }}
+          <div class="song-info-item">{{ track.artists[0].name }}</div>
+        </td>
+        <td @click="onQueueSong(track)" ><img src="../assets/plus.svg" class="queue-button-add"></td>
+    </tr>
+    </table>
   </div>
 </template>
 
@@ -28,23 +25,18 @@
 
 export default {
   name: 'Search',
-  created() {
-  },
   data() {
     return {
-      searchResults: this.searchRes,
       searchQuery: '',
     };
   },
-  props: ['searchInput', 'searchRes', 'queue'],
+  props: ['searchResults'],
   methods: {
-    search() {
-      this.searchInput(this.searchQuery);
+    onSongSearch() {
+      this.$emit('songSearch', this.searchQuery);
     },
-    convertAMilli(ms) {
-      const minutes = Math.floor(ms / 60000).toString();
-      const seconds = ((ms % 60000) / 1000).toFixed(0).toString();
-      return `${minutes} : ${(seconds < 10 ? '0' : '')} ${seconds}`;
+    onQueueSong(track) {
+      this.$emit('queueSong', track);
     },
   },
 };
@@ -122,42 +114,9 @@ input[type=text]:focus {
   max-height: 32px;
   margin-right: 3px;
   border-radius: 50%;
-  background: #fff;
 }
 
 ::placeholder {
   color: rgba(255, 255, 255, .35);
 }
-
-.search-list {
-  list-style-type: none;
-  width: 75%;
-}
-
-.search-header {
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.search-track-list:nth-child(even) {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.search-track {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-}
-
-.track-item {
-  flex-grow: 1;
-  flex-basis: 0;
-}
-
-.empty-image {
-  width: 64px;
-}
-
 </style>

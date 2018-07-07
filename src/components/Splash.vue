@@ -3,6 +3,7 @@
     <h1>Welcome to Party Pooper</h1>
     <ul class="menu-container main-menu">
       <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="$store.commit('setJoining', true)">
+        <input type='text' placeholder='roomID'/>
         Join a Room
       </li>
       <li class="menu-item main-menu-item" v-if="!$store.state.joining" v-on:click="hostRoom">
