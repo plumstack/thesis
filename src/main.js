@@ -26,3 +26,5 @@ new Vue({
   router,
   store,
 }).$mount('#app');
+
+export default router;

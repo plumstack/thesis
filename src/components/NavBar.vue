@@ -1,22 +1,17 @@
 <template>
   <ul class="menu-container navbar">
-    <li class="menu-item topbar-item home" v-on:click="homeRoute">
+    <li class="menu-item topbar-item home" @click="leaveRoom">
       <img src="../assets/home.svg">
     </li>
   </ul>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 
 export default {
   name: 'NavBar',
-
-  methods: {
-    homeRoute() {
-      this.$store.commit('setJoining', false);
-      this.$router.push({ path: '/' });
-    },
-  },
+  methods: mapActions(['leaveRoom']),
 };
 </script>
 
