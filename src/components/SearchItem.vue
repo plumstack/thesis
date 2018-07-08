@@ -1,5 +1,5 @@
 <template>
-    <div class="search-track" @click="add(track)">
+    <div class="search-track" v-on:click="add(track)">
         <img :src="track.album.images[2].url">
         <div class="search-info-item search-title">
             {{ track.name }}

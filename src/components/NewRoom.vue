@@ -6,13 +6,14 @@
     </div>
     <div class='room' align='center' v-else>
         <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
-        <MemberList />
         <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
       <ul class='menu-container bottom-toggle'>
         <li class='menu-item toggle-button' :class='{ active: view === "Queue"}'
           @click="changeView('Queue')">Queue</li>
         <li class='menu-item toggle-button' :class='{ active: view === "Search"}'
           @click='changeView("Search")'>Search</li>
+        <li class='menu-item toggle-button' :class='{ active: view === "Members"}'
+        @click='changeView("Members")'>Members</li>
       </ul>
       <Queue v-if='view === "Queue"'
         @queueVote='onQueueVote'
@@ -20,6 +21,7 @@
       <Search v-else-if='view === "Search"'
         @songSearch='onSongSearch' @queueSong='onQueueSong'
         :searchResults='searchResults' />
+      <MemberList v-if='view === "Members"'/>
     </div>
   </div>
 </template>
@@ -218,22 +220,13 @@ h2:focus {
   display: inline-block;
   font-size: 3vw;
   padding: 5px 10px;
-  margin: 1vh 2vw .5vh 2vw;
+  margin: 1vh 2vw 0vh 2vw;
   text-align: center;
   border-radius: 7px;
 }
 
 .toggle-button:hover {
   background: rgba(255, 255, 255, 0.5);
-}
-
-.members-table {
-  font-size: 1.25vw;
-  position: absolute;
-  text-align: center;
-  bottom: 5%;
-  right: 8%;
-  color: #fff;
 }
 
 .active {

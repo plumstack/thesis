@@ -1,11 +1,11 @@
 <template>
   <div class="player">
     <div v-if="currentlyPlaying.item" class="player-info">
+      <img class="album-art" :src="currentlyPlaying.item.album.images[0].url" />
       <ul class="menu-container song-info">
         <li class="song-info-item song-title">{{ currentlyPlaying.item.name}}</li>
         <li class="song-info-item">{{ currentlyPlaying.item.artists[0].name }}</li>
       </ul>
-      <img class="album-art" :src="currentlyPlaying.item.album.images[0].url" />
     </div>
     <div id="progress-bar">
       <div id="progress"></div>
