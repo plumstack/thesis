@@ -27,7 +27,7 @@ export default {
     };
   },
   methods: {
-    submitName() {
+    async submitName() {
       this.usernameError = '';
 
       if (this.username.length > 16) {
@@ -39,8 +39,14 @@ export default {
       if (!this.username.length) {
         this.usernameError = 'Enter a username';
       }
+
+      if (await this.usernameVerify(this.username)) {
+        this.usernameError = 'Username is taken.';
+      }
+
       if (!this.usernameError) {
         this.updateUsername(this.username);
+        this.$emit('joinRoom');
       }
     },
     ...mapActions(['usernameVerify', 'updateRoomID', 'updateUsername']),
