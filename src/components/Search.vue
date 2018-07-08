@@ -10,26 +10,17 @@
       </div>
     </li>
     <li class="search-track-list" v-for="track in searchRes" :key="track.id">
-      <div class="search-track">
-        <img :src="track.album.images[2].url" class="album-image">
-        <div class="song-info-item song-title">
-            {{ track.name }}
-            <div class="song-info-item">{{ track.artists[0].name }}</div>
-          </div>
-        <div v-on:click="queue(track)" ><img src="../assets/plus.svg" class="queue-button-add"></div>
-      </div>
+      <SearchItem :track="track" />
     </li>
   </ul>
   </div>
 </template>
 
 <script>
-// import dummyData from './exampleSearchData';
+import SearchItem from './SearchItem.vue';
 
 export default {
   name: 'Search',
-  created() {
-  },
   data() {
     return {
       searchResults: this.searchRes,
@@ -37,6 +28,9 @@ export default {
     };
   },
   props: ['searchInput', 'searchRes', 'queue'],
+  components: {
+    SearchItem,
+  },
   methods: {
     search() {
       this.searchInput(this.searchQuery);
@@ -113,7 +107,7 @@ input[type=text] {
 input[type=text]:focus {
   width: 45%;
   outline: none;
-  color: #db7095;
+  color: #6495ed;
   background: #fff;
 }
 
