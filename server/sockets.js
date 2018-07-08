@@ -1,5 +1,5 @@
-const Queue = require('./queue');
-const MemberList = require('./memberlist');
+const Queue = require('./Queue');
+const UserList = require('./UserList');
 
 const roomList = {};
 
@@ -7,9 +7,9 @@ class Room {
   constructor(roomID, Spotify, Redis) {
     this.roomID = roomID;
     this.Queue = new Queue(this.roomID);
-    this.MemberList = new MemberList(this.roomID);
+    this.UserList = new UserList(this.roomID);
     this.Queue.Redis = Redis;
-    this.MemberList.Redis = Redis;
+    this.UserList.Redis = Redis;
     this.hostSessionID = 'TODO';
     this.Redis = Redis;
     this.SpotifyConstructor = Spotify;
@@ -17,9 +17,9 @@ class Room {
 
   async updateAll() {
     const newQueue = this.updateQueue();
-    const newMemberList = this.updateMemberList();
+    const newUserList = this.updateUserList();
     const newCurrentlyPlaying = this.updateCurrentlyPlaying();
-    return Promise.all([newQueue, newMemberList, newCurrentlyPlaying]);
+    return Promise.all([newQueue, newUserList, newCurrentlyPlaying]);
   }
 
   async updateQueue() {
@@ -27,9 +27,9 @@ class Room {
     return newQueue.map((track) => JSON.parse(track));
   }
 
-  async updateMemberList() {
-    const newMemberList = await this.MemberList.get();
-    return newMemberList;
+  async updateUserList() {
+    const newUserList = await this.UserList.get();
+    return newUserList;
   }
 
   async updateCurrentlyPlaying() {
@@ -57,11 +57,11 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
       socket.username = username;
 
       roomList[roomID] = new Room(roomID, Spotify, Redis);
-      await roomList[roomID].MemberList.join(username);
+      await roomList[roomID].UserList.join(username);
 
       roomList[roomID].updateAll()
-        .then(([newQueue, newMemberList, currentlyPlaying]) =>
-          socket.emit('updateAll', { newQueue, newMemberList, currentlyPlaying }));
+        .then(([newQueue, newUserList, currentlyPlaying]) =>
+          socket.emit('updateAll', { newQueue, newUserList, currentlyPlaying }));
     });
 
     // socket.on('forceSkip');
@@ -74,12 +74,12 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
 
       socket.join(roomID);
       socket.username = username;
-
-      roomList[roomID].MemberList.join(username);
+      console.log(username);
+      roomList[roomID].UserList.join(username);
 
       roomList[roomID].updateAll()
-        .then(([newQueue, newMemberList, currentlyPlaying]) =>
-          io.to(roomID).emit('updateAll', { newQueue, newMemberList, currentlyPlaying }));
+        .then(([newQueue, newUserList, currentlyPlaying]) =>
+          io.to(roomID).emit('updateAll', { newQueue, newUserList, currentlyPlaying }));
     });
 
     socket.on('onQueueSong', async (addedToQueueInfo) => {
@@ -103,15 +103,15 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
     });
 
     socket.on('skipVote', async (skipVoteInfo) => {
-      const { roomID, memberCount } = skipVoteInfo;
+      const { roomID, userCount } = skipVoteInfo;
       const skipVotes = await roomList[roomID].Queue.skipVote();
-      if (skipVotes >= memberCount * 0.6) await roomList[roomID].Queue.playNext();
+      if (skipVotes >= userCount * 0.6) await roomList[roomID].Queue.playNext();
 
       roomList[roomID].updateAll()
-        .then(([newQueue, newMemberList, currentlyPlaying]) =>
+        .then(([newQueue, newUserList, currentlyPlaying]) =>
           io.to(roomID).emit('updateAll', {
             newQueue,
-            newMemberList,
+            newUserList,
             currentlyPlaying,
             skipVotes,
           }));
@@ -127,8 +127,14 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
       const { roomID } = roomInfo;
 
       roomList[roomID].updateAll()
-        .then(([newQueue, newMemberList, currentlyPlaying]) =>
-          io.to(roomID).emit('updateAll', { newQueue, newMemberList, currentlyPlaying }));
+        .then(([newQueue, newUserList, currentlyPlaying]) =>
+          io.to(roomID).emit('updateAll', { newQueue, newUserList, currentlyPlaying }));
+    });
+
+    socket.on('getUserList', async (roomInfo) => {
+      const { roomID } = roomInfo;
+      roomList[roomID].updateUserList()
+        .then((newUserList) => socket.emit('updateUserList', newUserList));
     });
     // socket.on('checkUsername');
     // socket.on('reconnect'); // ???
