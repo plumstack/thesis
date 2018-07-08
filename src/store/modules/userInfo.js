@@ -1,3 +1,5 @@
+import router from '../../main';
+
 const state = {
   username: '',
   userList: [],
@@ -30,6 +32,7 @@ const actions = {
     commit('setRoomID', '');
     commit('setUserList', []);
     commit('setUsername', '');
+    router.push('/');
   },
   voteToSkip({ commit, rootState }) {
     if (!rootState.skipped) commit('setSkipped', true);
