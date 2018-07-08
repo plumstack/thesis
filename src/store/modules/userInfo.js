@@ -15,11 +15,10 @@ const getters = {
 };
 
 const actions = {
-  usernameVerify({ rootState }, username) {
-    if (rootState.userList.contains(username)) return false;
-    return true;
+  usernameVerify(x, username) {
+    return x.state.userList.includes(username);
   },
-  updateUserlist({ commit }, userList) {
+  updateUserList({ commit }, userList) {
     commit('setUserList', userList);
   },
   updateUsername({ commit }, username) {
