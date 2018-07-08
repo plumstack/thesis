@@ -1,19 +1,19 @@
 <template>
   <div class="player">
-    <div v-if="playerInfo.item" class="player-info">
-      <img class="album-art" :src="playerInfo.item.album.images[0].url" />
+    <div v-if="currentlyPlaying.item" class="player-info">
       <ul class="menu-container song-info">
-        <li class="song-info-item song-title">{{ playerInfo.item.name}}</li>
-        <li class="song-info-item">{{ playerInfo.item.artists[0].name }}</li>
+        <li class="song-info-item song-title">{{ currentlyPlaying.item.name}}</li>
+        <li class="song-info-item">{{ currentlyPlaying.item.artists[0].name }}</li>
       </ul>
+      <img class="album-art" :src="currentlyPlaying.item.album.images[0].url" />
     </div>
     <div id="progress-bar">
       <div id="progress"></div>
     </div>
-    <ul class="menu-container controls" v-if="isHost" >
-      <li class="menu-item controls-item" v-on:click="onClickPlay()">{{ playButton }}//TODO</li>
-      <li class="menu-item controls-item" v-on:click="onClickNext()">Next //TODO</li>
-      <li class="menu-item controls-item" v-on:click="getInfoPressed">GetInfo</li>
+    <ul class="menu-container controls" v-if="$route.query.host" >
+      <li class="menu-item controls-item" @click="onClickPlay">{{ playButton }}//TODO</li>
+      <li class="menu-item controls-item" @click="onClickNext">Next //TODO</li>
+      <!-- <li class="menu-item controls-item" @click="getInfoPressed">GetInfo</li> -->
     </ul>
   </div>
 </template>
@@ -41,10 +41,7 @@ export default {
   },
 
   props: {
-    roomId: { type: String, required: true },
-    isHost: { type: Boolean, required: true },
-    getInfoPressed: { type: Function, required: true },
-    playerInfo: { type: Object, required: false },
+    currentlyPlaying: { type: Object, required: false },
   },
 
   mounted() {
@@ -62,7 +59,7 @@ export default {
   },
 
   watch: {
-    playerInfo(newInfo) {
+    currentlyPlaying(newInfo) {
       const dur = newInfo.item.duration_ms;
       const el = newInfo.progress_ms;
 

@@ -1,11 +1,11 @@
 <template>
-    <div class="search-track">
-        <img :src="track.album.images[2].url" class="album-image">
-        <div class="song-info-item song-title">
+    <div class="search-track" @click="add(track)">
+        <img :src="track.album.images[2].url">
+        <div class="search-info-item search-title">
             {{ track.name }}
-            <div class="song-info-item">{{ track.artists[0].name }}</div>
+            <div class="search-info-item">{{ track.artists[0].name }}</div>
             </div>
-        <div v-on:click="queue(track)" ><img src="../assets/plus.svg" class="queue-button-add"></div>
+        <div v-on:click="add(track)" ><img src="../assets/plus-6495ed.svg" class="queue-button-add"></div>
     </div>
 </template>
 
@@ -18,27 +18,23 @@ export default {
     };
   },
   methods: {
+    add(track) {
+      this.$emit('queue', track);
+    },
+    onSongSearch() {
+      this.$emit('songSearch', this.searchQuery);
+    },
   },
 };
 </script>
 
 <style scoped>
-.search {
-  margin: auto;
-  margin-top: 20px;
-  width: 100%;
+.search-track {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
   color: white;
-}
-
-.search-results{
-    width: 70%;
-    margin-left:0%;
-    margin-right:0%;
-    border-collapse: collapse;
-}
-
-.table-header{
-    height: 75px;
 }
 
 .alternative_row:nth-child(even){
@@ -55,21 +51,24 @@ td {
     padding: 0px;
 }
 
-.album-image {
-  padding-top: 4px;
+.search-info-item {
+  font-size: 2vw;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
 }
 
-.cue {
-    color: #0ff;
+.search-title {
+  color: #6495ed;
+  font-size: 3vw;
+  margin: 0vh .5vw 0vh .5vw;
 }
-
 
 .queue-button-add {
   max-width: 32px;
   max-height: 32px;
   margin-right: 3px;
   border-radius: 50%;
-  background: #fff;
 }
 
 ::placeholder {
@@ -90,13 +89,6 @@ td {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.search-track {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-}
 
 .track-item {
   flex-grow: 1;

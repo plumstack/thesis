@@ -1,18 +1,16 @@
 <template>
   <div class="search" align="center">
-    <input type="text" placeholder="Search for Songs" v-on:keyup.enter="search" v-model="searchQuery"/>
-    <ul v-if="searchQuery" class="search-list">
-    <li class="search-header">
-      <div class="search-track">
-        <div class="empty-image"></div>
-        <div class="track-item"> <!-- Track --></div>
-        <div><!-- Empty div for button --></div>
-      </div>
+    <input type="text" placeholder="Search for Songs" @keyup.enter="onSongSearch" v-model="searchQuery"/>
+    <ul v-if="searchQuery" class="search-results">
+      <li class="search-header">
+         <div>  <!-- artwork --> </div>
+        <div><!-- Track --></div>
+        <div><!-- Add --></div>
+      </li>
+    <li class="alternative_row" v-for="track in searchResults" :key="track.id">
+      <SearchItem :track="track" @queue="onQueueSong"/>
     </li>
-    <li class="search-track-list" v-for="track in searchRes" :key="track.id">
-      <SearchItem :track="track" />
-    </li>
-  </ul>
+    </ul>
   </div>
 </template>
 
@@ -23,22 +21,19 @@ export default {
   name: 'Search',
   data() {
     return {
-      searchResults: this.searchRes,
       searchQuery: '',
     };
   },
-  props: ['searchInput', 'searchRes', 'queue'],
+  props: ['searchResults'],
   components: {
     SearchItem,
   },
   methods: {
-    search() {
-      this.searchInput(this.searchQuery);
+    onSongSearch() {
+      this.$emit('songSearch', this.searchQuery);
     },
-    convertAMilli(ms) {
-      const minutes = Math.floor(ms / 60000).toString();
-      const seconds = ((ms % 60000) / 1000).toFixed(0).toString();
-      return `${minutes} : ${(seconds < 10 ? '0' : '')} ${seconds}`;
+    onQueueSong(track) {
+      this.$emit('queueSong', track);
     },
   },
 };
@@ -77,8 +72,8 @@ td {
     padding: 0px;
 }
 
-.album-image {
-  padding-top: 4px;
+ul {
+  list-style-type: none;
 }
 
 .cue {
@@ -97,7 +92,7 @@ input[type=text] {
     font-weight: 700;
     text-align: center;
     background-position: 10px 10px;
-    padding: 10px 10px 10px 10px;
+    padding: 1vh 1vw 1vh 1vw;
     -webkit-transition: width 0.4s ease-in-out;
     transition: width 0.4s ease-in-out;
     margin-left: auto;
@@ -111,47 +106,7 @@ input[type=text]:focus {
   background: #fff;
 }
 
-.queue-button-add {
-  max-width: 32px;
-  max-height: 32px;
-  margin-right: 3px;
-  border-radius: 50%;
-  background: #fff;
-}
-
 ::placeholder {
   color: rgba(255, 255, 255, .35);
 }
-
-.search-list {
-  list-style-type: none;
-  width: 75%;
-}
-
-.search-header {
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.search-track-list:nth-child(even) {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.search-track {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-}
-
-.track-item {
-  flex-grow: 1;
-  flex-basis: 0;
-}
-
-.empty-image {
-  width: 64px;
-}
-
 </style>
