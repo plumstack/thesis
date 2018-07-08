@@ -1,152 +1,113 @@
 <template>
-  <div class="room-container">
-    <div class="room" align="center" v-if="$store.state.username">
-      <h2>Room {{ roomId }}</h2>
-      <div class="content">
-        <Player class="content-item" :isHost="isHost"
-        :roomId="roomId" :getInfoPressed="getInfoPressed" :playerInfo="playerInfo" />
-      </div>
-      <table class="members-table">
-      <p class="username">Username: {{ username }}</p>
-      <tr>
-        <th>Room Members</th>
-      </tr>
-      <tr v-for="(member, ind) in members" :key="ind">
-        <td>{{ JSON.parse(member[0]) }}, Score: {{member[1]}}</td>
-      </tr>
-    </table>
-    <ul class="menu-container voting-menu">
-      <li class="menu-item voting-item vote-down" v-on:click="skip">Skip</li>
-      <li class="voting-item score">Skip Votes: {{ votes }}</li>
-    </ul>
-    <ul class="menu-container bottom-toggle">
-      <li class="menu-item toggle-button" v-bind:class="{ active: !$store.state.searching }"
-        v-on:click="$store.commit('setSearching', false)">Queue</li>
-      <li class="menu-item toggle-button" v-bind:class="{ active: $store.state.searching }"
-        v-on:click="$store.commit('setSearching', true)">Search</li>
-    </ul>
-    <Queue v-if="!$store.state.searching" :curQueue="curQueue"
-    :queueUpvote="queueUpvote" :queueDownvote="queueDownvote" />
-    <Search v-if="$store.state.searching" :searchInput="searchInput" :searchRes="searchRes" :queue="queue" />
-    </div>
-    <NameEntry v-if="!$store.state.username" :joinRoom="joinRoom" />
+<div class='room-container'>
+  <h2>Room {{ getRoomID }}</h2>
+  <div align='center' v-if='!getUsername'>
+    <NameEntry />
   </div>
+  <div class='room' align='center' v-else>
+      <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
+      <MemberList />
+      <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
+    <ul class='menu-container bottom-toggle'>
+      <li class='menu-item toggle-button' :class='{ active: view === "Queue"}'
+        @click="changeView('Queue')">Queue</li>
+      <li class='menu-item toggle-button' :class='{ active: view === "Search"}'
+        @click='changeView("Search")'>Search</li>
+    </ul>
+    <Queue v-if='view === "Queue"'
+      @queueVote='onQueueVote'
+      :currentQueue='currentQueue'/>
+    <Search v-else-if='view === "Search"'
+      @songSearch='onSongSearch' @queueSong='onQueueSong'
+      :searchResults='searchResults' />
+  </div>
+</div>
 </template>
 
 <script>
 import Vue from 'vue';
-import VueSocketio from 'vue-socket.io';
+import VueSocket from 'vue-socket.io';
+import { mapGetters, mapActions } from 'vuex';
 
 import Player from './Player.vue';
 import Search from './Search.vue';
 import Queue from './Queue.vue';
+import MemberList from './MemberList.vue';
 import NameEntry from './NameEntry.vue';
+import SkipVoter from './SkipVoter.vue';
 
-Vue.use(VueSocketio, 'http://localhost:8082');
+const SERVER_URL = 'http://localhost:8082';
+
+Vue.use(VueSocket, SERVER_URL);
+
 export default {
   name: 'Room',
-  props: ['roomId'],
   components: {
     Player,
     Search,
     Queue,
+    MemberList,
     NameEntry,
+    SkipVoter,
   },
   data() {
     return {
-      room: this.roomId,
-      username: this.$route.query.username || this.$store.state.username,
-      connected: false,
-      members: [],
-      isHost: false,
-      searchRes: {},
-      playerInfo: {},
-      vote: 0,
-      votes: '0 / 1',
-      curQueue: [],
-      hasSkipped: false,
+      view: 'Queue',
+      searchResults: [],
+      currentQueue: [],
+      currentlyPlaying: {},
+      currentSkipVotes: 0,
     };
   },
-  sockets: {
-    memberListUpdate(members) {
-      this.members = members.members;
-      const parsed = members.queue.map((track) => JSON.parse(track));
-      this.curQueue = parsed;
-    },
-    searchResponse(results) {
-      this.searchRes = JSON.parse(results).tracks.items;
-    },
-    infoResponse(results) {
-      if (this.playerInfo.item && this.playerInfo.item.id !== results.item.id) {
-        this.hasSkipped = false;
-        this.votes = `0 / ${Math.floor(this.members.length)}`;
-      }
-      this.playerInfo = results;
-    },
-    queueUpdate(queue) {
-      const parsed = queue.map((track) => JSON.parse(track));
-      this.curQueue = parsed;
-      setTimeout(this.getInfoPressed, 1000);
-    },
-    skip(skipStatus) {
-      this.votes = `${skipStatus.skips} / ${Math.floor(this.members.length)}`;
-    },
-  },
+  computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
   methods: {
-    joinRoom(newUser) {
-      const username = this.username || newUser;
-      if (username) {
-        this.username = username;
-        this.$socket.emit('joinRoom', { user: username, room: this.room });
-        this.$socket.emit('getInfo');
-      }
+    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserlist']),
+    changeView(newView) {
+      this.view = newView;
     },
-    createRoom() {
-      this.$socket.emit('createRoom', { user: this.username, room: this.room });
-      this.isHost = true;
-      this.$socket.emit('getInfo', { room: this.room });
-      this.$socket.emit('getQueue', { room: this.room });
+    onSongSearch(query) {
+      this.$socket.emit('songSearch', { roomID: this.getRoomID, query });
     },
-    searchInput(search) {
-      this.$socket.emit('searchInput', { user: this.username, room: this.room, search });
+    onQueueSong(songInfo) {
+      this.$socket.emit('onQueueSong', { username: this.getUsername, roomID: this.getRoomID, songInfo });
     },
-    getInfoPressed() {
-      this.$socket.emit('getInfo', { room: this.room });
+    onQueueVote(songInfo, vote) {
+      this.$socket.emit('queueVote', { roomID: this.getRoomID, songInfo, vote });
     },
-    upvote() {
-      this.$socket.emit('upvote', { room: this.room, user: this.username });
-    },
-    skip() {
-      if (!this.hasSkipped) {
-        this.$socket.emit('skipVote', {
-          room: this.room,
-          user: this.username,
-          trackid: this.playerInfo.item.id,
-        });
-      }
-      this.hasSkipped = true;
-    },
-    queue(song) {
-      this.$store.commit('setSearching', false);
-      this.$socket.emit('queue', { room: this.room, user: this.username, song });
-    },
-    queueUpvote(song) {
-      this.$socket.emit('queueUpvote', { room: this.room, user: this.username, song });
-    },
-    queueDownvote(song) {
-      this.$socket.emit('queueDownvote', { room: this.room, song });
+    onSkipVote() {
+      this.$socket.emit('skipVote', { roomID: this.getRoomID, memberCount: this.getUsersList.length });
     },
   },
-  mounted() {
+  sockets: {
+    songSearchResponse(searchResults) {
+      this.searchResults = JSON.parse(searchResults).tracks.items;
+    },
+    updateAll({
+      newQueue,
+      newMemberList,
+      currentlyPlaying,
+      skipVotes,
+    }) {
+      this.currentQueue = newQueue;
+      this.currentSkipVotes = skipVotes || this.currentSkipVotes;
+      this.currentlyPlaying = currentlyPlaying;
+      this.updateUserlist(newMemberList);
+    },
+    updateQueue(newQueue) {
+      this.currentQueue = newQueue;
+    },
+  },
+  created() {
     if (this.$route.query.host) {
-      this.$store.commit('setUserName', this.$route.query.username);
-      return this.createRoom();
+      this.updateUsername(this.$route.query.username);
+      this.updateRoomID(this.$route.path.slice(-5));
+      return this.$socket.emit('createRoom', { username: this.getUsername, roomID: this.getRoomID });
     }
-    return this.joinRoom();
+    this.updateRoomID(this.$route.path.slice(-5));
+    return this.$socket.emit('joinRoom', { username: this.getUsername, roomID: this.getRoomID });
   },
 };
 </script>
-
 
 <style scoped>
 h2 {

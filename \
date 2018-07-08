@@ -9,7 +9,7 @@
     <li class="join-error">
       {{ usernameError }}
     </li>
-    <li class="menu-item join-item" @click="submitName">
+    <li class="menu-item join-item" @:click="submitName">
       Join
     </li>
   </ul>
@@ -25,6 +25,9 @@ export default {
       username: '',
       usernameError: '',
     };
+  },
+  props: {
+    joinRoom: { type: Function, required: true },
   },
   methods: {
     submitName() {
@@ -46,7 +49,7 @@ export default {
     ...mapActions(['usernameVerify', 'updateRoomID', 'updateUsername']),
   },
   created() {
-    this.updateRoomID(this.$route.path.slice(-5));
+    console.log(this.$route.path);
   },
 };
 </script>
