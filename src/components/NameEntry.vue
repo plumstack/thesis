@@ -4,35 +4,30 @@
       Username:
     </li>
     <li>
-      <input type="text" class="join-input" v-on:keyup.enter="submitName" v-model="username" />
+      <input type="text" class="join-input" @:keyup.enter="submitName" v-model="username" />
     </li>
     <li class="join-error">
       {{ usernameError }}
     </li>
-    <li class="menu-item join-item" v-on:click="submitName">
+    <li class="menu-item join-item" @click="submitName">
       Join
     </li>
   </ul>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 
 export default {
   name: 'NameEntry',
-
   data() {
     return {
       username: '',
       usernameError: '',
     };
   },
-
-  props: {
-    joinRoom: { type: Function, required: true },
-  },
-
   methods: {
-    submitName() {
+    async submitName() {
       this.usernameError = '';
 
       if (this.username.length > 16) {
@@ -44,11 +39,20 @@ export default {
       if (!this.username.length) {
         this.usernameError = 'Enter a username';
       }
+
+      if (await this.usernameVerify(this.username)) {
+        this.usernameError = 'Username is taken.';
+      }
+
       if (!this.usernameError) {
-        this.$store.commit('setUserName', this.username);
-        this.joinRoom(this.$store.state.username);
+        this.updateUsername(this.username);
+        this.$emit('joinRoom');
       }
     },
+    ...mapActions(['usernameVerify', 'updateRoomID', 'updateUsername']),
+  },
+  created() {
+    this.updateRoomID(this.$route.path.slice(-5));
   },
 };
 </script>
