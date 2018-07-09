@@ -1,27 +1,29 @@
 <template>
-<div class='room-container'>
-  <h2>Room {{ getRoomID }}</h2>
-  <div align='center' v-if='!getUsername'>
-    <NameEntry @joinRoom='onJoinRoom' />
+  <div align="center" class='room-container'>
+    <h2>ROOM {{ getRoomID }}</h2>
+    <div align='center' v-if='!getUsername'>
+      <NameEntry />
+    </div>
+    <div class='room' align='center' v-else>
+        <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
+        <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
+      <ul class='menu-container bottom-toggle'>
+        <li class='menu-item toggle-button' :class='{ active: view === "Queue"}'
+          @click="changeView('Queue')">Queue</li>
+        <li class='menu-item toggle-button' :class='{ active: view === "Search"}'
+          @click='changeView("Search")'>Search</li>
+        <li class='menu-item toggle-button' :class='{ active: view === "Users"}'
+        @click='changeView("Users")'>Members</li>
+      </ul>
+      <Queue v-if='view === "Queue"'
+        @queueVote='onQueueVote'
+        :currentQueue='currentQueue'/>
+      <Search v-else-if='view === "Search"'
+        @songSearch='onSongSearch' @queueSong='onQueueSong'
+        :searchResults='searchResults' />
+      <UserList v-if='view === "Users"'/>
+    </div>
   </div>
-  <div class='room' align='center' v-else>
-      <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
-      <UserList/>
-      <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
-    <ul class='menu-container bottom-toggle'>
-      <li class='menu-item toggle-button' :class='{ active: view === "Queue"}'
-        @click="changeView('Queue')">Queue</li>
-      <li class='menu-item toggle-button' :class='{ active: view === "Search"}'
-        @click='changeView("Search")'>Search</li>
-    </ul>
-    <Queue v-if='view === "Queue"'
-      @queueVote='onQueueVote'
-      :currentQueue='currentQueue'/>
-    <Search v-else-if='view === "Search"'
-      @songSearch='onSongSearch' @queueSong='onQueueSong'
-      :searchResults='searchResults' />
-  </div>
-</div>
 </template>
 
 <script>
@@ -55,7 +57,7 @@ export default {
       view: 'Queue',
       searchResults: [],
       currentQueue: [],
-      currentlyPlaying: {},
+      currentlyPlaying: null,
       currentSkipVotes: 0,
     };
   },
@@ -117,11 +119,63 @@ export default {
 </script>
 
 <style>
+@import url(https://fonts.googleapis.com/css?family=Exo+2:200i);
+
 h2 {
-  color: #fff;
-  text-align: center;
-  font-size: 5vw;
-  margin: 2px;
+  /* Base font size */
+  font-size: 10px;
+  /* Set neon color */
+  --neon-text-color: #f40;
+  --neon-border-color: #08f;
+  font-family: 'Exo 2', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: .8vh;
+  font-size: 1.5rem;
+  font-weight: 150;
+  font-style: italic;
+  color: rgb(255, 225, 225);
+  padding: 1rem 2rem 1rem 2rem;
+  border: 0.4rem solid rgb(223, 250, 255);
+  border-radius: 2rem;
+  animation: flicker 20s infinite alternate;
+  width: 20vw;
+}
+h2::-moz-selection {
+  background-color: var(--neon-border-color);
+  color: var(--neon-text-color);
+}
+h2::selection {
+  background-color: var(--neon-border-color);
+  color: var(--neon-text-color);
+}
+h2:focus {
+  outline: none;
+}
+/* Animate neon flicker */
+@keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        text-shadow:
+            -0.2rem -0.2rem 1rem rgb(255, 134, 134),
+            0.2rem 0.2rem 1rem rgb(255, 134, 134),
+            0 0 2rem var(--neon-text-color),
+            0 0 4rem var(--neon-text-color),
+            0 0 6rem var(--neon-text-color),
+            0 0 8rem var(--neon-text-color),
+            0 0 10rem var(--neon-text-color);
+        box-shadow:
+            0 0 .5rem rgb(129, 205, 255),
+            inset 0 0 .5rem rgb(129, 205, 255),
+            0 0 2rem var(--neon-border-color),
+            inset 0 0 2rem var(--neon-border-color),
+            0 0 4rem var(--neon-border-color),
+            inset 0 0 4rem var(--neon-border-color);
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+        box-shadow: none;
+    }
 }
 
 .content {
@@ -131,21 +185,20 @@ h2 {
 }
 
 .content-item {
-  margin: 10px 50px;
+  margin: 10px 10px;
 }
 
 .voting-menu {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 15px;
+  border-radius: 2px;
 }
 
 .voting-item {
   display: inline-block;
   font-weight: 700;
-  padding: 10px;
-  margin: 10px 10px;
-  font-size: 1.5vw;
+  padding: 5px 10px 5px 10px;
+  margin: 2vh 1vw 1vh 1vw;
+  font-size: 3vw;
   border-radius: 10px;
 }
 
@@ -154,11 +207,11 @@ h2 {
 }
 
 .vote-down {
-  background: #f66;
+  background: #08f;
 }
 
 .score {
-  color: #000;
+  color: #FFF;
   background: transparent;
 }
 
@@ -172,28 +225,19 @@ h2 {
 
 .toggle-button {
   display: inline-block;
-  font-size: 1.5vw;
+  font-size: 3vw;
   padding: 5px 10px;
-  margin: 5px;
+  margin: 1vh 2vw 0vh 2vw;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 7px;
 }
 
 .toggle-button:hover {
   background: rgba(255, 255, 255, 0.5);
 }
 
-.members-table {
-  font-size: 1.25vw;
-  position: absolute;
-  text-align: center;
-  top: 5%;
-  right: 8%;
-  color: #fff;
-}
-
 .active {
-  color: #db7095;
+  color: #08f;
   background: #fff;
 }
 </style>
