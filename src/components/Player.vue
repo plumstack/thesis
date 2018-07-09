@@ -1,11 +1,11 @@
 <template>
   <div class="player">
     <div v-if="currentlyPlaying" class="player-info">
+      <img class="album-art" :src="currentlyPlaying.item.album.images[0].url" />
       <ul class="menu-container song-info">
         <li class="song-info-item song-title">{{ currentlyPlaying.item.name}}</li>
         <li class="song-info-item">{{ currentlyPlaying.item.artists[0].name }}</li>
       </ul>
-      <img class="album-art" :src="currentlyPlaying.item.album.images[0].url" />
     <div id="progress-bar">
       <div id="progress"></div>
     </div>
@@ -18,7 +18,7 @@
       <li class="menu-item controls-item" @click="onClickNext">Next //TODO</li>
       <!-- <li class="menu-item controls-item" @click="getInfoPressed">GetInfo</li> -->
     </ul>
-  </div>
+</div>
 </template>
 
 <script>
@@ -92,11 +92,11 @@ export default {
 .player-info {
   margin: auto;
   width: 80%;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .song-info-item {
-  font-size: 1.5vw;
+  font-size: 2vw;
   font-weight: 700;
   color: #fff;
   margin-bottom: 10px;
@@ -104,19 +104,19 @@ export default {
 
 .song-title {
   color: #6495ed;
-  font-size: 2vw;
+  font-size: 4vw;
   margin-bottom: 0;
 }
 
 .album-art {
   display: block;
   margin: auto;
-  height: 45%;
-  width: 45%;
+  height: 60%;
+  width: 60%;
 }
 
 #progress-bar {
-  width: 80%;
+  width: 50%;
   background: #fff;
   text-align: left;
   border-radius: 5px;
@@ -125,7 +125,7 @@ export default {
 #progress {
   height: 10px;
   background: linear-gradient(90deg,#0ff,#6495ed);
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-radius: 5px;
 }
 

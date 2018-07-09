@@ -1,27 +1,21 @@
 <template>
   <div class="search" align="center">
     <input type="text" placeholder="Search for Songs" @keyup.enter="onSongSearch" v-model="searchQuery"/>
-    <table v-if="searchQuery" class="search-results">
-      <tr class="table-header">
-         <th>  <!-- artwork --> </th>
-        <th><!-- Track --></th>
-        <th><!--Add --></th>
-      </tr>
-
-    <tr class="alternative_row" v-for="track in searchResults" :key="track.id">
-        <td><img :src="track.album.images[2].url" class="album-image"></td>
-        <td class="song-info-item song-title">
-          {{ track.name }}
-          <div class="song-info-item">{{ track.artists[0].name }}</div>
-        </td>
-        <td @click="onQueueSong(track)" ><img src="../assets/plus.svg" class="queue-button-add"></td>
-    </tr>
-    </table>
+    <ul v-if="searchQuery" class="search-results">
+      <li class="search-header">
+         <div>  <!-- artwork --> </div>
+        <div><!-- Track --></div>
+        <div><!-- Add --></div>
+      </li>
+    <li class="alternative_row" v-for="track in searchResults" :key="track.id">
+      <SearchItem :track="track" @queue="onQueueSong"/>
+    </li>
+    </ul>
   </div>
 </template>
 
 <script>
-// import dummyData from './exampleSearchData';
+import SearchItem from './SearchItem.vue';
 
 export default {
   name: 'Search',
@@ -31,6 +25,9 @@ export default {
     };
   },
   props: ['searchResults'],
+  components: {
+    SearchItem,
+  },
   methods: {
     onSongSearch() {
       this.$emit('songSearch', this.searchQuery);
@@ -75,8 +72,8 @@ td {
     padding: 0px;
 }
 
-.album-image {
-  padding-top: 4px;
+ul {
+  list-style-type: none;
 }
 
 .cue {
@@ -95,7 +92,7 @@ input[type=text] {
     font-weight: 700;
     text-align: center;
     background-position: 10px 10px;
-    padding: 10px 10px 10px 10px;
+    padding: 1vh 1vw 1vh 1vw;
     -webkit-transition: width 0.4s ease-in-out;
     transition: width 0.4s ease-in-out;
     margin-left: auto;
@@ -105,15 +102,8 @@ input[type=text] {
 input[type=text]:focus {
   width: 45%;
   outline: none;
-  color: #db7095;
+  color: #6495ed;
   background: #fff;
-}
-
-.queue-button-add {
-  max-width: 32px;
-  max-height: 32px;
-  margin-right: 3px;
-  border-radius: 50%;
 }
 
 ::placeholder {
