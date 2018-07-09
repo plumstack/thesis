@@ -8,7 +8,7 @@
       placeholder="Username" @keyup.enter="submitName"/>
     </li>
     <li class="join-error">
-      {{ roomError }}
+      {{ usernameError }}
     </li>
   </ul>
 </template>
@@ -37,11 +37,9 @@ export default {
       if (!this.username.length) {
         this.usernameError = 'Enter a username';
       }
-
       if (await this.usernameVerify(this.username)) {
         this.usernameError = 'Username is taken.';
       }
-
       if (!this.usernameError) {
         this.updateUsername(this.username);
         this.$emit('joinRoom');
