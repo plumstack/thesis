@@ -115,13 +115,13 @@ h1 {
 
 .main-menu {
   margin: auto;
-  width: 50%;
+  width: 100%;
 }
 
 .main-menu-item {
   font-family: "Comfortaa";
   width: 80%;
-  font-size: calc(.6em + 3vw);
+  font-size: 1.5em;
   font-weight: 700;
   padding: 12px;
   margin: 10px;
@@ -169,5 +169,11 @@ h1 {
 
 .join-error {
   color: #900;
+}
+
+@media screen and (min-width: 900px) {
+  .main-menu-item {
+    width: 50%;
+  }
 }
 </style>

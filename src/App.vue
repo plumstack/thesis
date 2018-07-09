@@ -30,6 +30,7 @@ html {
 body {
   margin: 0;
   font-family: Roboto;
+  font-size: calc(.8rem + 1vw);
 }
 
 h1, h2, h3 {
@@ -43,7 +44,6 @@ h1, h2, h3 {
   padding: 0;
   margin: 0;
   overflow: hidden;
-  background: transparent;
 }
 
 .menu-item {
@@ -52,9 +52,11 @@ h1, h2, h3 {
   background: #333;
 }
 
-.menu-item:hover {
-  cursor: pointer;
-  background: #0ff;
-  transition: background-color 5s ease;
+@media screen and (min-width: 900px) {
+  .menu-item:hover {
+    cursor: pointer;
+    background: #0ff;
+    transition: background-color 5s ease;
+  }
 }
 </style>
