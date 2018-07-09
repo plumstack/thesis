@@ -57,7 +57,7 @@ export default {
       view: 'Queue',
       searchResults: [],
       currentQueue: [],
-      currentlyPlaying: {},
+      currentlyPlaying: null,
       currentSkipVotes: 0,
     };
   },

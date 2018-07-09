@@ -1,21 +1,24 @@
 <template>
   <div class="player">
-    <div v-if="currentlyPlaying.item" class="player-info">
+    <div v-if="currentlyPlaying" class="player-info">
       <img class="album-art" :src="currentlyPlaying.item.album.images[0].url" />
       <ul class="menu-container song-info">
         <li class="song-info-item song-title">{{ currentlyPlaying.item.name}}</li>
         <li class="song-info-item">{{ currentlyPlaying.item.artists[0].name }}</li>
       </ul>
-    </div>
     <div id="progress-bar">
       <div id="progress"></div>
+    </div>
+    </div>
+    <div v-else>
+      <h2>Please start playback on your device and refresh the page.</h2>
     </div>
     <ul class="menu-container controls" v-if="$route.query.host" >
       <li class="menu-item controls-item" @click="onClickPlay">{{ playButton }}//TODO</li>
       <li class="menu-item controls-item" @click="onClickNext">Next //TODO</li>
       <!-- <li class="menu-item controls-item" @click="getInfoPressed">GetInfo</li> -->
     </ul>
-  </div>
+</div>
 </template>
 
 <script>
@@ -39,20 +42,18 @@ export default {
       baseline: 0,
     };
   },
-
-  props: {
-    currentlyPlaying: { type: Object, required: false },
-  },
-
+  props: ['currentlyPlaying'],
   mounted() {
     this.timer = new Tock({
       interval: 50,
       callback: () => {
-        const elapsed = this.baseline + this.timer.lap();
-        const progress = document.getElementById('progress');
-        const percent = (elapsed / this.duration) * 100;
-        const width = percent <= 100 ? percent : 100;
-        progress.style.width = `${width}%`;
+        if (this.currentlyPlaying) {
+          const elapsed = this.baseline + this.timer.lap();
+          const progress = document.getElementById('progress');
+          const percent = (elapsed / this.duration) * 100;
+          const width = percent <= 100 ? percent : 100;
+          progress.style.width = `${width}%`;
+        }
       },
     });
     this.timer.start();
@@ -60,14 +61,16 @@ export default {
 
   watch: {
     currentlyPlaying(newInfo) {
-      const dur = newInfo.item.duration_ms;
-      const el = newInfo.progress_ms;
+      if (this.currentlyPlaying) {
+        const dur = newInfo.item.duration_ms;
+        const el = newInfo.progress_ms;
 
-      this.duration = dur;
-      this.baseline = el;
+        this.duration = dur;
+        this.baseline = el;
 
-      this.timer.reset();
-      this.timer.start();
+        this.timer.reset();
+        this.timer.start();
+      }
     },
   },
 
