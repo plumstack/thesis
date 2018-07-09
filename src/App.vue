@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <NavBar />
+    <NavBar class = "top-bar"/>
     <router-view></router-view>
   </div>
 </template>
@@ -35,6 +35,11 @@ body {
 h1, h2, h3 {
   font-family: "Comfortaa";
   font-weight: 400;
+}
+
+.top-bar {
+  position: fixed;
+  top: 0;
 }
 
 .menu-container {
