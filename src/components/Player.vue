@@ -88,7 +88,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .player-info {
   margin: auto;
   width: 80%;
