@@ -154,6 +154,7 @@ module.exports = class Spotify {
       const data = playerInfoData ? JSON.parse(playerInfoData) : null;
       return data;
     } catch (error) {
+      console.log(error);
       console.log('error AHHHHH');
       return error;
     }

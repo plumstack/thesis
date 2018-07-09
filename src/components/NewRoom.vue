@@ -77,7 +77,7 @@ export default {
       this.$socket.emit('queueVote', { roomID: this.getRoomID, songInfo, vote });
     },
     onSkipVote() {
-      this.$socket.emit('skipVote', { roomID: this.getRoomID, memberCount: this.getUsersList.length });
+      this.$socket.emit('skipVote', { roomID: this.getRoomID, userCount: this.getUsersList.length });
     },
     onJoinRoom() {
       this.$socket.emit('joinRoom', { username: this.getUsername, roomID: this.getRoomID });
