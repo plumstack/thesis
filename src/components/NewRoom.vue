@@ -15,6 +15,7 @@
       @songSearch='onSongSearch' @queueSong='onQueueSong'
       :searchResults='searchResults' />
     <UserList v-if='view === "Users"'/>
+    <div class = "bar-margin"></div>
     <BottomBar @changeView="onChangeView" :view='view'/>
   </div>
 </template>
@@ -216,6 +217,10 @@ h2:focus {
 .score {
   color: #FFF;
   background: transparent;
+}
+
+.bar-margin{
+  height: 6vh;
 }
 
 </style>
