@@ -47,7 +47,7 @@ export default {
     this.timer = new Tock({
       interval: 50,
       callback: () => {
-        if (this.currentlyPlaying) {
+        if (document.getElementById('progress')) {
           const elapsed = this.baseline + this.timer.lap();
           const progress = document.getElementById('progress');
           const percent = (elapsed / this.duration) * 100;
