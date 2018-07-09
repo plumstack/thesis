@@ -5,9 +5,9 @@
       <tr>
         <th class="members-title">Room Members</th>
       </tr>
-      <tr v-for="member in getUsersList" :key="member">
+      <tr v-for="user in getUsersList" :key="user">
         <td>
-          <MemberListItem :member="member" />
+          <UserListItem :user="user" />
         </td>
       </tr>
     </table>

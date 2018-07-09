@@ -12,8 +12,8 @@
           @click="changeView('Queue')">Queue</li>
         <li class='menu-item toggle-button' :class='{ active: view === "Search"}'
           @click='changeView("Search")'>Search</li>
-        <li class='menu-item toggle-button' :class='{ active: view === "Members"}'
-        @click='changeView("Members")'>Members</li>
+        <li class='menu-item toggle-button' :class='{ active: view === "Users"}'
+        @click='changeView("Users")'>Members</li>
       </ul>
       <Queue v-if='view === "Queue"'
         @queueVote='onQueueVote'
@@ -21,7 +21,7 @@
       <Search v-else-if='view === "Search"'
         @songSearch='onSongSearch' @queueSong='onQueueSong'
         :searchResults='searchResults' />
-      <MemberList v-if='view === "Members"'/>
+      <UserList v-if='view === "Users"'/>
     </div>
   </div>
 </template>
