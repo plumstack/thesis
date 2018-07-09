@@ -16,11 +16,11 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import MemberListItem from './MemberListItem.vue';
+import UserListItem from './UserListItem.vue';
 
 export default {
-  name: 'MemberList',
-  components: { MemberListItem },
+  name: 'UserList',
+  components: { UserListItem },
   computed: mapGetters(['getUsersList', 'getUsername']),
 };
 </script>

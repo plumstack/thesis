@@ -34,7 +34,7 @@ import { mapGetters, mapActions } from 'vuex';
 import Player from './Player.vue';
 import Search from './Search.vue';
 import Queue from './Queue.vue';
-import MemberList from './MemberList.vue';
+import UserList from './UserList.vue';
 import NameEntry from './NameEntry.vue';
 import SkipVoter from './SkipVoter.vue';
 
@@ -48,7 +48,7 @@ export default {
     Player,
     Search,
     Queue,
-    MemberList,
+    UserList,
     NameEntry,
     SkipVoter,
   },
@@ -63,7 +63,7 @@ export default {
   },
   computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
   methods: {
-    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserlist']),
+    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList']),
     changeView(newView) {
       this.view = newView;
     },
@@ -79,6 +79,9 @@ export default {
     onSkipVote() {
       this.$socket.emit('skipVote', { roomID: this.getRoomID, memberCount: this.getUsersList.length });
     },
+    onJoinRoom() {
+      this.$socket.emit('joinRoom', { username: this.getUsername, roomID: this.getRoomID });
+    },
   },
   sockets: {
     songSearchResponse(searchResults) {
@@ -86,27 +89,31 @@ export default {
     },
     updateAll({
       newQueue,
-      newMemberList,
+      newUserList,
       currentlyPlaying,
       skipVotes,
     }) {
       this.currentQueue = newQueue;
       this.currentSkipVotes = skipVotes || this.currentSkipVotes;
       this.currentlyPlaying = currentlyPlaying;
-      this.updateUserlist(newMemberList);
+      this.updateUserList(newUserList);
     },
     updateQueue(newQueue) {
       this.currentQueue = newQueue;
+    },
+    updateUserList(newUserList) {
+      this.updateUserList(newUserList);
     },
   },
   created() {
     if (this.$route.query.host) {
       this.updateUsername(this.$route.query.username);
       this.updateRoomID(this.$route.path.slice(-5));
-      return this.$socket.emit('createRoom', { username: this.getUsername, roomID: this.getRoomID });
+      this.$socket.emit('createRoom', { username: this.getUsername, roomID: this.getRoomID });
+    } else {
+      this.updateRoomID(this.$route.path.slice(-5));
+      this.$socket.emit('getUserList', { roomID: this.getRoomID });
     }
-    this.updateRoomID(this.$route.path.slice(-5));
-    return this.$socket.emit('joinRoom', { username: this.getUsername, roomID: this.getRoomID });
   },
 };
 </script>
@@ -234,4 +241,3 @@ h2:focus {
   background: #fff;
 }
 </style>
-
