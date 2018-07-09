@@ -1,4 +1,4 @@
-const Queue = require('./Queue');
+const Queue = require('./queue');
 const UserList = require('./UserList');
 
 const roomList = {};

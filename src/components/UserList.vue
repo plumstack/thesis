@@ -1,12 +1,14 @@
 <template>
-<div>
-      <table class="members-table">
-      <p class="username">Username: {{ getUsername}}</p>
+  <div class="members-table">
+      <table>
+      <p class="current-user">You: <span class="highlight">{{ getUsername }}</span> </p>
       <tr>
-        <th>Room Members</th>
+        <th class="members-title">Room Members</th>
       </tr>
-      <tr v-for="member in getUsersList" :key="member">
-        <td>{{ member }}</td>
+      <tr v-for="user in getUsersList" :key="user">
+        <td>
+          <UserListItem :user="user" />
+        </td>
       </tr>
     </table>
   </div>
@@ -23,6 +25,23 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+  .members-table {
+    margin: auto;
+    margin-top: .25vh;
+    width: 100%;
+    color: white;
+    font-size: 4vw;
+  }
+  .highlight {
+    color: #08f;
+    text-align: center;
+  }
+  .members-title {
+    color: #08f;
+  }
+  .current-user {
+    text-align: center;
+  }
 
 </style>

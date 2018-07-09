@@ -1,5 +1,5 @@
 <template>
-  <div class="room-container">
+  <div align="center" class="room-container">
     <div class="room" align="center" v-if="$store.state.username">
       <h2>Room {{ roomId }}</h2>
       <div class="content">
