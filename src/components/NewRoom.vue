@@ -107,7 +107,7 @@ export default {
     getUpdatedUserList(newUserList) {
       this.updateUserList(newUserList);
     },
-    updateScores(newScores) {
+    getUpdatedScores(newScores) {
       this.updateScores(newScores);
     },
   },
