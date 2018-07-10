@@ -2,7 +2,7 @@
   <div align="center" class='room-container'>
     <h2>ROOM {{ getRoomID }}</h2>
     <div align='center' v-if='!getUsername'>
-      <NameEntry />
+      <NameEntry @joinRoom='onJoinRoom' />
     </div>
     <div class='room' align='center' v-else>
         <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
