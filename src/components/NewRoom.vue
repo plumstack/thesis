@@ -8,15 +8,17 @@
         <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
         <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
     </div>
-    <Queue v-if='view === "Queue"'
-      @queueVote='onQueueVote'
-      :currentQueue='currentQueue'/>
-    <Search v-else-if='view === "Search"'
-      @songSearch='onSongSearch' @queueSong='onQueueSong'
-      :searchResults='searchResults' />
-    <UserList v-if='view === "Users"'/>
-    <div class = "bar-margin"></div>
-    <BottomBar @changeView="onChangeView" :view='view'/>
+    <div v-if='getUsername'>
+      <Queue v-if='view === "Queue"'
+        @queueVote='onQueueVote'
+        :currentQueue='currentQueue'/>
+      <Search v-else-if='view === "Search"'
+        @songSearch='onSongSearch' @queueSong='onQueueSong'
+        :searchResults='searchResults' />
+      <UserList v-if='view === "Users"'/>
+      <div class = "bar-margin"></div>
+      <BottomBar @changeView="onChangeView" :view='view'/>
+    </div>
   </div>
 </template>
 
