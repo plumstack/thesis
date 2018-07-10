@@ -3,10 +3,12 @@ module.exports = class UserList {
     this.roomID = roomID;
     this.RedisKey = `${this.roomID}:UserList`;
   }
-  async join(username) {
-    await this.Redis.zadd(this.RedisKey, 0, username);
+  join(username) {
+    this.Redis.zadd(this.RedisKey, 0, username);
   }
-  // leave(username) { return username; }
+  leave(username) {
+    this.Redis.zrem(this.RedisKey, username);
+  }
   // vote(username) { return username; }
   async get() {
     const result = await this.Redis.zrevrangeAsync(this.RedisKey, 0, -1);

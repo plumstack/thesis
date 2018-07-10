@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-import VueSocket from 'vue-socket.io';
 import { mapGetters, mapActions } from 'vuex';
 
 import Player from './Player.vue';
@@ -30,10 +28,6 @@ import UserList from './UserList.vue';
 import NameEntry from './NameEntry.vue';
 import SkipVoter from './SkipVoter.vue';
 import BottomBar from './BottomBar.vue';
-
-const SERVER_URL = 'http://localhost:8082';
-
-Vue.use(VueSocket, SERVER_URL);
 
 export default {
   name: 'Room',
@@ -76,6 +70,14 @@ export default {
     onJoinRoom() {
       this.$socket.emit('joinRoom', { username: this.getUsername, roomID: this.getRoomID });
     },
+    handleVisibilityChange() {
+      // console.log(this.$socket);
+      // if (this.$socket.connected) this.$socket.disconnect();
+      // else {
+      //   this.$socket.connect(null, { forceNew: true });
+      //   this.$socket.emit('reconnect', { roomID: this.getRoomID });
+      // }
+    },
   },
   sockets: {
     songSearchResponse(searchResults) {
@@ -100,6 +102,7 @@ export default {
     },
   },
   created() {
+    document.addEventListener('visibilitychange', this.handleVisibilityChange, false);
     if (this.$route.query.host) {
       this.updateUsername(this.$route.query.username);
       this.updateRoomID(this.$route.path.slice(-5));
