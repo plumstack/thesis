@@ -42,7 +42,7 @@ class Room {
   async updateCurrentlyPlaying() {
     if (!this.Spotify) await this.spotifyInit();
     const currentlyPlaying = await this.Spotify.getPlayerInfo();
-    this.setTimer(currentlyPlaying.item.duration_ms, currentlyPlaying.progress_ms);
+    if (currentlyPlaying) this.setTimer(currentlyPlaying.item.duration_ms, currentlyPlaying.progress_ms);
     return currentlyPlaying;
   }
 
@@ -71,6 +71,7 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
 
       socket.join(roomID);
       socket.username = username;
+      socket.roomID = roomID;
 
       roomList[roomID] = new Room(roomID, Spotify, Redis, io);
       await roomList[roomID].UserList.join(username);
@@ -87,6 +88,8 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
 
       socket.join(roomID);
       socket.username = username;
+      socket.roomID = roomID;
+
       roomList[roomID].UserList.join(username);
 
       roomList[roomID].updateAll();
@@ -136,10 +139,23 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
 
     socket.on('getUserList', async (roomInfo) => {
       const { roomID } = roomInfo;
+
       roomList[roomID].updateUserList()
         .then((newUserList) => socket.emit('updateUserList', newUserList));
     });
+
+    socket.on('disconnect', async () => {
+      const { roomID } = socket;
+      if (roomList[roomID]) {
+        roomList[roomID].UserList.leave(socket.username);
+        roomList[roomID].updateAll();
+      }
+    });
+
+    socket.on('reconnect', (roomInfo) => {
+      const { roomID } = roomInfo;
+      roomList[roomID].updateAll();
+    }); // ???
     // socket.on('checkUsername');
-    // socket.on('reconnect'); // ???
   });
 };
