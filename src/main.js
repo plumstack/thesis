@@ -11,7 +11,7 @@ import Login from '../src/components/Login.vue';
 
 Vue.config.productionTip = false;
 
-const SERVER_URL = 'http://10.30.23.191:8082';
+const SERVER_URL = 'http://localhost:8082';
 const socket = io(SERVER_URL);
 
 Vue.use(VueRouter);
