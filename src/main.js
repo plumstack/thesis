@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import VueSocket from 'vue-socket.io';
+import io from 'socket.io-client';
 import store from './store/store';
 
 import App from './App.vue';
@@ -8,9 +8,11 @@ import Splash from '../src/components/Splash.vue';
 import Room from '../src/components/NewRoom.vue';
 import Login from '../src/components/Login.vue';
 
+
 Vue.config.productionTip = false;
 
-const SERVER_URL = 'http://10.30.65.224:8082';
+const SERVER_URL = 'http://localhost:8082';
+const socket = io(SERVER_URL);
 
 Vue.use(VueRouter);
 
@@ -22,7 +24,7 @@ const routes = [
     props: true,
     beforeEnter(_, __, next) {
       if (!Vue.prototype.$socket) {
-        Vue.use(VueSocket, SERVER_URL);
+        Vue.prototype.$socket = socket;
       }
       next();
     },

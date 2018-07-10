@@ -78,8 +78,6 @@ export default {
       //   this.$socket.emit('reconnect', { roomID: this.getRoomID });
       // }
     },
-  },
-  sockets: {
     songSearchResponse(searchResults) {
       this.searchResults = JSON.parse(searchResults).tracks.items;
     },
@@ -97,12 +95,18 @@ export default {
     updateQueue(newQueue) {
       this.currentQueue = newQueue;
     },
-    updateUserList(newUserList) {
+    getUpdatedUserList(newUserList) {
       this.updateUserList(newUserList);
     },
   },
-  created() {
+  mounted() {
+    this.$socket.on('songSearchResponse', this.songSearchResponse);
+    this.$socket.on('updateAll', this.updateAll);
+    this.$socket.on('updateQueue', this.updateQueue);
+    this.$socket.on('updateUserList', this.getUpdateUserList);
+
     document.addEventListener('visibilitychange', this.handleVisibilityChange, false);
+
     if (this.$route.query.host) {
       this.updateUsername(this.$route.query.username);
       this.updateRoomID(this.$route.path.slice(-5));
