@@ -1,8 +1,8 @@
 <template>
       <div class="queue-track">
         <img :src="track.album.images[2].url" class="album-image">
-        <div class="track-item song-title">{{ track.name }}
-          <div class="track-item song-info-item">{{ track.artists[0].name }}</div>
+        <div class="track-item song-info">{{ track.name }}
+          <div class="song-artist">{{ track.artists[0].name }}</div>
         </div>
         <div class="queue-button" @click="onQueueUpvote(track)">
           <img src="../assets/queueUp.svg" class="queue-vote" :class='{ voted: vote === 1}' />
@@ -61,6 +61,17 @@ queue-track-list:nth-child(even) {
 .track-item {
   flex-grow: 1;
   flex-basis: 0;
+}
+
+.song-info {
+  color: #6495ed;
+  font-size: 1.4em;
+}
+
+.song-artist {
+  color: #fff;
+  font-size: .75em;
+  margin-top: .5vh;
 }
 
 .queue-button {

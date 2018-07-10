@@ -108,12 +108,6 @@ export default {
   margin-top: 1.25vh;
 }
 
-.song-info-item {
-  font-size: 1em;
-  font-weight: 700;
-  color: #fff;
-}
-
 .song-title {
   color: #6495ed;
   font-size: 1.5em;

@@ -10,7 +10,7 @@ import Login from '../src/components/Login.vue';
 
 Vue.config.productionTip = false;
 
-const SERVER_URL = 'http://10.30.23.191:8082';
+const SERVER_URL = 'http://10.30.65.224:8082';
 
 Vue.use(VueRouter);
 

@@ -1,7 +1,7 @@
 <template>
-        <div>
-            {{user}}, Score: 9000 (TBD)
-        </div>
+  <div>
+    {{user}}, 9000
+  </div>
 </template>
 
 <script>

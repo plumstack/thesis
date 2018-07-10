@@ -149,14 +149,8 @@ h2 {
   box-shadow: 0 0 1.5em #fff, 0 0 .8em #0ff, inset 0 0 1.5em #fff, inset 0 0 .8em #0ff;
 }
 
-.content {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-}
-
-.content-item {
-  margin: 10px 10px;
+.room {
+  margin-bottom: 3vh;
 }
 
 .voting-menu {
