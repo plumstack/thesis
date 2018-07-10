@@ -1,6 +1,7 @@
 <template>
   <div class="search" align="center">
-    <input type="text" placeholder="Search for Songs" @keyup.enter="onSongSearch" v-model="searchQuery"/>
+    <input type="text" id="search-input" placeholder="Search for Songs"
+    @keyup.enter="onSongSearch" v-model="searchQuery"/>
     <ul v-if="searchQuery" class="search-results">
       <li class="alternative_row" v-for="track in searchResults" :key="track.id">
         <SearchItem :track="track" @queue="onQueueSong"/>
@@ -22,6 +23,9 @@ export default {
   props: ['searchResults'],
   components: {
     SearchItem,
+  },
+  mounted() {
+    document.getElementById('search-input').focus();
   },
   methods: {
     onSongSearch() {

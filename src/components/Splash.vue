@@ -6,7 +6,7 @@
         Join a Room:
       </li>
       <li class="room-id">
-        <input type="text" class="text-input" v-model="joinRoomID"
+        <input type="text" id="room-input" class="text-input" v-model="joinRoomID"
         placeholder="Room ID" @keyup.enter="joinRoom"/>
       </li>
       <li class="join-error">
@@ -30,6 +30,10 @@ export default {
       joinRoomID: '',
       roomError: '',
     };
+  },
+
+  mounted() {
+    document.getElementById('room-input').focus();
   },
 
   methods: {
