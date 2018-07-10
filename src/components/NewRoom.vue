@@ -7,22 +7,16 @@
     <div class='room' align='center' v-else>
         <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
         <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
-      <ul class='menu-container bottom-toggle'>
-        <li class='menu-item toggle-button' :class='{ active: view === "Queue"}'
-          @click="changeView('Queue')">Queue</li>
-        <li class='menu-item toggle-button' :class='{ active: view === "Search"}'
-          @click='changeView("Search")'>Search</li>
-        <li class='menu-item toggle-button' :class='{ active: view === "Users"}'
-        @click='changeView("Users")'>Members</li>
-      </ul>
-      <Queue v-if='view === "Queue"'
-        @queueVote='onQueueVote'
-        :currentQueue='currentQueue'/>
-      <Search v-else-if='view === "Search"'
-        @songSearch='onSongSearch' @queueSong='onQueueSong'
-        :searchResults='searchResults' />
-      <UserList v-if='view === "Users"'/>
     </div>
+    <Queue v-if='view === "Queue"'
+      @queueVote='onQueueVote'
+      :currentQueue='currentQueue'/>
+    <Search v-else-if='view === "Search"'
+      @songSearch='onSongSearch' @queueSong='onQueueSong'
+      :searchResults='searchResults' />
+    <UserList v-if='view === "Users"'/>
+    <div class = "bar-margin"></div>
+    <BottomBar @changeView="onChangeView" :view='view'/>
   </div>
 </template>
 
@@ -37,6 +31,7 @@ import Queue from './Queue.vue';
 import UserList from './UserList.vue';
 import NameEntry from './NameEntry.vue';
 import SkipVoter from './SkipVoter.vue';
+import BottomBar from './BottomBar.vue';
 
 const SERVER_URL = 'http://localhost:8082';
 
@@ -51,6 +46,7 @@ export default {
     UserList,
     NameEntry,
     SkipVoter,
+    BottomBar,
   },
   data() {
     return {
@@ -64,7 +60,7 @@ export default {
   computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
   methods: {
     ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList']),
-    changeView(newView) {
+    onChangeView(newView) {
       this.view = newView;
     },
     onSongSearch(query) {
@@ -210,11 +206,6 @@ h2:focus {
   background: #08f;
 }
 
-.score {
-  color: #FFF;
-  background: transparent;
-}
-
 .vote-up:hover {
   color: #db7095;
 }
@@ -223,21 +214,13 @@ h2:focus {
   color: #daa360;
 }
 
-.toggle-button {
-  display: inline-block;
-  font-size: 3vw;
-  padding: 5px 10px;
-  margin: 1vh 2vw 0vh 2vw;
-  text-align: center;
-  border-radius: 7px;
+.score {
+  color: #FFF;
+  background: transparent;
 }
 
-.toggle-button:hover {
-  background: rgba(255, 255, 255, 0.5);
+.bar-margin{
+  height: 6vh;
 }
 
-.active {
-  color: #08f;
-  background: #fff;
-}
 </style>

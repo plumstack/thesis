@@ -46,9 +46,6 @@ h2, h3 {
   font-weight: 400;
 }
 
-li {
-  display: inline-block;
-}
 
 .menu-container {
   list-style-type: none;
