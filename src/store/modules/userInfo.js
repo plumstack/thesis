@@ -55,7 +55,6 @@ const mutations = {
     s.userList = userList;
   },
   setScores(s, scores) {
-    console.log(scores);
     s.scores = scores;
   },
   setRoomID(s, roomID) {

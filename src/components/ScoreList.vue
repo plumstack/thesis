@@ -5,7 +5,7 @@
       <tr>
         <th class="scores-title"> Scores: </th>
       </tr>
-      <tr v-for="score in getScores" :key="score">
+      <tr v-for="score in getScores" :key="score[0]">
         <ScoreListItem :score="score" />
       </tr>
     </table>

@@ -100,7 +100,6 @@ export default {
       this.currentlyPlaying = currentlyPlaying;
       this.updateUserList(newUserList);
       this.updateScores(newScores);
-      console.log('UPDATE ALL NEW SCORES: ', newScores);
     },
     updateQueue(newQueue) {
       this.currentQueue = newQueue;

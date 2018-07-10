@@ -42,7 +42,6 @@ class Room {
 
   async updateScores() {
     const allScores = await this.UserList.getScores();
-    console.log('socket js scores: ', allScores);
     return allScores;
   }
 
@@ -114,6 +113,7 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
       const { roomID, songInfo, vote } = queueVoteInfo;
 
       await roomList[roomID].Queue.vote(songInfo, vote);
+      await roomList[roomID].UserList.changePoints(songInfo.addedBy, vote * 10);
 
       roomList[roomID].updateAll();
     });
@@ -122,7 +122,12 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
       const { roomID, userCount } = skipVoteInfo;
       const skipVotes = await roomList[roomID].Queue.skipVote();
 
-      if (skipVotes >= userCount * 0.6) await roomList[roomID].Queue.playNext();
+      if (skipVotes >= userCount * 0.6) {
+        const nextSelector = await roomList[roomID].Queue.playNext();
+        const room = await roomList[roomID].UserList.get();
+        const roomSize = room.length;
+        await roomList[roomID].UserList.changePoints(nextSelector, roomSize * 20);
+      }
 
       roomList[roomID].skipVotes = skipVotes;
 
@@ -141,7 +146,6 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
     });
 
     socket.on('getUserList', async (roomInfo) => {
-      console.log('Room info', roomInfo);
       const { roomID } = roomInfo;
       roomList[roomID].updateUserList()
         .then((newUserList) => socket.emit('updateUserList', newUserList));
@@ -150,10 +154,7 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
     socket.on('getScores', async (roomInfo) => {
       const { roomID } = roomInfo;
       roomList[roomID].updateScores()
-        .then((newScores) => {
-          console.log('Returned in promise ', newScores);
-          socket.emit('updateScores', newScores);
-        });
+        .then((newScores) => socket.emit('updateScores', newScores));
     });
     // socket.on('checkUsername');
     // socket.on('reconnect'); // ???

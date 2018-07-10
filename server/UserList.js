@@ -19,5 +19,9 @@ module.exports = class UserList {
     const chunked = chunk(allScores, 2);
     return chunked;
   }
+  async changePoints(username, points) {
+    console.log('Change Points: ', username, 'Points: ', points);
+    await this.Redis.zincrbyAsync(this.RedisKey, points, username);
+  }
 };
 
