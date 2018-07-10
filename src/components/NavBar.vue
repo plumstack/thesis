@@ -47,6 +47,7 @@ export default {
 }
 
 .username {
+  font-family: "Comfortaa";
   float: right;
   font-size: 1.5em;
   padding: 0;

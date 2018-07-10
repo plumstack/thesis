@@ -10,10 +10,10 @@
       <div id="progress"></div>
     </div>
     </div>
-    <div v-else>
+    <div v-else class="require-playback">
       <h2>Please start playback on your device and refresh the page.</h2>
     </div>
-    <ul class="menu-container controls" v-if="$route.query.host" >
+    <ul class="menu-container controls" v-if="$route.query.host && currentlyPlaying">
       <li class="menu-item controls-item" @click="onClickPlay">{{ playButton }}//TODO</li>
       <li class="menu-item controls-item" @click="onClickNext">Next //TODO</li>
     </ul>
@@ -88,6 +88,10 @@ export default {
 </script>
 
 <style scoped>
+.player {
+  margin: 2vw;
+}
+
 .player-info {
   margin: auto;
   margin-bottom: 5px;
@@ -130,12 +134,17 @@ export default {
   margin: 1.5vw 0;
 }
 
+.controls {
+  margin-top: .5vw;
+}
+
 .controls-item {
-  display: inline-block;
-  border-radius: 5px;
   font-size: 1em;
-  padding: 1.5vw;
+  padding: 1vw 2vw;
   margin: 0 1vw;
-  text-align: center;
+}
+
+.require-playback {
+  margin: 10vh;
 }
 </style>

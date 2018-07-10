@@ -1,10 +1,10 @@
 <template>
   <div class="room-container">
-    <h2 class="room-title">ROOM {{ getRoomID }}</h2>
+    <div class="room-title"><h2 >Room: {{ getRoomID }}</h2></div>
     <NameEntry v-if="!getUsername"/>
     <div class="room" align="center" v-else>
-        <Player class="content-item" :currentlyPlaying="currentlyPlaying"/>
-        <SkipVoter @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
+        <Player :currentlyPlaying="currentlyPlaying" />
+        <SkipVoter v-if="currentlyPlaying" @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
     </div>
     <Queue v-if="view === 'Queue'"
       @queueVote="onQueueVote"
@@ -116,43 +116,23 @@ export default {
 </script>
 
 <style scoped>
-@import url(https://fonts.googleapis.com/css?family=Exo+2:200i);
 
 h2 {
+  color: #ffcce7;
   font-size: 2.5em;
-  font-style: italic;
-  font-family: 'Exo 2', sans-serif;
-  font-weight: 200;
-  padding: 1.5vh 2vh;
-  border: 5px solid rgb(223, 250, 255);
-  border-radius: 30px;
-  animation: flicker 20s infinite alternate;
-  --neon-text-color: #f40;
-  --neon-border-color: #08f;
+  padding: 1.5vh 3vh;
+  animation: flicker 10s linear infinite;
 }
 
 @keyframes flicker {
-    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        text-shadow:
-            -0.2rem -0.2rem 1rem rgb(255, 134, 134),
-            0.2rem 0.2rem 1rem rgb(255, 134, 134),
-            0 0 2rem var(--neon-text-color),
-            0 0 4rem var(--neon-text-color),
-            0 0 6rem var(--neon-text-color),
-            0 0 8rem var(--neon-text-color),
-            0 0 10rem var(--neon-text-color);
-        box-shadow:
-            0 0 .5rem rgb(129, 205, 255),
-            inset 0 0 .5rem rgb(129, 205, 255),
-            0 0 2rem var(--neon-border-color),
-            inset 0 0 2rem var(--neon-border-color),
-            0 0 4rem var(--neon-border-color),
-            inset 0 0 4rem var(--neon-border-color);
-    }
-    20%, 24%, 55% {
-        text-shadow: none;
-        box-shadow: none;
-    }
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 2em #fff, 0 0 1em #ff1493;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.4;
+    text-shadow: none;
+  }
 }
 
 .room-container {
@@ -162,8 +142,11 @@ h2 {
 .room-title {
   display: inline-block;
   text-align: center;
-  margin-top: 1.5vh;
-  margin-bottom: .5vh;
+  margin-top: 2vh;
+  margin-bottom: 1vh;
+  border: 4px solid #fff;
+  border-radius: 8vh;
+  box-shadow: 0 0 1.5em #fff, 0 0 .8em #0ff, inset 0 0 1.5em #fff, inset 0 0 .8em #0ff;
 }
 
 .content {
@@ -181,15 +164,6 @@ h2 {
   border-radius: 2px;
 }
 
-.voting-item {
-  display: inline-block;
-  font-weight: 700;
-  padding: 5px 10px 5px 10px;
-  margin: 2vh 1vw 1vh 1vw;
-  font-size: 3vw;
-  border-radius: 10px;
-}
-
 .vote-up {
   background: #5cd65c;
 }
@@ -204,11 +178,6 @@ h2 {
 
 .vote-down:hover {
   color: #daa360;
-}
-
-.score {
-  color: #FFF;
-  background: transparent;
 }
 
 .bar-margin{

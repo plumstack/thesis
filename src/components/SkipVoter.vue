@@ -1,8 +1,8 @@
 <template>
 <div>
   <ul class="menu-container voting-menu">
-    <li class="menu-item voting-item vote-down" @click="onSkipVote">Skip</li>
-    <li class="voting-item score">Skip Votes: {{ currentSkipVotes }}</li>
+    <li class="menu-item controls-item" @click="onSkipVote">Skip</li>
+    <li class="controls-item score">Skip Votes: {{ currentSkipVotes }}</li>
   </ul>
 </div>
 </template>
@@ -27,5 +27,12 @@ export default {
 </script>
 
 <style>
+.controls-item {
+  font-size: 1em;
+  padding: 1vw 2vw;
+}
 
+.score {
+  display: inline-block;
+}
 </style>

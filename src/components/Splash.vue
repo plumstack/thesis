@@ -98,7 +98,6 @@ li {
   font-weight: 700;
   padding: 2.5vw 1.5vw;
   margin: 1vh 0;
-  border-radius: 25px;
 }
 
 .join-header {
