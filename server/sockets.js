@@ -21,11 +21,12 @@ class Room {
     const updatedQueue = this.updateQueue();
     const updatedUserList = this.updateUserList();
     const updatedCurrentlyPlaying = this.updateCurrentlyPlaying();
+    const updatedScores = this.updateScores();
 
-    Promise.all([updatedQueue, updatedUserList, updatedCurrentlyPlaying])
-      .then(([newQueue, newUserList, currentlyPlaying], skipVotes = this.skipVotes) =>
+    Promise.all([updatedQueue, updatedUserList, updatedCurrentlyPlaying, updatedScores])
+      .then(([newQueue, newUserList, currentlyPlaying, newScores], skipVotes = this.skipVotes) =>
         this.io.to(this.roomID).emit('updateAll', {
-          newQueue, newUserList, currentlyPlaying, skipVotes,
+          newQueue, newUserList, currentlyPlaying, newScores, skipVotes,
         }));
   }
 
@@ -37,6 +38,12 @@ class Room {
   async updateUserList() {
     const newUserList = await this.UserList.get();
     return newUserList;
+  }
+
+  async updateScores() {
+    const allScores = await this.UserList.getScores();
+    console.log('socket js scores: ', allScores);
+    return allScores;
   }
 
   async updateCurrentlyPlaying() {
@@ -130,14 +137,23 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
 
     socket.on('getInfo', async (roomInfo) => {
       const { roomID } = roomInfo;
-
       roomList[roomID].updateAll();
     });
 
     socket.on('getUserList', async (roomInfo) => {
+      console.log('Room info', roomInfo);
       const { roomID } = roomInfo;
       roomList[roomID].updateUserList()
         .then((newUserList) => socket.emit('updateUserList', newUserList));
+    });
+
+    socket.on('getScores', async (roomInfo) => {
+      const { roomID } = roomInfo;
+      roomList[roomID].updateScores()
+        .then((newScores) => {
+          console.log('Returned in promise ', newScores);
+          socket.emit('updateScores', newScores);
+        });
     });
     // socket.on('checkUsername');
     // socket.on('reconnect'); // ???

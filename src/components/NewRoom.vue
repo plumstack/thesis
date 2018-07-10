@@ -15,7 +15,7 @@
       <Search v-else-if='view === "Search"'
         @songSearch='onSongSearch' @queueSong='onQueueSong'
         :searchResults='searchResults' />
-      <UserList v-if='view === "Users"'/>
+      <ScoreList v-if='view === "Users"'/>
       <div class = "bar-margin"></div>
       <BottomBar @changeView="onChangeView" :view='view'/>
     </div>
@@ -31,6 +31,7 @@ import Player from './Player.vue';
 import Search from './Search.vue';
 import Queue from './Queue.vue';
 import UserList from './UserList.vue';
+import ScoreList from './ScoreList.vue';
 import NameEntry from './NameEntry.vue';
 import SkipVoter from './SkipVoter.vue';
 import BottomBar from './BottomBar.vue';
@@ -46,6 +47,7 @@ export default {
     Search,
     Queue,
     UserList,
+    ScoreList,
     NameEntry,
     SkipVoter,
     BottomBar,
@@ -57,11 +59,12 @@ export default {
       currentQueue: [],
       currentlyPlaying: null,
       currentSkipVotes: 0,
+      scores: [],
     };
   },
-  computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
+  computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList', 'getScores']),
   methods: {
-    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList']),
+    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList', 'updateScores']),
     onChangeView(newView) {
       this.view = newView;
     },
@@ -89,18 +92,24 @@ export default {
       newQueue,
       newUserList,
       currentlyPlaying,
+      newScores,
       skipVotes,
     }) {
       this.currentQueue = newQueue;
       this.currentSkipVotes = skipVotes || this.currentSkipVotes;
       this.currentlyPlaying = currentlyPlaying;
       this.updateUserList(newUserList);
+      this.updateScores(newScores);
+      console.log('UPDATE ALL NEW SCORES: ', newScores);
     },
     updateQueue(newQueue) {
       this.currentQueue = newQueue;
     },
     updateUserList(newUserList) {
       this.updateUserList(newUserList);
+    },
+    updateScores(newScores) {
+      this.updateScores(newScores);
     },
   },
   created() {
@@ -109,8 +118,10 @@ export default {
       this.updateRoomID(this.$route.path.slice(-5));
       this.$socket.emit('createRoom', { username: this.getUsername, roomID: this.getRoomID });
     } else {
+      console.log('room created');
       this.updateRoomID(this.$route.path.slice(-5));
       this.$socket.emit('getUserList', { roomID: this.getRoomID });
+      this.$socket.emit('getScores', { roomID: this.getRoomID });
     }
   },
 };
