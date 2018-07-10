@@ -3,14 +3,18 @@
     <li class="menu-item topbar-item home" @click="leaveRoom">
       <img src="../assets/home.svg">
     </li>
+    <li class="topbar-item username" v-if="getUsername">
+      {{ getUsername }}
+    </li>
   </ul>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'NavBar',
+  computed: mapGetters(['getUsername']),
   methods: mapActions(['leaveRoom']),
 };
 </script>
@@ -22,24 +26,32 @@ export default {
 
 .topbar-item {
   float: left;
-  height: 8vw;
-  padding: 1vw;
-  margin: 1vw;
+  height: 5vh;
+  padding: 0;
+  margin: 3vw;
 }
 
 .home {
-  width: 8vw;
+  width: 5vh;
   background: #333;
   border-radius: 50%;
   position: relative;
 }
 
 .home > img {
-  height: 7vw;
-  width: 7vw;
+  height: 4vh;
+  width: 4vh;
   position: absolute;
-  top: calc(50% - 3.5vw);
-  left: calc(50% - 3.5vw);
+  top: calc(50% - 2vh);
+  left: calc(50% - 2vh);
+}
+
+.username {
+  float: right;
+  font-size: 1.5em;
+  padding: 0;
+  line-height: 4vh;
+  background: transparent;
 }
 
 @media screen and (min-width: 900px) {
@@ -47,18 +59,24 @@ export default {
     background: transparent;
   }
   .topbar-item {
-    height: 3.5vw;
+    height: 8vh;
+    margin: 1vh;
   }
 
   .home {
-    width: 3.5vw;
+    width: 8vh;
+  }
+
+  .username {
+    line-height: 8vh;
+    margin-right: 3vh;
   }
 
   .home > img {
-    height: 3vw;
-    width: 3vw;
-    top: calc(50% - 1.5vw);
-    left: calc(50% - 1.5vw);
+    height: 6vh;
+    width: 6vh;
+    top: calc(50% - 3.5vh);
+    left: calc(50% - 3vh);
   }
 }
 </style>

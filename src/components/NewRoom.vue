@@ -1,22 +1,20 @@
 <template>
-  <div align="center" class='room-container'>
-    <h2>ROOM {{ getRoomID }}</h2>
-    <div align='center' v-if='!getUsername'>
-      <NameEntry @joinRoom='onJoinRoom' />
+  <div class="room-container">
+    <h2 class="room-title">ROOM {{ getRoomID }}</h2>
+    <NameEntry v-if="!getUsername"/>
+    <div class="room" align="center" v-else>
+        <Player class="content-item" :currentlyPlaying="currentlyPlaying"/>
+        <SkipVoter @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
     </div>
-    <div class='room' align='center' v-else>
-        <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
-        <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
-    </div>
-    <Queue v-if='view === "Queue"'
-      @queueVote='onQueueVote'
-      :currentQueue='currentQueue'/>
-    <Search v-else-if='view === "Search"'
-      @songSearch='onSongSearch' @queueSong='onQueueSong'
-      :searchResults='searchResults' />
-    <UserList v-if='view === "Users"'/>
+    <Queue v-if="view === 'Queue'"
+      @queueVote="onQueueVote"
+      :currentQueue="currentQueue"/>
+    <Search v-if="view === 'Search'"
+      @songSearch="onSongSearch" @queueSong="onQueueSong"
+      :searchResults="searchResults" />
+    <UserList v-if="view === 'Users'"/>
     <div class = "bar-margin"></div>
-    <BottomBar @changeView="onChangeView" :view='view'/>
+    <BottomBar @changeView="onChangeView" :view="view"/>
   </div>
 </template>
 
@@ -118,38 +116,18 @@ export default {
 @import url(https://fonts.googleapis.com/css?family=Exo+2:200i);
 
 h2 {
-  /* Base font size */
-  font-size: 10px;
-  /* Set neon color */
+  font-size: 2.5em;
+  font-style: italic;
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 200;
+  padding: 1.5vh 2vh;
+  border: 5px solid rgb(223, 250, 255);
+  border-radius: 30px;
+  animation: flicker 20s infinite alternate;
   --neon-text-color: #f40;
   --neon-border-color: #08f;
-  font-family: 'Exo 2', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: .8vh;
-  font-size: 1.5rem;
-  font-weight: 150;
-  font-style: italic;
-  color: rgb(255, 225, 225);
-  padding: 1rem 2rem 1rem 2rem;
-  border: 0.4rem solid rgb(223, 250, 255);
-  border-radius: 2rem;
-  animation: flicker 20s infinite alternate;
-  width: 20vw;
 }
-h2::-moz-selection {
-  background-color: var(--neon-border-color);
-  color: var(--neon-text-color);
-}
-h2::selection {
-  background-color: var(--neon-border-color);
-  color: var(--neon-text-color);
-}
-h2:focus {
-  outline: none;
-}
-/* Animate neon flicker */
+
 @keyframes flicker {
     0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
         text-shadow:
@@ -172,6 +150,17 @@ h2:focus {
         text-shadow: none;
         box-shadow: none;
     }
+}
+
+.room-container {
+  text-align: center;
+}
+
+.room-title {
+  display: inline-block;
+  text-align: center;
+  margin-top: 1.5vh;
+  margin-bottom: .5vh;
 }
 
 .content {

@@ -1,7 +1,6 @@
 <template>
   <div class="members-table">
       <table>
-      <p class="current-user">You: <span class="highlight">{{ getUsername }}</span> </p>
       <tr>
         <th class="members-title">Room Members</th>
       </tr>

@@ -29,6 +29,7 @@ export default {
   },
   methods: {
     onSongSearch() {
+      document.getElementById('search-input').blur();
       this.$emit('songSearch', this.searchQuery);
     },
     onQueueSong(track) {
