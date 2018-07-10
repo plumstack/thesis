@@ -1,16 +1,14 @@
 <template>
   <ul class="menu-container main-menu">
-    <li class="join-header">
-      Username:
+    <li class="join-header main-menu-item">
+      Enter a username:
     </li>
-    <li>
-      <input type="text" class="join-input" @:keyup.enter="submitName" v-model="username" />
+    <li class="username">
+      <input type="text" class="text-input" v-model="username"
+      placeholder="Username" @keyup.enter="submitName"/>
     </li>
     <li class="join-error">
       {{ usernameError }}
-    </li>
-    <li class="menu-item join-item" @click="submitName">
-      Join
     </li>
   </ul>
 </template>
@@ -39,11 +37,9 @@ export default {
       if (!this.username.length) {
         this.usernameError = 'Enter a username';
       }
-
       if (await this.usernameVerify(this.username)) {
         this.usernameError = 'Username is taken.';
       }
-
       if (!this.usernameError) {
         this.updateUsername(this.username);
         this.$emit('joinRoom');
@@ -60,49 +56,43 @@ export default {
 <style scoped>
 .main-menu {
   margin: auto;
-  width: 40%;
+  width: 100%;
+}
+
+.main-menu-item {
+  width: 80%;
+  font-family: "Comfortaa";
+  font-size: 1.5em;
+  font-weight: 700;
+  padding: .5em;
+  margin: .2em;
+  border-radius: 15px;
 }
 
 .join-header {
-  font-size: 2.5vw;
-  color: #fff;
   text-align: left;
-  margin-left: 15%;
-  margin-top: 20px;
-  margin-bottom: 0;
 }
 
-.join-input {
-  overflow: auto;
-  width: 75%;
-  font-size: 3vw;
-  font-weight: 700;
-  color: #fff;
-  padding: 5px;
-  margin: 3px 10px 0px 10px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid #fff;
-  border-radius: 15px;
+.username {
+  width: 100%;
 }
 
-.join-input:focus {
-  outline: none;
-  color: #db7095;
-  background: #fff;
-}
-
-.join-item {
-  font-size: 3vw;
-  font-weight: 700;
-  width: 20%;
-  padding: 12px;
-  margin: auto;
-  margin-top: 15px;
-  border: 2px solid #fff;
-  border-radius: 15px;
+.username > input {
+  width: 80%;
 }
 
 .join-error {
+  margin-top: .25em;
   color: #900;
+}
+
+.host-button {
+  margin-top: .75em;
+}
+
+@media screen and (min-width: 900px) {
+  .main-menu {
+    width: 50%;
+  }
 }
 </style>

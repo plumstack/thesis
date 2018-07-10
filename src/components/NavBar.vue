@@ -15,31 +15,50 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.navbar {
+  background: #333;
+}
+
 .topbar-item {
   float: left;
-  height: 3.5vw;
+  height: 8vw;
   padding: 1vw;
   margin: 1vw;
 }
 
 .home {
-  width: 3.5vw;
+  width: 8vw;
   background: #333;
   border-radius: 50%;
   position: relative;
 }
 
 .home > img {
-  height: 2vw;
-  width: 2vw;
+  height: 7vw;
+  width: 7vw;
   position: absolute;
-  top: calc(50% - 1vw);
-  left: calc(50% - 1vw);
+  top: calc(50% - 3.5vw);
+  left: calc(50% - 3.5vw);
 }
 
-.home:hover {
-  background: #0ff;
-  transition: background-color 5s ease;
+@media screen and (min-width: 900px) {
+  .navbar {
+    background: transparent;
+  }
+  .topbar-item {
+    height: 3.5vw;
+  }
+
+  .home {
+    width: 3.5vw;
+  }
+
+  .home > img {
+    height: 3vw;
+    width: 3vw;
+    top: calc(50% - 1.5vw);
+    left: calc(50% - 1.5vw);
+  }
 }
 </style>
