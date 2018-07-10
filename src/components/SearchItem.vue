@@ -5,7 +5,9 @@
             {{ track.name }}
             <div class="search-info-item">{{ track.artists[0].name }}</div>
             </div>
-        <div v-on:click="add(track)" ><img src="../assets/plus-6495ed.svg" class="queue-button-add"></div>
+        <div v-on:click="add(track)">
+          <img src="../assets/plus.svg" class="queue-button-add">
+        </div>
     </div>
 </template>
 

@@ -2,14 +2,9 @@
   <div class="search" align="center">
     <input type="text" placeholder="Search for Songs" @keyup.enter="onSongSearch" v-model="searchQuery"/>
     <ul v-if="searchQuery" class="search-results">
-      <li class="search-header">
-         <div>  <!-- artwork --> </div>
-        <div><!-- Track --></div>
-        <div><!-- Add --></div>
+      <li class="alternative_row" v-for="track in searchResults" :key="track.id">
+        <SearchItem :track="track" @queue="onQueueSong"/>
       </li>
-    <li class="alternative_row" v-for="track in searchResults" :key="track.id">
-      <SearchItem :track="track" @queue="onQueueSong"/>
-    </li>
     </ul>
   </div>
 </template>
@@ -54,22 +49,12 @@ export default {
     border-collapse: collapse;
 }
 
-.table-header{
-    height: 75px;
-}
-
 .alternative_row:nth-child(even){
     background: rgba(255, 255, 255, .2);
 }
 
 .alternative_row:hover{
     color: #ff1493;
-}
-
-td {
-    text-align: center;
-    vertical-align: center;
-    padding: 0px;
 }
 
 ul {
