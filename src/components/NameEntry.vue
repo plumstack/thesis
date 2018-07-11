@@ -4,7 +4,7 @@
       Enter a username:
     </li>
     <li class="username">
-      <input type="text" class="text-input" v-model="username"
+      <input type="text" id="username-input" class="text-input" v-model="username"
       placeholder="Username" @keyup.enter="submitName"/>
     </li>
     <li class="join-error">
@@ -24,6 +24,11 @@ export default {
       usernameError: '',
     };
   },
+
+  mounted() {
+    document.getElementById('username-input').focus();
+  },
+
   methods: {
     async submitName() {
       this.usernameError = '';
