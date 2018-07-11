@@ -6,7 +6,6 @@ module.exports = class UserList {
     this.RedisKey = `${this.roomID}:UserList`;
   }
   async join(username) {
-    console.log(username);
     await this.Redis.zadd(this.RedisKey, 100, username);
   }
   leave(username) {
