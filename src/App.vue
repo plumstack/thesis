@@ -56,6 +56,7 @@ h2, h3 {
 .menu-item {
   display: inline-block;
   background: #333;
+  border-radius: 4vh;
 }
 
 .text-input {
@@ -64,10 +65,10 @@ h2, h3 {
   color: #777;
   font-size: 1.5em;
   font-weight: 700;
-  padding: .25em .5em;
+  padding: 1vw 1.5vw;
   background: #333;
   border: 1px solid #fff;
-  border-radius: 15px;
+  border-radius: 4vh;
 }
 
 .text-input:focus {

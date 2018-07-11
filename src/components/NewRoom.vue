@@ -1,24 +1,21 @@
 <template>
-  <div align="center" class='room-container'>
-    <h2>ROOM {{ getRoomID }}</h2>
-    <div align='center' v-if='!getUsername'>
-      <NameEntry @joinRoomClicked='onJoinRoom' />
-    </div>
-    <div class='room' align='center' v-else>
-        <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
-        <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
-    </div>
-    <div v-if='getUsername'>
-      <Queue v-if='view === "Queue"'
-        @queueVote='onQueueVote'
-        :currentQueue='currentQueue'/>
-      <Search v-else-if='view === "Search"'
-        @songSearch='onSongSearch' @queueSong='onQueueSong'
-        :searchResults='searchResults' />
-      <ScoreList v-if='view === "Users"'/>
+  <div class="room-container">
+    <div class="room-title"><h2 >Room: {{ getRoomID }}</h2></div>
+    <NameEntry v-if="!getUsername"/>
+    <div class="room" align="center" v-else>
+      <Player :currentlyPlaying="currentlyPlaying" />
+      <SkipVoter v-if="currentlyPlaying" @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
+      <Queue v-if="view === 'Queue'"
+        @queueVote="onQueueVote"
+        :currentQueue="currentQueue"/>
+      <Search v-if="view === 'Search'"
+        @songSearch="onSongSearch" @queueSong="onQueueSong"
+        :searchResults="searchResults" />
+      <UserList v-if="view === 'Users'"/>
       <div class = "bar-margin"></div>
-      <BottomBar @changeView="onChangeView" :view='view'/>
+      <BottomBar @changeView="onChangeView" :view="view"/>
     </div>
+   
   </div>
 </template>
 
@@ -127,87 +124,46 @@ export default {
 </script>
 
 <style scoped>
-@import url(https://fonts.googleapis.com/css?family=Exo+2:200i);
 
 h2 {
-  /* Base font size */
-  font-size: 10px;
-  /* Set neon color */
-  --neon-text-color: #f40;
-  --neon-border-color: #08f;
-  font-family: 'Exo 2', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: .8vh;
-  font-size: 1.5rem;
-  font-weight: 150;
-  font-style: italic;
-  color: rgb(255, 225, 225);
-  padding: 1rem 2rem 1rem 2rem;
-  border: 0.4rem solid rgb(223, 250, 255);
-  border-radius: 2rem;
-  animation: flicker 20s infinite alternate;
-  width: 20vw;
+  color: #ffcce7;
+  font-size: 2.5em;
+  padding: 1.5vh 3vh;
+  animation: flicker 10s linear infinite;
 }
-h2::-moz-selection {
-  background-color: var(--neon-border-color);
-  color: var(--neon-text-color);
-}
-h2::selection {
-  background-color: var(--neon-border-color);
-  color: var(--neon-text-color);
-}
-h2:focus {
-  outline: none;
-}
-/* Animate neon flicker */
+
 @keyframes flicker {
-    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        text-shadow:
-            -0.2rem -0.2rem 1rem rgb(255, 134, 134),
-            0.2rem 0.2rem 1rem rgb(255, 134, 134),
-            0 0 2rem var(--neon-text-color),
-            0 0 4rem var(--neon-text-color),
-            0 0 6rem var(--neon-text-color),
-            0 0 8rem var(--neon-text-color),
-            0 0 10rem var(--neon-text-color);
-        box-shadow:
-            0 0 .5rem rgb(129, 205, 255),
-            inset 0 0 .5rem rgb(129, 205, 255),
-            0 0 2rem var(--neon-border-color),
-            inset 0 0 2rem var(--neon-border-color),
-            0 0 4rem var(--neon-border-color),
-            inset 0 0 4rem var(--neon-border-color);
-    }
-    20%, 24%, 55% {
-        text-shadow: none;
-        box-shadow: none;
-    }
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 2em #fff, 0 0 1em #ff1493;
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.4;
+    text-shadow: none;
+  }
 }
 
-.content {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
+.room-container {
+  text-align: center;
 }
 
-.content-item {
-  margin: 10px 10px;
+.room-title {
+  display: inline-block;
+  text-align: center;
+  margin-top: 2vh;
+  margin-bottom: 1vh;
+  border: 4px solid #fff;
+  border-radius: 8vh;
+  box-shadow: 0 0 1.5em #fff, 0 0 .8em #0ff, inset 0 0 1.5em #fff, inset 0 0 .8em #0ff;
+}
+
+.room {
+  margin-bottom: 3vh;
 }
 
 .voting-menu {
   display: inline-block;
   border-radius: 2px;
-}
-
-.voting-item {
-  display: inline-block;
-  font-weight: 700;
-  padding: 5px 10px 5px 10px;
-  margin: 2vh 1vw 1vh 1vw;
-  font-size: 3vw;
-  border-radius: 10px;
 }
 
 .vote-up {
@@ -224,11 +180,6 @@ h2:focus {
 
 .vote-down:hover {
   color: #daa360;
-}
-
-.score {
-  color: #FFF;
-  background: transparent;
 }
 
 .bar-margin{

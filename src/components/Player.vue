@@ -6,17 +6,16 @@
         <li class="song-info-item song-title">{{ currentlyPlaying.item.name}}</li>
         <li class="song-info-item">{{ currentlyPlaying.item.artists[0].name }}</li>
       </ul>
-    <div id="progress-bar">
-      <div id="progress"></div>
+    <div id="progress-bar" class="stripes">
+      <span id="progress" class="stripes"></span>
     </div>
     </div>
-    <div v-else>
+    <div v-else class="require-playback">
       <h2>Please start playback on your device and refresh the page.</h2>
     </div>
-    <ul class="menu-container controls" v-if="$route.query.host" >
+    <ul class="menu-container controls" v-if="$route.query.host && currentlyPlaying">
       <li class="menu-item controls-item" @click="onClickPlay">{{ playButton }}//TODO</li>
       <li class="menu-item controls-item" @click="onClickNext">Next //TODO</li>
-      <!-- <li class="menu-item controls-item" @click="getInfoPressed">GetInfo</li> -->
     </ul>
 </div>
 </template>
@@ -89,52 +88,73 @@ export default {
 </script>
 
 <style scoped>
+.player {
+  margin: 2vw;
+}
+
 .player-info {
   margin: auto;
-  width: 80%;
   margin-bottom: 5px;
-}
-
-.song-info-item {
-  font-size: 2vw;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 10px;
-}
-
-.song-title {
-  color: #6495ed;
-  font-size: 4vw;
-  margin-bottom: 0;
 }
 
 .album-art {
   display: block;
   margin: auto;
-  height: 60%;
-  width: 60%;
+  height: 40vw;
+  width: 40vw;
+}
+
+.song-info {
+  margin-top: 1.25vh;
+}
+
+.song-title {
+  color: #6495ed;
+  font-size: 1.5em;
+  margin-bottom: 1vh;
 }
 
 #progress-bar {
-  width: 50%;
-  background: #fff;
   text-align: left;
-  border-radius: 5px;
+  background-color: #1a1a1a;
+  height: 2vh;
+  padding: .5vh;
+  width: 60vw;
+  margin-top: 1vh;
+  margin-bottom: 2vh;
+  border-radius: 5vh;
+  box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
 }
 
 #progress {
-  height: 10px;
-  background: linear-gradient(90deg,#0ff,#6495ed);
-  margin-bottom: 10px;
-  border-radius: 5px;
+  display: inline-block;
+  background: #6495ed;
+  background-size: 4vh 4vh;
+  height: 100%;
+  border-radius: 5vh;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
+  transition: width .5s ease-in-out;
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
+                    transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
+                    transparent 75%, transparent);
+  animation: animate-stripes 5s linear infinite;
+}
+
+@keyframes animate-stripes {
+    0% {background-position: 0 0;} 100% {background-position: 60px 0;}
+}
+
+.controls {
+  margin-top: .5vw;
 }
 
 .controls-item {
-  display: inline-block;
-  font-size: 1.5vw;
-  padding: 5px 10px;
-  margin: 5px;
-  text-align: center;
-  border-radius: 5px;
+  font-size: 1em;
+  padding: 1vw 2vw;
+  margin: 0 1vw;
+}
+
+.require-playback {
+  margin: 10vh;
 }
 </style>

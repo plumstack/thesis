@@ -1,16 +1,9 @@
 <template>
-  <div class="members-table">
-      <table>
-      <p class="current-user">You: <span class="highlight">{{ getUsername }}</span> </p>
-      <tr>
-        <th class="members-title">Room Members</th>
-      </tr>
-      <tr v-for="user in getUsersList" :key="user">
-        <td>
-          <UserListItem :user="user" />
-        </td>
-      </tr>
-    </table>
+  <div class="users-table">
+    <div class="users-title">Room Users:</div>
+    <div v-for="user in getUsersList" :key="user">
+      <UserListItem :user="user" />
+    </div>
   </div>
 </template>
 
@@ -26,20 +19,17 @@ export default {
 </script>
 
 <style scoped>
-  .members-table {
-    margin: auto;
-    margin-top: .25vh;
-    width: 100%;
-    color: white;
-    font-size: 4vw;
+  .users-table {
+    display: inline-block;
+    width: 40vw;
+    text-align: left;
+    font-size: 1.5em;
   }
-  .highlight {
-    color: #08f;
-    text-align: center;
+
+  .users-title {
+    color: #6495ed;
   }
-  .members-title {
-    color: #08f;
-  }
+
   .current-user {
     text-align: center;
   }

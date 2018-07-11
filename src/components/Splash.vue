@@ -6,7 +6,7 @@
         Join a Room:
       </li>
       <li class="room-id">
-        <input type="text" class="text-input" v-model="joinRoomID"
+        <input type="text" id="room-input" class="text-input" v-model="joinRoomID"
         placeholder="Room ID" @keyup.enter="joinRoom"/>
       </li>
       <li class="join-error">
@@ -30,6 +30,10 @@ export default {
       joinRoomID: '',
       roomError: '',
     };
+  },
+
+  mounted() {
+    document.getElementById('room-input').focus();
   },
 
   methods: {
@@ -63,6 +67,10 @@ h1 {
   text-shadow: 0 0 1em #fff, 0 0 .4em #ff1493;
 }
 
+li {
+  display: inline-block;
+}
+
 .flicker {
   animation: flicker 10s linear infinite;
 }
@@ -88,13 +96,13 @@ h1 {
   font-family: "Comfortaa";
   font-size: 1.5em;
   font-weight: 700;
-  padding: .5em;
-  margin: .2em;
-  border-radius: 15px;
+  padding: 2.5vw 1.5vw;
+  margin: 1vh 0;
 }
 
 .join-header {
   text-align: left;
+  padding-bottom: 0;
 }
 
 .room-id {
@@ -103,20 +111,29 @@ h1 {
 
 .room-id > input {
   width: 80%;
+  margin: 1vw 0;
 }
 
 .join-error {
-  margin-top: .25em;
+  margin-top: 0;
   color: #900;
 }
 
 .host-button {
-  margin-top: .75em;
+  margin-top: 2vh;
 }
 
 @media screen and (min-width: 900px) {
   .main-menu {
     width: 50%;
+  }
+
+  .main-menu-item {
+    padding: 1.5vw;
+  }
+
+  .join-header {
+    padding-bottom: 0;
   }
 }
 </style>

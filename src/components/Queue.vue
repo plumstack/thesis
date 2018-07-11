@@ -1,13 +1,5 @@
 <template>
-  <ul v-if="currentQueue.length" class="queue-list">
-    <li class="queue-header">
-      <div class="queue-track">
-        <div class="empty-image"></div>
-        <div class="track-item"></div>
-        <div class="queue-vote"></div>
-        <div class="queue-vote"></div>
-      </div>
-    </li>
+  <ul v-if="currentQueue.length" class="menu-container queue-list">
     <li class="queue-track-list" v-for="track in currentQueue" :key="track.id">
       <QueueItem :track="track" @queueVote="onQueueVote"/>
     </li>
@@ -34,38 +26,14 @@ export default {
 
 <style scoped>
 .queue-list {
-  list-style-type: none;
-  width: 75%;
+  width: 100%;
 }
 
-.queue-header {
-  font-weight: 700;
-  margin-bottom: 15px;
+.queue-track-list {
+  background: #222;
 }
 
-.queue-track-list:nth-child(even) {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.queue-track {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-}
-
-.track-item {
-  flex-grow: 1;
-  flex-basis: 0;
-}
-
-.empty-image {
-  width: 64px;
-}
-
-.queue-vote {
-  width: 32px;
-  margin-right: 3px;
+.queue-track-list:nth-child(odd) {
+  background: #333;
 }
 </style>
