@@ -6,8 +6,8 @@
         <li class="song-info-item song-title">{{ currentlyPlaying.item.name}}</li>
         <li class="song-info-item">{{ currentlyPlaying.item.artists[0].name }}</li>
       </ul>
-    <div id="progress-bar">
-      <div id="progress"></div>
+    <div id="progress-bar" class="stripes">
+      <span id="progress" class="stripes"></span>
     </div>
     </div>
     <div v-else class="require-playback">
@@ -115,17 +115,33 @@ export default {
 }
 
 #progress-bar {
-  width: 60vw;
-  background: #fff;
   text-align: left;
-  border-radius: .75vh;
+  background-color: #1a1a1a;
+  height: 2vh;
+  padding: .5vh;
+  width: 60vw;
+  margin-top: 1vh;
+  margin-bottom: 2vh;
+  border-radius: 5vh;
+  box-shadow: 0 1px 5px #000 inset, 0 1px 0 #444;
 }
 
 #progress {
-  height: 1.25vh;
-  border-radius: .75vh;
-  background: linear-gradient(90deg,#0ff,#6495ed);
-  margin: 1.5vw 0;
+  display: inline-block;
+  background: #6495ed;
+  background-size: 4vh 4vh;
+  height: 100%;
+  border-radius: 5vh;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
+  transition: width .5s ease-in-out;
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
+                    transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
+                    transparent 75%, transparent);
+  animation: animate-stripes 5s linear infinite;
+}
+
+@keyframes animate-stripes {
+    0% {background-position: 0 0;} 100% {background-position: 60px 0;}
 }
 
 .controls {

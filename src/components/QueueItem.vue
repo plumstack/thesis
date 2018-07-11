@@ -78,7 +78,6 @@ queue-track-list:nth-child(even) {
   width: 32px;
   height: 32px;
   margin-right: 3px;
-  background: #fff;
   border-radius: 50%;
 }
 
