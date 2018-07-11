@@ -3,18 +3,19 @@
     <div class="room-title"><h2 >Room: {{ getRoomID }}</h2></div>
     <NameEntry v-if="!getUsername"/>
     <div class="room" align="center" v-else>
-        <Player :currentlyPlaying="currentlyPlaying" />
-        <SkipVoter v-if="currentlyPlaying" @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
+      <Player :currentlyPlaying="currentlyPlaying" />
+      <SkipVoter v-if="currentlyPlaying" @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
+      <Queue v-if="view === 'Queue'"
+        @queueVote="onQueueVote"
+        :currentQueue="currentQueue"/>
+      <Search v-if="view === 'Search'"
+        @songSearch="onSongSearch" @queueSong="onQueueSong"
+        :searchResults="searchResults" />
+      <UserList v-if="view === 'Users'"/>
+      <div class = "bar-margin"></div>
+      <BottomBar @changeView="onChangeView" :view="view"/>
     </div>
-    <Queue v-if="view === 'Queue'"
-      @queueVote="onQueueVote"
-      :currentQueue="currentQueue"/>
-    <Search v-if="view === 'Search'"
-      @songSearch="onSongSearch" @queueSong="onQueueSong"
-      :searchResults="searchResults" />
-    <UserList v-if="view === 'Users'"/>
-    <div class = "bar-margin"></div>
-    <BottomBar @changeView="onChangeView" :view="view"/>
+   
   </div>
 </template>
 
