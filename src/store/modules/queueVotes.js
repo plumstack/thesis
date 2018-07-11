@@ -12,7 +12,6 @@ const actions = {
     commit('setSongVote', { trackID, vote });
   },
   addToQueue( { state, commit }, trackID ) { //eslint-disable-line
-    console.log(state.votes);
     if (!(trackID in state.votes)) {
       state.votes[trackID] = 0;
     }
@@ -21,7 +20,7 @@ const actions = {
 
 const mutations = {
   setSongVote(s, { trackID, vote }) {
-    s.votes[trackID] = vote;
+    s.votes[trackID] += vote;
   },
 };
 

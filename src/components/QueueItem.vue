@@ -27,22 +27,22 @@ export default {
   methods: {
     onQueueDownvote(track) {
       const trackID = this.track.id;
-      if (this.getVote(trackID) !== -1) {
+      if (this.getVote !== -1) {
         this.voteOn({ trackID, vote: -1 });
-        this.$emit('queueVote', track, this.getVote(trackID));
+        this.$emit('queueVote', track, -1);
       } else {
         this.voteOn(trackID, 1);
-        this.$emit('queueVote', track, this.getVote(trackID));
+        this.$emit('queueVote', track, 1);
       }
     },
     async onQueueUpvote(track) {
       const trackID = this.track.id;
       if (this.getVote !== 1) {
         this.voteOn({ trackID, vote: 1 });
-        this.$emit('queueVote', track, this.getVote);
+        this.$emit('queueVote', track, 1);
       } else {
         this.voteOn({ trackID, vote: -1 });
-        this.$emit('queueVote', track, this.getVote);
+        this.$emit('queueVote', track, -1);
       }
     },
     ...mapActions(['voteOn', 'addToQueue']),

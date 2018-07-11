@@ -17,6 +17,7 @@ export default {
   },
   methods: {
     onQueueVote(track, vote) {
+      console.log(track, vote);
       this.$emit('queueVote', track, vote);
     },
   },

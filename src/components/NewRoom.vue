@@ -15,7 +15,6 @@
       <div class = "bar-margin"></div>
       <BottomBar @changeView="onChangeView" :view="view"/>
     </div>
-   
   </div>
 </template>
 
