@@ -25,6 +25,7 @@ import Player from './Player.vue';
 import Search from './Search.vue';
 import Queue from './Queue.vue';
 import UserList from './UserList.vue';
+import ScoreList from './ScoreList.vue';
 import NameEntry from './NameEntry.vue';
 import SkipVoter from './SkipVoter.vue';
 import BottomBar from './BottomBar.vue';
@@ -36,6 +37,7 @@ export default {
     Search,
     Queue,
     UserList,
+    ScoreList,
     NameEntry,
     SkipVoter,
     BottomBar,
@@ -47,6 +49,7 @@ export default {
       currentQueue: [],
       currentlyPlaying: null,
       currentSkipVotes: 0,
+      scores: [],
     };
   },
   computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
