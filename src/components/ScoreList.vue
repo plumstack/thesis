@@ -1,7 +1,6 @@
 <template>
   <div class="scores-table">
       <table>
-      <p class="current-user">You: <span class="highlight">{{ getUsername }}</span> </p>
       <tr>
         <th class="scores-title"> Scores: </th>
       </tr>
