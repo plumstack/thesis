@@ -3,7 +3,6 @@ import router from '../../main';
 const state = {
   username: '',
   userList: [],
-  scores: [],
   roomID: '',
   skipped: false,
 };
@@ -11,7 +10,6 @@ const state = {
 const getters = {
   getUsername: (s) => s.username,
   getUsersList: (s) => s.userList,
-  getScores: (s) => s.scores,
   getRoomID: (s) => s.roomID,
   getSkipped: (s) => s.skipped,
 };
@@ -23,9 +21,6 @@ const actions = {
   updateUserList({ commit }, userList) {
     commit('setUserList', userList);
   },
-  updateScores({ commit }, scores) {
-    commit('setScores', scores);
-  },
   updateUsername({ commit }, username) {
     commit('setUsername', username);
   },
@@ -35,7 +30,6 @@ const actions = {
   leaveRoom({ commit }) {
     commit('setRoomID', '');
     commit('setUserList', []);
-    commit('setScores', []);
     commit('setUsername', '');
     router.push('/');
   },
@@ -53,9 +47,6 @@ const mutations = {
   },
   setUserList(s, userList) {
     s.userList = userList;
-  },
-  setScores(s, scores) {
-    s.scores = scores;
   },
   setRoomID(s, roomID) {
     s.roomID = roomID;

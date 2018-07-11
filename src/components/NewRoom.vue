@@ -2,7 +2,7 @@
   <div align="center" class='room-container'>
     <h2>ROOM {{ getRoomID }}</h2>
     <div align='center' v-if='!getUsername'>
-      <NameEntry @joinRoom='onJoinRoom' />
+      <NameEntry @joinRoomClicked='onJoinRoom' />
     </div>
     <div class='room' align='center' v-else>
         <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
@@ -56,9 +56,9 @@ export default {
       scores: [],
     };
   },
-  computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList', 'getScores']),
+  computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
   methods: {
-    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList', 'updateScores']),
+    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList']),
     onChangeView(newView) {
       this.view = newView;
     },
@@ -92,23 +92,18 @@ export default {
       newQueue,
       newUserList,
       currentlyPlaying,
-      newScores,
       skipVotes,
     }) {
       this.currentQueue = newQueue;
       this.currentSkipVotes = skipVotes || this.currentSkipVotes;
       this.currentlyPlaying = currentlyPlaying;
       this.updateUserList(newUserList);
-      this.updateScores(newScores);
     },
     updateQueue(newQueue) {
       this.currentQueue = newQueue;
     },
     getUpdatedUserList(newUserList) {
       this.updateUserList(newUserList);
-    },
-    getUpdatedScores(newScores) {
-      this.updateScores(newScores);
     },
   },
   mounted() {
@@ -124,10 +119,8 @@ export default {
       this.updateRoomID(this.$route.path.slice(-5));
       this.$socket.emit('createRoom', { username: this.getUsername, roomID: this.getRoomID });
     } else {
-      console.log('room created');
       this.updateRoomID(this.$route.path.slice(-5));
       this.$socket.emit('getUserList', { roomID: this.getRoomID });
-      this.$socket.emit('getScores', { roomID: this.getRoomID });
     }
   },
 };

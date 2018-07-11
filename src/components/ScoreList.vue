@@ -5,8 +5,8 @@
       <tr>
         <th class="scores-title"> Scores: </th>
       </tr>
-      <tr v-for="score in getScores" :key="score[0]">
-        <ScoreListItem :score="score" />
+      <tr v-for="[username, score] in getUsersList" :key="username">
+        <ScoreListItem :username="username" :score='score' />
       </tr>
     </table>
   </div>
@@ -19,7 +19,7 @@ import ScoreListItem from './ScoreListItem.vue';
 export default {
   name: 'ScoreList',
   components: { ScoreListItem },
-  computed: mapGetters(['getScores', 'getUsername']),
+  computed: mapGetters(['getUsersList', 'getUsername']),
 };
 </script>
 

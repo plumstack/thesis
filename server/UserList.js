@@ -6,6 +6,7 @@ module.exports = class UserList {
     this.RedisKey = `${this.roomID}:UserList`;
   }
   async join(username) {
+    console.log(username);
     await this.Redis.zadd(this.RedisKey, 100, username);
   }
   leave(username) {
@@ -13,16 +14,10 @@ module.exports = class UserList {
   }
   // vote(username) { return username; }
   async get() {
-    const result = await this.Redis.zrevrangeAsync(this.RedisKey, 0, -1);
-    return result;
-  }
-  async getScores() {
-    const allScores = await this.Redis.zrevrangeAsync(this.RedisKey, 0, -1, 'withscores');
-    const chunked = chunk(allScores, 2);
-    return chunked;
+    const result = await this.Redis.zrevrangeAsync(this.RedisKey, 0, -1, 'withscores');
+    return chunk(result, 2);
   }
   async changePoints(username, points) {
-    console.log('Change Points: ', username, 'Points: ', points);
     await this.Redis.zincrbyAsync(this.RedisKey, points, username);
   }
 };

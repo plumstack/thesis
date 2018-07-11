@@ -1,13 +1,13 @@
 <template>
         <td>
-            {{score[0]}}, Score: {{score[1]}}
+            {{username}}, Score: {{score}}
         </td>
 </template>
 
 <script>
 export default {
   name: 'ScoreListItem',
-  props: ['score'],
+  props: ['username', 'score'],
   data() {
     return {
     };
