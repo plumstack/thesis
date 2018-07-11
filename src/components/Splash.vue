@@ -2,7 +2,7 @@
   <div>
     <h1>Social <span class="flicker">Nights</span></h1>
     <ul class="menu-container main-menu">
-      <li class="join-header main-menu-item">
+      <li class="join-header main-menu-item" align="center">
         Join a Room:
       </li>
       <li class="room-id">
@@ -94,7 +94,11 @@ h1 {
 }
 
 .join-header {
-  text-align: left;
+  text-align: center;
+}
+
+li{
+  display: inline-block;
 }
 
 .room-id {

@@ -44,6 +44,13 @@ h1 {
 h2, h3 {
   font-family: "Comfortaa";
   font-weight: 400;
+  text-align: center;
+  font-size: 5em;
+}
+
+h2, h3 {
+  font-family: "Comfortaa";
+  font-weight: 400;
 }
 
 
