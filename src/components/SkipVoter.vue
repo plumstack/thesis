@@ -1,6 +1,6 @@
 <template>
 <div>
-  <ul class="menu-container voting-menu">
+  <ul class="menu-container skip-menu">
     <li class="menu-item controls-item" @click="onSkipVote">Skip</li>
     <li class="controls-item score">Skip Votes: {{ currentSkipVotes }}</li>
   </ul>
@@ -27,9 +27,13 @@ export default {
 </script>
 
 <style>
+.skip-menu {
+  margin-bottom: 2.5vh;
+}
+
 .controls-item {
   font-size: 1em;
-  padding: 1vw 2vw;
+  padding: 2vw 3vw;
 }
 
 .score {

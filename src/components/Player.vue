@@ -13,10 +13,10 @@
     <div v-else class="require-playback">
       <h2>Please start playback on your device and refresh the page.</h2>
     </div>
-    <ul class="menu-container controls" v-if="$route.query.host && currentlyPlaying">
+    <!-- <ul class="menu-container controls" v-if="$route.query.host && currentlyPlaying">
       <li class="menu-item controls-item" @click="onClickPlay">{{ playButton }}//TODO</li>
       <li class="menu-item controls-item" @click="onClickNext">Next //TODO</li>
-    </ul>
+    </ul> -->
 </div>
 </template>
 
@@ -100,8 +100,8 @@ export default {
 .album-art {
   display: block;
   margin: auto;
-  height: 40vw;
-  width: 40vw;
+  height: 30vw;
+  width: 30vw;
 }
 
 .song-info {
@@ -110,15 +110,16 @@ export default {
 
 .song-title {
   color: #6495ed;
-  font-size: 1.5em;
+  font-size: 1.2em;
   margin-bottom: 1vh;
 }
 
 #progress-bar {
   text-align: left;
   background-color: #1a1a1a;
-  height: 2vh;
-  padding: .5vh;
+  height: 1.25vh;
+  line-height: 1.25vh;
+  padding: .3vh;
   width: 60vw;
   margin-top: 1vh;
   margin-bottom: 2vh;

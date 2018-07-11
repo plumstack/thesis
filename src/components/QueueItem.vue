@@ -65,12 +65,12 @@ queue-track-list:nth-child(even) {
 
 .song-info {
   color: #6495ed;
-  font-size: 1.4em;
+  font-size: 1.2em;
 }
 
 .song-artist {
   color: #fff;
-  font-size: .75em;
+  font-size: .8em;
   margin-top: .5vh;
 }
 

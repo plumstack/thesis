@@ -1,8 +1,8 @@
 <template>
   <div class="users-table">
-    <div class="users-title">Room Users:</div>
-    <div v-for="user in getUsersList" :key="user">
-      <UserListItem :user="user" />
+    <div class="users-title">Scoreboard</div>
+    <div v-for="[username, score] in getUsersList" :key="username">
+      <UserListItem :username="username" :score="score" />
     </div>
   </div>
 </template>
@@ -21,13 +21,15 @@ export default {
 <style scoped>
   .users-table {
     display: inline-block;
-    width: 40vw;
+    width: 30vw;
     text-align: left;
     font-size: 1.5em;
   }
 
   .users-title {
     color: #6495ed;
+    font-size: .8em;
+    margin-bottom: .5vh;
   }
 
   .current-user {

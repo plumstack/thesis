@@ -5,17 +5,13 @@
     <div class="room" align="center" v-else>
       <Player :currentlyPlaying="currentlyPlaying" />
       <SkipVoter v-if="currentlyPlaying" @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
-      <Queue v-if="view === 'Queue'"
-        @queueVote="onQueueVote"
-        :currentQueue="currentQueue"/>
-      <Search v-if="view === 'Search'"
-        @songSearch="onSongSearch" @queueSong="onQueueSong"
-        :searchResults="searchResults" />
+      <Queue v-if="view === 'Queue'" @queueVote="onQueueVote" :currentQueue="currentQueue"/>
+      <Search v-if="view === 'Search'" @songSearch="onSongSearch"
+      @queueSong="onQueueSong" :searchResults="searchResults" />
       <UserList v-if="view === 'Users'"/>
       <div class = "bar-margin"></div>
       <BottomBar @changeView="onChangeView" :view="view"/>
     </div>
-   
   </div>
 </template>
 
@@ -26,7 +22,6 @@ import Player from './Player.vue';
 import Search from './Search.vue';
 import Queue from './Queue.vue';
 import UserList from './UserList.vue';
-import ScoreList from './ScoreList.vue';
 import NameEntry from './NameEntry.vue';
 import SkipVoter from './SkipVoter.vue';
 import BottomBar from './BottomBar.vue';
@@ -38,7 +33,6 @@ export default {
     Search,
     Queue,
     UserList,
-    ScoreList,
     NameEntry,
     SkipVoter,
     BottomBar,
@@ -127,8 +121,8 @@ export default {
 
 h2 {
   color: #ffcce7;
-  font-size: 2.5em;
-  padding: 1.5vh 3vh;
+  font-size: 2em;
+  padding: 1.2vh 3vh;
   animation: flicker 10s linear infinite;
 }
 
@@ -155,10 +149,6 @@ h2 {
   border: 4px solid #fff;
   border-radius: 8vh;
   box-shadow: 0 0 1.5em #fff, 0 0 .8em #0ff, inset 0 0 1.5em #fff, inset 0 0 .8em #0ff;
-}
-
-.room {
-  margin-bottom: 3vh;
 }
 
 .voting-menu {
