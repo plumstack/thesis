@@ -2,21 +2,23 @@
   <div align="center" class='room-container'>
     <h2>ROOM {{ getRoomID }}</h2>
     <div align='center' v-if='!getUsername'>
-      <NameEntry @joinRoom='onJoinRoom' />
+      <NameEntry @joinRoomClicked='onJoinRoom' />
     </div>
     <div class='room' align='center' v-else>
         <Player class='content-item' :currentlyPlaying='currentlyPlaying'/>
         <SkipVoter @skipVote='onSkipVote' :currentSkipVotes='currentSkipVotes' />
     </div>
-    <Queue v-if='view === "Queue"'
-      @queueVote='onQueueVote'
-      :currentQueue='currentQueue'/>
-    <Search v-else-if='view === "Search"'
-      @songSearch='onSongSearch' @queueSong='onQueueSong'
-      :searchResults='searchResults' />
-    <UserList v-if='view === "Users"'/>
-    <div class = "bar-margin"></div>
-    <BottomBar @changeView="onChangeView" :view='view'/>
+    <div v-if='getUsername'>
+      <Queue v-if='view === "Queue"'
+        @queueVote='onQueueVote'
+        :currentQueue='currentQueue'/>
+      <Search v-else-if='view === "Search"'
+        @songSearch='onSongSearch' @queueSong='onQueueSong'
+        :searchResults='searchResults' />
+      <ScoreList v-if='view === "Users"'/>
+      <div class = "bar-margin"></div>
+      <BottomBar @changeView="onChangeView" :view='view'/>
+    </div>
   </div>
 </template>
 
@@ -27,6 +29,7 @@ import Player from './Player.vue';
 import Search from './Search.vue';
 import Queue from './Queue.vue';
 import UserList from './UserList.vue';
+import ScoreList from './ScoreList.vue';
 import NameEntry from './NameEntry.vue';
 import SkipVoter from './SkipVoter.vue';
 import BottomBar from './BottomBar.vue';
@@ -38,6 +41,7 @@ export default {
     Search,
     Queue,
     UserList,
+    ScoreList,
     NameEntry,
     SkipVoter,
     BottomBar,
@@ -49,6 +53,7 @@ export default {
       currentQueue: [],
       currentlyPlaying: null,
       currentSkipVotes: 0,
+      scores: [],
     };
   },
   computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),

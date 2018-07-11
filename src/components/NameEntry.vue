@@ -42,7 +42,7 @@ export default {
       }
       if (!this.usernameError) {
         this.updateUsername(this.username);
-        this.$emit('joinRoom');
+        this.$emit('joinRoomClicked');
       }
     },
     ...mapActions(['usernameVerify', 'updateRoomID', 'updateUsername']),

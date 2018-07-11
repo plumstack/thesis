@@ -1,13 +1,13 @@
 <template>
-        <div>
-            {{user}}
-        </div>
+        <td>
+            {{username}}, Score: {{score}}
+        </td>
 </template>
 
 <script>
 export default {
-  name: 'UserListItem',
-  props: ['user'],
+  name: 'ScoreListItem',
+  props: ['username', 'score'],
   data() {
     return {
     };
