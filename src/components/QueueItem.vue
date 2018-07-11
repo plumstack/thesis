@@ -5,15 +5,17 @@
           <div class="song-artist">{{ track.artists[0].name }}</div>
         </div>
         <div class="queue-button" @click="onQueueUpvote(track)">
-          <img src="../assets/queueUp.svg" class="queue-vote" :class='{ voted: vote === 1}' />
+          <img src="../assets/queueUp.svg" class="queue-vote" :class='{ voted: getVote === 1}' />
         </div>
         <div class="queue-button" @click="onQueueDownvote(track)">
-          <img src="../assets/queueDown.svg" class="queue-vote" :class='{ voted: vote === -1}' />
+          <img src="../assets/queueDown.svg" class="queue-vote" :class='{ voted: getVote === -1}' />
         </div>
       </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   name: 'QueueItem',
   props: ['track'],
@@ -24,23 +26,36 @@ export default {
   },
   methods: {
     onQueueDownvote(track) {
-      if (this.vote !== -1) {
-        this.vote = -1;
-        this.$emit('queueVote', track, this.vote);
+      const trackID = this.track.id;
+      if (this.getVote !== -1) {
+        this.voteOn({ trackID, vote: -1 });
+        this.$emit('queueVote', track, -1);
       } else {
-        this.vote = 0;
+        this.voteOn(trackID, 1);
         this.$emit('queueVote', track, 1);
       }
     },
-    onQueueUpvote(track) {
-      if (this.vote !== 1) {
-        this.vote = 1;
-        this.$emit('queueVote', track, this.vote);
+    async onQueueUpvote(track) {
+      const trackID = this.track.id;
+      if (this.getVote !== 1) {
+        this.voteOn({ trackID, vote: 1 });
+        this.$emit('queueVote', track, 1);
       } else {
-        this.vote = 0;
+        this.voteOn({ trackID, vote: -1 });
         this.$emit('queueVote', track, -1);
       }
     },
+    ...mapActions(['voteOn', 'addToQueue']),
+  },
+  computed: {
+    ...mapGetters(['getVotes']),
+    getVote() {
+      const res = this.getVotes;
+      return res[this.track.id];
+    },
+  },
+  created(trackID = this.track.id) {
+    this.addToQueue(trackID);
   },
 };
 </script>
