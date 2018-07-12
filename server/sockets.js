@@ -68,7 +68,6 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
     // HOST
     socket.on('createRoom', async (newRoomInfo) => {
       const { roomID, username } = newRoomInfo;
-
       socket.join(roomID);
       socket.username = username;
       socket.roomID = roomID;
@@ -152,14 +151,23 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
       const { roomID } = socket;
       if (roomList[roomID]) {
         roomList[roomID].UserList.leave(socket.username);
+        socket.leave(roomID);
         roomList[roomID].updateAll();
       }
     });
 
-    socket.on('reconnect', (roomInfo) => {
-      const { roomID } = roomInfo;
+    socket.on('reconnectClient', (reconnectInfo) => {
+      const { roomID, username } = reconnectInfo;
+
+      socket.join(roomID);
+      socket.username = username;
+      socket.roomID = roomID;
+
+      roomList[roomID].UserList.join(username);
+
       roomList[roomID].updateAll();
     });
+
     // ???
     // socket.on('checkUsername');
   });
