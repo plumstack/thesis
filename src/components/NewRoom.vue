@@ -49,7 +49,7 @@ export default {
   },
   computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
   methods: {
-    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList']),
+    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList', 'resetSkip']),
     onChangeView(newView) {
       this.view = newView;
     },
@@ -77,8 +77,9 @@ export default {
       currentlyPlaying,
       skipVotes,
     }) {
+      if (this.currentlyPlaying && this.currentlyPlaying.item.id !== currentlyPlaying.item.id) this.resetSkip();
       this.currentQueue = newQueue;
-      this.currentSkipVotes = skipVotes || this.currentSkipVotes;
+      this.currentSkipVotes = skipVotes;
       this.currentlyPlaying = currentlyPlaying;
       this.updateUserList(newUserList);
     },
@@ -141,5 +142,9 @@ h2 {
   border: 4px solid #fff;
   border-radius: 8vh;
   box-shadow: 0 0 1.5em #fff, 0 0 .8em #0ff, inset 0 0 1.5em #fff, inset 0 0 .8em #0ff;
+}
+
+.bar-margin {
+  height: 6vh;
 }
 </style>

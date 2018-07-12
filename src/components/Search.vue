@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     mapQueue() {
-      return this.currentQueue.map((track) => track.album.id);
+      return this.currentQueue.map((track) => track.id);
     },
   },
   mounted() {
