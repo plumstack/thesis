@@ -33,8 +33,8 @@ const actions = {
     commit('setUsername', '');
     router.push('/');
   },
-  voteToSkip({ commit, rootState }) {
-    if (!rootState.skipped) commit('setSkipped', true);
+  voteToSkip({ commit, state }) { //eslint-disable-line
+    if (!state.skipped) commit('setSkipped', true);
   },
   resetSkip({ commit }) {
     commit('setSkipped', false);
