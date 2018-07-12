@@ -143,4 +143,8 @@ h2 {
   border-radius: 8vh;
   box-shadow: 0 0 1.5em #fff, 0 0 .8em #0ff, inset 0 0 1.5em #fff, inset 0 0 .8em #0ff;
 }
+
+.bar-margin {
+  height: 6vh;
+}
 </style>

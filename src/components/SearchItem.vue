@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     searchIcon() {
-      return this.clicked || this.currentQueue.includes(this.track.album.id) ? Check : Plus;
+      return this.clicked || this.currentQueue.includes(this.track.id) ? Check : Plus;
     },
   },
   methods: {
