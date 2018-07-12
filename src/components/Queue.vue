@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="currentQueue.length" class="menu-container queue-list">
+  <ul class="queue-list">
     <li class="queue-track-list" v-for="track in currentQueue" :key="track.id">
       <QueueItem :track="track" @queueVote="onQueueVote"/>
     </li>

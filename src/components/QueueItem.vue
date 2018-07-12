@@ -1,24 +1,25 @@
 <template>
-      <div class="queue-track">
-        <img :src="track.album.images[2].url" class="album-image">
-        <div class="track-item song-info">{{ track.name }}
-          <div class="song-artist">{{ track.artists[0].name }}</div>
-        </div>
-        <div class="queue-button" @click="onQueueUpvote(track)">
-          <svg viewBox="0 0 129 129" class="queue-vote" :class="{ voted: getVote === 1}">
-            <g transform="matrix(1 0 0 -1 0 129)">
-            <path d="m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,
-            4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z"/>
-            </g>
-          </svg>
-        </div>
-        <div class="queue-button" @click="onQueueDownvote(track)">
-          <svg viewBox="0 0 129 129" class="queue-vote" :class="{ voted: getVote === -1}">
-            <path d="m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,
-            4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z"/>
-          </svg>
-        </div>
-      </div>
+  <div class="queue-track">
+    <img :src="track.album.images[2].url" class="album-image">
+    <div class="track-item song-info">
+      {{ track.name }}
+      <div class="song-artist">{{ track.artists[0].name }}</div>
+    </div>
+    <div class="queue-button" @click="onQueueUpvote(track)">
+      <svg viewBox="0 0 129 129" class="queue-vote" :class="{ voted: getVote === 1}">
+        <g transform="matrix(1 0 0 -1 0 129)">
+        <path d="m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,
+        4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="queue-button" @click="onQueueDownvote(track)">
+      <svg viewBox="0 0 129 129" class="queue-vote" :class="{ voted: getVote === -1}">
+        <path d="m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,
+        4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z"/>
+      </svg>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -70,16 +71,12 @@ export default {
 </script>
 
 <style scoped>
-queue-track-list:nth-child(even) {
-  background: rgba(255, 255, 255, 0.2);
-}
-
 .queue-track {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  color: white;
+  color: #fff;
 }
 
 .track-item {
