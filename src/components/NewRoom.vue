@@ -1,7 +1,7 @@
 <template>
   <div class="room-container">
     <div class="room-title"><h2 >Room: {{ getRoomID }}</h2></div>
-    <NameEntry v-if="!getUsername"/>
+    <NameEntry v-if="!getUsername" @joinRoomClicked='onJoinRoom'/>
     <div class="room" align="center" v-else>
       <Player :currentlyPlaying="currentlyPlaying" />
       <SkipVoter v-if="currentlyPlaying" @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
@@ -68,14 +68,6 @@ export default {
     onJoinRoom() {
       this.$socket.emit('joinRoom', { username: this.getUsername, roomID: this.getRoomID });
     },
-    handleVisibilityChange() {
-      // console.log(this.$socket);
-      // if (this.$socket.connected) this.$socket.disconnect();
-      // else {
-      //   this.$socket.connect(null, { forceNew: true });
-      //   this.$socket.emit('reconnect', { roomID: this.getRoomID });
-      // }
-    },
     songSearchResponse(searchResults) {
       this.searchResults = JSON.parse(searchResults).tracks.items;
     },
@@ -102,8 +94,9 @@ export default {
     this.$socket.on('updateAll', this.updateAll);
     this.$socket.on('updateQueue', this.updateQueue);
     this.$socket.on('updateUserList', this.getUpdateUserList);
-
-    document.addEventListener('visibilitychange', this.handleVisibilityChange, false);
+    this.$socket.on('reconnect', () => {
+      this.$socket.emit('reconnectClient', { roomID: this.getRoomID, username: this.getUsername });
+    });
 
     if (this.$route.query.host) {
       this.updateUsername(this.$route.query.username);
