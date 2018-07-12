@@ -1,12 +1,18 @@
 <template>
-  <ul class="menu-container navbar">
-    <li class="menu-item topbar-item home" @click="leaveRoom">
-      <img src="../assets/home.svg">
-    </li>
-    <li class="topbar-item username" v-if="getUsername">
-      {{ getUsername }}
-    </li>
-  </ul>
+  <div>
+    <ul class="menu-container navbar">
+      <li class="menu-item topbar-item home" @click="leaveRoom">
+        <img src="../assets/home.svg">
+      </li>
+      <li class="topbar-item logo">
+        S<span class="logo-blue">N</span>
+      </li>
+      <li class="topbar-item username" v-if="getUsername">
+        {{ getUsername }}
+      </li>
+    </ul>
+    <div class="navbar-empty-div"></div>
+  </div>
 </template>
 
 <script>
@@ -22,6 +28,15 @@ export default {
 <style scoped>
 .navbar {
   background: #333;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-empty-div {
+  height: calc(5vh + 6vw);
+  margin: 0;
+  padding: 0;
 }
 
 .topbar-item {
@@ -46,12 +61,29 @@ export default {
   left: calc(50% - 2vh);
 }
 
+.logo {
+  position: absolute;
+  width: 15vw;
+  left: calc(50% - 7.5vw);
+  right: calc(50% - 7.5vw);
+  line-height: 5vh;
+  padding: 0;
+  margin: 3vw 0;
+  font-size: 2.5em;
+  font-family: "Monoton";
+  color: #ff1493;
+}
+
+.logo-blue {
+  color: #0ff;
+}
+
 .username {
   font-family: "Comfortaa";
   float: right;
   font-size: 1.5em;
   padding: 0;
-  line-height: 4vh;
+  line-height: 5vh;
   background: transparent;
 }
 
@@ -71,6 +103,10 @@ export default {
   .username {
     line-height: 8vh;
     margin-right: 3vh;
+  }
+
+  .logo {
+    font-size: 0em;
   }
 
   .home > img {
