@@ -7,7 +7,7 @@
       <SkipVoter v-if="currentlyPlaying" @skipVote="onSkipVote" :currentSkipVotes="currentSkipVotes" />
       <Queue v-if="view === 'Queue'" @queueVote="onQueueVote" :currentQueue="currentQueue"/>
       <Search v-if="view === 'Search'" @songSearch="onSongSearch"
-      @queueSong="onQueueSong" :searchResults="searchResults" />
+      @queueSong="onQueueSong" :searchResults="searchResults" :currentQueue="currentQueue"/>
       <UserList v-if="view === 'Users'"/>
       <div class = "bar-margin"></div>
       <BottomBar @changeView="onChangeView" :view="view"/>
@@ -111,7 +111,6 @@ export default {
 </script>
 
 <style scoped>
-
 h2 {
   color: #ffcce7;
   font-size: 2em;
@@ -143,30 +142,4 @@ h2 {
   border-radius: 8vh;
   box-shadow: 0 0 1.5em #fff, 0 0 .8em #0ff, inset 0 0 1.5em #fff, inset 0 0 .8em #0ff;
 }
-
-.voting-menu {
-  display: inline-block;
-  border-radius: 2px;
-}
-
-.vote-up {
-  background: #5cd65c;
-}
-
-.vote-down {
-  background: #08f;
-}
-
-.vote-up:hover {
-  color: #db7095;
-}
-
-.vote-down:hover {
-  color: #daa360;
-}
-
-.bar-margin{
-  height: 6vh;
-}
-
 </style>
