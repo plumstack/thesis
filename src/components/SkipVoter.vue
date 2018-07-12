@@ -1,7 +1,8 @@
 <template>
 <div>
   <ul class="menu-container skip-menu">
-    <li class="menu-item controls-item" @click="onSkipVote">Skip</li>
+    <li v-if='!getSkipped' class="menu-item controls-item" @click="onSkipVote">Skip</li>
+    <li v-if='getSkipped' class="menu-item controls-item" >Skipped</li>
     <li class="controls-item score">Skip Votes: {{ currentSkipVotes }}</li>
   </ul>
 </div>
