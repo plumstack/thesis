@@ -49,7 +49,7 @@ export default {
   },
   computed: mapGetters(['getUsername', 'getRoomID', 'getUsersList']),
   methods: {
-    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList']),
+    ...mapActions(['updateUsername', 'usernameVerify', 'leaveRoom', 'updateRoomID', 'updateUserList', 'resetSkip']),
     onChangeView(newView) {
       this.view = newView;
     },
@@ -77,11 +77,11 @@ export default {
       currentlyPlaying,
       skipVotes,
     }) {
+      if (this.currentlyPlaying && this.currentlyPlaying.item.id !== currentlyPlaying.item.id) this.resetSkip();
       this.currentQueue = newQueue;
       this.currentSkipVotes = skipVotes;
       this.currentlyPlaying = currentlyPlaying;
       this.updateUserList(newUserList);
-      if (this.currentlyPlaying && this.currentlyPlaying.item.id !== currentlyPlaying.item.id) this.resetSkip();
     },
     updateQueue(newQueue) {
       this.currentQueue = newQueue;

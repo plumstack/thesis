@@ -132,12 +132,11 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
       const { roomID, userCount } = skipVoteInfo;
       roomList[roomID].skipVotes += 1;
 
-      if (roomList[roomID].skipVotes >= userCount * 0.6) {
+      if (roomList[roomID].skipVotes >= Math.ceil(userCount * 0.6)) {
         const nextSong = await roomList[roomID].Queue.playNext();
         await roomList[roomID].UserList.changePoints(nextSong, userCount * 20);
         roomList[roomID].skipVotes = 0;
       }
-
       setTimeout(roomList[roomID].updateAll.bind(roomList[roomID]), 2000);
     });
 
