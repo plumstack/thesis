@@ -1,15 +1,18 @@
 <template>
-  <ul class="menu-container navbar">
-    <li class="menu-item topbar-item home" @click="leaveRoom">
-      <img src="../assets/home.svg">
-    </li>
-    <li class="topbar-item logo">
-      S<span class="logo-blue">N</span>
-    </li>
-    <li class="topbar-item username" v-if="getUsername">
-      {{ getUsername }}
-    </li>
-  </ul>
+  <div>
+    <ul class="menu-container navbar">
+      <li class="menu-item topbar-item home" @click="leaveRoom">
+        <img src="../assets/home.svg">
+      </li>
+      <li class="topbar-item logo">
+        S<span class="logo-blue">N</span>
+      </li>
+      <li class="topbar-item username" v-if="getUsername">
+        {{ getUsername }}
+      </li>
+    </ul>
+    <div class="navbar-empty-div"></div>
+  </div>
 </template>
 
 <script>
@@ -25,6 +28,15 @@ export default {
 <style scoped>
 .navbar {
   background: #333;
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-empty-div {
+  height: calc(5vh + 6vw);
+  margin: 0;
+  padding: 0;
 }
 
 .topbar-item {
