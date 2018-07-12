@@ -1,26 +1,36 @@
 <template>
-    <div class="search-track" v-on:click="add(track)">
-        <img :src="track.album.images[2].url">
-        <div class="search-info-item search-title">
-            {{ track.name }}
-            <div class="search-info-item">{{ track.artists[0].name }}</div>
-            </div>
-        <div v-on:click="add(track)">
-          <img src="../assets/plus.svg" class="queue-button-add">
-        </div>
+  <div class="search-track" v-on:click="add(track)">
+    <img :src="track.album.images[2].url">
+    <div class="search-info-item song-info">
+      {{ track.name }}
+      <div class="song-artist">{{ track.artists[0].name }}</div>
     </div>
+    <div class="queue-add-button" v-on:click="add(track)">
+      <img :src="searchIcon" class="queue-add-plus">
+    </div>
+  </div>
 </template>
 
 <script>
+const Plus = require('../assets/plus.svg');
+const Check = require('../assets/check.svg');
+
 export default {
   name: 'SearchItem',
-  props: ['track'],
+  props: ['track', 'currentQueue'],
   data() {
     return {
+      clicked: false,
     };
+  },
+  computed: {
+    searchIcon() {
+      return this.clicked || this.currentQueue.includes(this.track.album.id) ? Check : Plus;
+    },
   },
   methods: {
     add(track) {
+      this.clicked = true;
       this.$emit('queue', track);
     },
     onSongSearch() {
@@ -36,69 +46,36 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  color: white;
-}
-
-.alternative_row:nth-child(even){
-    background: rgba(255, 255, 255, .2);
-}
-
-.alternative_row:hover{
-    color: #ff1493;
-}
-
-td {
-    text-align: center;
-    vertical-align: center;
-    padding: 0px;
+  color: #fff;
 }
 
 .search-info-item {
-  font-size: 2vw;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 10px;
-}
-
-.search-title {
-  color: #6495ed;
-  font-size: 3vw;
-  margin: 0vh .5vw 0vh .5vw;
-}
-
-.queue-button-add {
-  max-width: 32px;
-  max-height: 32px;
-  margin-right: 3px;
-  border-radius: 50%;
-}
-
-::placeholder {
-  color: rgba(255, 255, 255, .35);
-}
-
-.search-list {
-  list-style-type: none;
-  width: 75%;
-}
-
-.search-header {
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.search-track-list:nth-child(even) {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-
-.track-item {
   flex-grow: 1;
   flex-basis: 0;
 }
 
-.empty-image {
-  width: 64px;
+.song-info {
+  color: #6495ed;
+  font-size: 1.2em;
 }
 
+.song-artist {
+  color: #fff;
+  font-size: .8em;
+  margin-top: .5vh;
+}
+
+.queue-add-button {
+  width: 32px;
+  height: 32px;
+  margin-right: 3px;
+  border-radius: 50%;
+}
+
+.queue-add-plus {
+  fill: #fff;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+}
 </style>
