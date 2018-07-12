@@ -33,7 +33,7 @@ module.exports = (redis) => {
     {
       clientID: process.env.SPOTIFY_ID,
       clientSecret: process.env.SPOTIFY_SECRET,
-      callbackURL: 'http://localhost:8082/auth/spotify/callback',
+      callbackURL: 'http://johnstonjacob.com/socialnights/auth/spotify/callback',
     },
     (accessToken, refreshToken, expiresIn, profile, done) => {
       User.findOrCreate(
@@ -51,7 +51,7 @@ module.exports = (redis) => {
   passport.serializeUser(User.serializeUser());
   passport.deserializeUser(User.deserializeUser());
 
-  app.get('/auth/loggedin', async (req, res) => {
+  app.get('/socialnights/auth/loggedin', async (req, res) => {
     try {
       if (req.isAuthenticated()) {
         const result = await User.sessionCheck(req.sessionID);
@@ -62,10 +62,10 @@ module.exports = (redis) => {
     }
   });
 
-  app.get('/auth/spotify', passport.authenticate('spotify', { scope, showDialog: false }), (req) => req);
+  app.get('/socialnights/auth/spotify', passport.authenticate('spotify', { scope, showDialog: false }), (req) => req);
 
   app.get(
-    '/auth/spotify/callback*',
+    '/socialnights/auth/spotify/callback*',
     passport.authenticate('spotify', {
       failureRedirect: '/login',
     }),
@@ -79,7 +79,7 @@ module.exports = (redis) => {
       await User.sessionAdd(user, req.sessionID, newRoom).catch(console.error);
       const result = await User.sessionCheck(req.sessionID);
       redis.hmset(newRoom, ['host', user, 'accesstoken', result.accessToken, 'refreshtoken', result.refreshToken]);
-      res.redirect(`http://localhost:8080/#/room/${newRoom}?host=true&username=${user}`);
+      res.redirect(`http://johnstonjacob.com/socialnights/#/room/${newRoom}?host=true&username=${user}`);
     },
   );
 };

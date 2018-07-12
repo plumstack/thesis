@@ -20,11 +20,6 @@ const client = redis.createClient({
 (require('./sockets')(io, Spotify, client));
 
 // router
-const spotifyNext = require('./routes/spotify/player/next');
-const spotifyPrev = require('./routes/spotify/player/prev');
-const spotifyPlay = require('./routes/spotify/player/play');
-const spotifyPause = require('./routes/spotify/player/pause');
-const spotifyPlayerInfo = require('./routes/spotify/player/info');
 
 dotenv.config({ silent: true });
 
@@ -35,6 +30,10 @@ app.use((req, res, next) => {
   next();
 });
 
+if (process.env.BUILD === 'PROD') {
+  app.use('/socialnights', express.static(`${__dirname}/../dist`));
+}
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -43,12 +42,6 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 app.use(cookieParser());
-
-app.use('/spotify/player/next', spotifyNext);
-app.use('/spotify/player/prev', spotifyPrev);
-app.use('/spotify/player/play', spotifyPlay);
-app.use('/spotify/player/pause', spotifyPause);
-app.use('/spotify/player/info', spotifyPlayerInfo);
 
 server.listen(port, () => {
   console.log(`Server started on port ${port}!`);

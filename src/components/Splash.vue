@@ -13,7 +13,7 @@
         {{ roomError }}
       </li>
       <li class="menu-item main-menu-item host-button" v-on:click="hostRoom">
-        <form id="loginForm" action="http://localhost:8082/auth/spotify" method="GET">
+        <form id="loginForm" action="http://johnstonjacob.com/socialnights/auth/spotify" method="GET">
           Host a Room
         </form>
       </li>
