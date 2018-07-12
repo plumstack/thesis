@@ -6,17 +6,17 @@
         <li class="song-info-item song-title">{{ currentlyPlaying.item.name}}</li>
         <li class="song-info-item">{{ currentlyPlaying.item.artists[0].name }}</li>
       </ul>
-    <div id="progress-bar" class="stripes">
-      <span id="progress" class="stripes"></span>
+    <div id="progress-bar">
+      <span id="progress"></span>
     </div>
     </div>
     <div v-else class="require-playback">
       <h2>Please start playback on your device and refresh the page.</h2>
     </div>
-    <ul class="menu-container controls" v-if="$route.query.host && currentlyPlaying">
+    <!-- <ul class="menu-container controls" v-if="$route.query.host && currentlyPlaying">
       <li class="menu-item controls-item" @click="onClickPlay">{{ playButton }}//TODO</li>
       <li class="menu-item controls-item" @click="onClickNext">Next //TODO</li>
-    </ul>
+    </ul> -->
 </div>
 </template>
 
@@ -100,8 +100,8 @@ export default {
 .album-art {
   display: block;
   margin: auto;
-  height: 40vw;
-  width: 40vw;
+  height: 30vw;
+  width: 30vw;
 }
 
 .song-info {
@@ -110,15 +110,15 @@ export default {
 
 .song-title {
   color: #6495ed;
-  font-size: 1.5em;
+  font-size: 1.2em;
   margin-bottom: 1vh;
 }
 
 #progress-bar {
   text-align: left;
   background-color: #1a1a1a;
-  height: 2vh;
-  padding: .5vh;
+  height: 1.25vh;
+  padding: .3vh;
   width: 60vw;
   margin-top: 1vh;
   margin-bottom: 2vh;
@@ -128,12 +128,12 @@ export default {
 
 #progress {
   display: inline-block;
+  vertical-align: top;
   background: #6495ed;
   background-size: 4vh 4vh;
   height: 100%;
   border-radius: 5vh;
   box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset;
-  transition: width .5s ease-in-out;
   background-image: linear-gradient(135deg, rgba(255, 255, 255, .15) 25%, transparent 25%,
                     transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%,
                     transparent 75%, transparent);
@@ -141,7 +141,7 @@ export default {
 }
 
 @keyframes animate-stripes {
-    0% {background-position: 0 0;} 100% {background-position: 60px 0;}
+    0% {background-position: 0 0;} 100% {background-position: 8vh 0;}
 }
 
 .controls {

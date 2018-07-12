@@ -1,13 +1,13 @@
 <template>
-  <div>
-    {{user}}, 9000
+  <div class="user">
+    {{username}} <span>{{score}}</span>
   </div>
 </template>
 
 <script>
 export default {
   name: 'UserListItem',
-  props: ['user'],
+  props: ['username', 'score'],
   data() {
     return {
     };
@@ -18,5 +18,10 @@ export default {
 </script>
 
 <style scoped>
-
+span {
+  float: right;
+}
+.user {
+  font-size: .75em;
+}
 </style>
