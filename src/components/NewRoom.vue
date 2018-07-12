@@ -81,6 +81,7 @@ export default {
       this.currentSkipVotes = skipVotes || this.currentSkipVotes;
       this.currentlyPlaying = currentlyPlaying;
       this.updateUserList(newUserList);
+      if (this.currentlyPlaying && this.currentlyPlaying.item.id !== currentlyPlaying.item.id) this.resetSkip();
     },
     updateQueue(newQueue) {
       this.currentQueue = newQueue;

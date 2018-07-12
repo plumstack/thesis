@@ -15,7 +15,7 @@ class Room {
     this.SpotifyConstructor = Spotify;
     this.io = io;
     this.skipVotes = 0;
-    this.reconnectTimers = {};
+    this.timer = {};
   }
 
   async updateAll() {
@@ -130,16 +130,13 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
 
     socket.on('skipVote', async (skipVoteInfo) => {
       const { roomID, userCount } = skipVoteInfo;
-      const skipVotes = await roomList[roomID].Queue.skipVote();
+      roomList[roomID].skipVotes += 1;
 
-      if (skipVotes >= userCount * 0.6) {
-        const nextSelector = await roomList[roomID].Queue.playNext();
-        const room = await roomList[roomID].UserList.get();
-        const roomSize = room.length;
-        await roomList[roomID].UserList.changePoints(nextSelector, roomSize * 20);
+      if (roomList[roomID].skipVotes >= userCount * 0.6) {
+        const nextSong = await roomList[roomID].Queue.playNext();
+        await roomList[roomID].UserList.changePoints(nextSong, userCount * 20);
+        roomList[roomID].skipVotes = 0;
       }
-
-      roomList[roomID].skipVotes = skipVotes;
 
       setTimeout(roomList[roomID].updateAll.bind(roomList[roomID]), 2000);
     });
@@ -170,7 +167,6 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
 
     socket.on('reconnectClient', (reconnectInfo) => {
       const { roomID, username } = reconnectInfo;
-
       if (roomList[roomID]) roomList[roomID].stopReconnectTimer(username, socket);
     });
 
