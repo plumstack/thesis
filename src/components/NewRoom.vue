@@ -68,8 +68,6 @@ export default {
     onJoinRoom() {
       this.$socket.emit('joinRoom', { username: this.getUsername, roomID: this.getRoomID });
     },
-    handleVisibilityChange() {
-    },
     songSearchResponse(searchResults) {
       this.searchResults = JSON.parse(searchResults).tracks.items;
     },
@@ -98,13 +96,7 @@ export default {
     this.$socket.on('updateUserList', this.getUpdateUserList);
     this.$socket.on('reconnect', () => {
       this.$socket.emit('reconnectClient', { roomID: this.getRoomID, username: this.getUsername });
-      console.log('reconnect');
-      console.log(this.$socket);
     });
-
-    console.log(this.$socket);
-
-    document.addEventListener('visibilitychange', this.handleVisibilityChange, false);
 
     if (this.$route.query.host) {
       this.updateUsername(this.$route.query.username);

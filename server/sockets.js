@@ -15,6 +15,7 @@ class Room {
     this.SpotifyConstructor = Spotify;
     this.io = io;
     this.skipVotes = 0;
+    this.reconnectTimers = {};
   }
 
   async updateAll() {
@@ -60,6 +61,19 @@ class Room {
       await this.Queue.playNext();
       setTimeout(this.updateAll.bind(this), 2000);
     }, duration - elapsed);
+  }
+
+  startReconnectTimer(username, roomID = this.roomID, socket) {
+    this.timer[username] = setTimeout(() => {
+      socket.leave(roomID);
+      this.UserList.leave(socket.username);
+      roomList[roomID].updateAll();
+    }, 12 * 60 * 1000);
+  }
+
+  stopReconnectTimer(username, socket) {
+    socket.join(this.roomID);
+    clearTimeout(this.timer[username]);
   }
 }
 
@@ -148,24 +162,16 @@ module.exports = (io, Spotify, Redis) => { //eslint-disable-line
     });
 
     socket.on('disconnect', async () => {
-      const { roomID } = socket;
+      const { roomID, username } = socket;
       if (roomList[roomID]) {
-        roomList[roomID].UserList.leave(socket.username);
-        socket.leave(roomID);
-        roomList[roomID].updateAll();
+        roomList[roomID].startReconnectTimer(username, roomID, socket);
       }
     });
 
     socket.on('reconnectClient', (reconnectInfo) => {
       const { roomID, username } = reconnectInfo;
 
-      socket.join(roomID);
-      socket.username = username;
-      socket.roomID = roomID;
-
-      roomList[roomID].UserList.join(username);
-
-      roomList[roomID].updateAll();
+      if (roomList[roomID]) roomList[roomID].stopReconnectTimer(username, socket);
     });
 
     // ???
