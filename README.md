@@ -16,7 +16,7 @@ For a limited time (and the foreseeable future), Social Nights is available for 
 ---
 
 ## Team PStack:
-- Robert Chung, chungrob@gmail.com, http://github.com/grungebob
-- Jacob Johnston, johnstonajacob@gmail.com, http://github.com/johnstonjacob
-- Michael Panetta, mtpanetta@gmail.com, http://github.com/panetters
+- Robert Chung | chungrob@gmail.com | http://github.com/grungebob
+- Jacob Johnston | johnstonajacob@gmail.com | http://github.com/johnstonjacob
+- Michael Panetta | mtpanetta@gmail.com | http://github.com/panetters
 
