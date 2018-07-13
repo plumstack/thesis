@@ -1,6 +1,6 @@
 <template>
   <div class="room-container">
-    <div class="room-title"><h2 >Room: {{ getRoomID }}</h2></div>
+    <div class="room-title"><h2>Room: {{ getRoomID }}</h2></div>
     <NameEntry v-if="!getUsername" @joinRoomClicked='onJoinRoom'/>
     <div class="room" align="center" v-else>
       <Player :currentlyPlaying="currentlyPlaying" />
