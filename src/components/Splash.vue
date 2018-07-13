@@ -12,8 +12,8 @@
       <li class="join-error">
         {{ roomError }}
       </li>
-      <li class="menu-item main-menu-item host-button" v-on:click="hostRoom">
-        <form id="loginForm" action="http://johnstonjacob.com/socialnights/auth/spotify" method="GET">
+      <li class="menu-item main-menu-item host-button" @click="hostRoom">
+        <form id="loginForm" action="https://johnstonjacob.com/socialnights/auth/spotify" method="GET">
           Host a Room
         </form>
       </li>
@@ -24,23 +24,19 @@
 <script>
 export default {
   name: 'Splash',
-
   data() {
     return {
       joinRoomID: '',
       roomError: '',
     };
   },
-
   mounted() {
     document.getElementById('room-input').focus();
   },
-
   methods: {
     hostRoom() {
       document.getElementById('loginForm').submit();
     },
-
     joinRoom() {
       this.roomError = '';
 

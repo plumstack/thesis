@@ -4,10 +4,43 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.png">
+      <link rel="manifest" href="https://johnstonjacob.com/socialnights/manifest.json">
+      <link rel="icon" href="https://johnstonjacob.com/socialnights/favicon.png">
+      <link rel="apple-touch-icon" href="https://johnstonjacob.com/socialnights/favicon.png">
+    <!-- Tell the browser it's a PWA -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- Tell iOS it's a PWA -->
+    <!-- Make sure theme-color is defined -->
+    <link href="https://johnstonjacob.com/socialnights/splashscreens/iphone5_splash.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="https://johnstonjacob.com/socialnights/splashscreens/iphone6_splash.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="https://johnstonjacob.com/socialnights/splashscreens/iphoneplus_splash.png" media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="https://johnstonjacob.com/socialnights/splashscreens/iphonex_splash.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" rel="apple-touch-startup-image" />
+    <link href="https://johnstonjacob.com/socialnights/splashscreens/ipad_splash.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="https://johnstonjacob.com/socialnights/splashscreens/ipadpro1_splash.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+    <link href="https://johnstonjacob.com/socialnights/splashscreens/ipadpro2_splash.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image" />
+
+    <meta name="theme-color" content="#536878">
     <title>Social Nights</title>
+
   </head>
   <body>
+      <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+            // Registration was successful
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, function(err) {
+            // registration failed :(
+            console.log('ServiceWorker registration failed: ', err);
+          }).catch(function(err) {
+            console.log(err)
+          });
+        });
+      } else {
+        console.log('service worker is not supported');
+      }
+    </script>
     <noscript>
       <strong>Please enable Javascript to view this application.</strong>
     </noscript>

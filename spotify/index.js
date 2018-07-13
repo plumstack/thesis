@@ -18,6 +18,7 @@ module.exports = class Spotify {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.oauth}`,
     };
+    console.log('running');
   }
 
   async refreshToken() {
