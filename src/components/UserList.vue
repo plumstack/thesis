@@ -21,7 +21,7 @@ export default {
 <style scoped>
   .users-table {
     display: inline-block;
-    width: 45vw;
+    width: 50vw;
     text-align: left;
     font-size: 1.5em;
   }
