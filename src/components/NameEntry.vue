@@ -33,8 +33,8 @@ export default {
     async submitName() {
       this.usernameError = '';
 
-      if (this.username.length > 16) {
-        this.usernameError = 'Username must be under 16 characters';
+      if (this.username.length > 12) {
+        this.usernameError = 'Username must be under 12 characters';
       }
       if (!/^[a-z0-9]+$/i.test(this.username)) {
         this.usernameError = 'Username can only use letters and numbers';

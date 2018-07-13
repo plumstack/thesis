@@ -119,7 +119,7 @@ export default {
   background-color: #1a1a1a;
   height: 1.25vh;
   padding: .3vh;
-  width: 60vw;
+  width: 40vw;
   margin-top: 1vh;
   margin-bottom: 2vh;
   border-radius: 5vh;

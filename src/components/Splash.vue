@@ -12,6 +12,9 @@
       <li class="join-error">
         {{ roomError }}
       </li>
+      <li class="or-header main-menu-item">
+        Or
+      </li>
       <li class="menu-item main-menu-item host-button" v-on:click="hostRoom">
         <form id="loginForm" action="http://localhost:8082/auth/spotify" method="GET">
           Host a Room
@@ -101,8 +104,12 @@ li {
 }
 
 .join-header {
-  text-align: left;
   padding-bottom: 0;
+}
+
+.or-header {
+  padding: 1vh;
+  margin: 0;
 }
 
 .room-id {
@@ -120,7 +127,7 @@ li {
 }
 
 .host-button {
-  margin-top: 2vh;
+  margin-top: 0vh;
 }
 
 @media screen and (min-width: 900px) {
